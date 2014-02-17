@@ -3,6 +3,8 @@ package edu.sjsu.canlog.app;
 import java.util.Arrays;
 import java.util.Locale;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -20,10 +22,13 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import java.util.ArrayList;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
+
+//TODO android plot
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
-       public static MainActivity _this;
+    public static int REQUEST_ENABLE_BT = 3;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -41,7 +46,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        _this = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -78,8 +82,43 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if ( bluetoothAdapter == null)
+        {
+            Toast toast = Toast.makeText(getApplicationContext(), "Bluetooth not supported", Toast.LENGTH_LONG);
+            toast.show();
+        }
+        else
+        {
+            if (!bluetoothAdapter.isEnabled())
+            {
+                Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBTIntent, REQUEST_ENABLE_BT);
+            }
+
+            //Assume the user has enabled bluetooth
+
+        }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent)
+    {
+        if (requestCode == REQUEST_ENABLE_BT)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                Toast toast = Toast.makeText(getApplicationContext(), "Bluetooth Enabled", Toast.LENGTH_LONG);
+                toast.show();
+            }
+            else
+            {
+                Toast toast = Toast.makeText(getApplicationContext(), "Bluetooth could not be enabled", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
