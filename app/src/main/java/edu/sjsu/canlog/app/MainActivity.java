@@ -16,10 +16,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
+import java.util.ArrayList;
+import android.widget.ArrayAdapter;
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
+       public static MainActivity _this;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -37,6 +40,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        _this = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -158,6 +162,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private static final String ARG_LIST = "listView";
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -178,8 +183,13 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            ListView view = (ListView) rootView.findViewById(R.id.listView);
+
+            String[] values = {"Test 1", "Test 2", "Test 3"};
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity._this , android.R.layout.simple_list_item_1, android.R.id.text1, values);
+            view.setAdapter(adapter);
+
             return rootView;
         }
     }
