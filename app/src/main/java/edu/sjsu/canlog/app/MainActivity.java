@@ -1,5 +1,6 @@
 package edu.sjsu.canlog.app;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import android.support.v7.app.ActionBarActivity;
@@ -129,7 +130,16 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            ArrayList<String> values;
+            if (position == 0) //DTC page
+            {
+                values = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.dtc_page_names)));
+            }
+            else
+            {
+                values = new ArrayList<String>(Arrays.asList(new String[]{"hard", "coded", "values"}));
+            }
+            return ArrayListViewFragment.newInstance(values);
         }
 
         @Override
@@ -152,46 +162,4 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             return null;
         }
     }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-        private static final String ARG_LIST = "listView";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            ListView view = (ListView) rootView.findViewById(R.id.listView);
-
-            String[] values = {"Test 1", "Test 2", "Test 3"};
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity._this , android.R.layout.simple_list_item_1, android.R.id.text1, values);
-            view.setAdapter(adapter);
-
-            return rootView;
-        }
-    }
-
 }

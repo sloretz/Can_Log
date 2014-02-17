@@ -7,4 +7,10 @@
     <string name="title_section3">Logged Data</string>
     <string name="action_settings">Settings</string>
 
+    <string-array name="dtc_page_names">
+        <item>DTC page 1</item>
+        <item>The second thing</item>
+        <item>How many things do we have?</item>
+    </string-array>
+
 </resources>
