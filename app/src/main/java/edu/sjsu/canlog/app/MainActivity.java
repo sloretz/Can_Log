@@ -169,16 +169,34 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            ArrayList<String> values;
             if (position == 0) //DTC page
             {
-                values = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.dtc_page_names)));
+                ArrayList<String> values = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.dtc_page_names)));
+                return ArrayListViewFragment.newInstance(values);
+            }
+            else if (position == 1)
+            {
+                ArrayList<Number> xVals = new ArrayList<Number>();
+                xVals.add(1);
+                xVals.add(2);
+                xVals.add(3);
+                xVals.add(4);
+                ArrayList<Number> yVals = new ArrayList<Number>();
+                yVals.add(4);
+                yVals.add(3);
+                yVals.add(1);
+                yVals.add(4);
+                StaticXYPlotFragment fragment = StaticXYPlotFragment.newInstance("Garbage",xVals,yVals);
+
+                return fragment;
             }
             else
             {
-                values = new ArrayList<String>(Arrays.asList(new String[]{"hard", "coded", "values"}));
+                ArrayList<String> values = new ArrayList<String>(Arrays.asList(new String[]{"hard", "coded", "values"}));
+                return ArrayListViewFragment.newInstance(values);
             }
-            return ArrayListViewFragment.newInstance(values);
+
+
         }
 
         @Override

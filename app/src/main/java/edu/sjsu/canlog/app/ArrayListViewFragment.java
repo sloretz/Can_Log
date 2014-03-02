@@ -37,16 +37,18 @@ public class ArrayListViewFragment extends Fragment{
             ListView listView = (ListView) rootView.findViewById(R.id.listView);
 
             ArrayList<String> values = getArguments().getStringArrayList(ARG_LIST_VALUES);
+            //android.util.Log.i("Arguments",getArguments().toString());
 
             sensorListAdapter = new SensorListAdapter(getActivity());
 
-
-            Iterator<String> strIter = values.iterator();
-            while (strIter.hasNext())
+            if (values != null)
             {
-                sensorListAdapter.addSensor(strIter.next(), "0.0");
+                Iterator<String> strIter = values.iterator();
+                while (strIter.hasNext())
+                {
+                    sensorListAdapter.addSensor(strIter.next(), "0.0");
+                }
             }
-
             listView.setAdapter(sensorListAdapter);
 
             sensorListAdapter.updateSensor(0, "fitfsadf");

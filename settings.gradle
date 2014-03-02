@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':app:libs:androidplot-core-0.6.0-sources'
+
