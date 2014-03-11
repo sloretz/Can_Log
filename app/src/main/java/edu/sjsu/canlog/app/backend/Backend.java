@@ -72,4 +72,25 @@ public class Backend {
         tempResult.putStringArrayList("Data", dataList);
         resultHandler.gotResult(tempResult);
     }
+
+    public void fetchDTCs(ResultHandler handler)
+    {
+        lastResult = null;
+        resultHandler = handler;
+
+        //TODO Begin Bluetooth transfer in another thread
+        //That thread should call the result handler when
+        //we get the data from the microcontroller
+        //for now, just call the handler with some debug data
+        Bundle tempResult = new Bundle();
+        ArrayList<String> DTCList = new ArrayList<String>();
+        ArrayList<String> descList = new ArrayList<String>();
+        DTCList.add("P0638");
+        descList.add("Throttle Actuator Control Range");
+        DTCList.add("P0720");
+        descList.add("Output Speed Sensor Circuit Malfunction");
+        tempResult.putStringArrayList("DTCs", DTCList);
+        tempResult.putStringArrayList("short_descriptions", descList);
+        resultHandler.gotResult(tempResult);
+    }
 }

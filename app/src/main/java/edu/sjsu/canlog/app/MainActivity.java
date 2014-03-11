@@ -169,8 +169,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position == 0) //DTC page
             {
-                ArrayList<String> values = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.dtc_page_names)));
-                return ArrayListViewFragment.newInstance(values);
+                DTCPage fragment = new DTCPage();
+                return fragment;
             }
             else if (position == 1)
             {
@@ -188,7 +188,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 yVals.add(4);
                 StaticXYPlotFragment fragment = StaticXYPlotFragment.newInstance("Garbage",xVals,yVals);
                 */
-
                 LiveDataPage fragment = new LiveDataPage();
                 return fragment;
             }

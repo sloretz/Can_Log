@@ -2,14 +2,18 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/listname_background_normal">
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/sensor_name"
         android:layout_gravity="center_horizontal"
-        android:editable="false" />
+        android:editable="false"
+        android:text="sensor name"
+        android:singleLine="true"
+        android:background="@drawable/sensorname_editbox_background_normal" />
 
     <EditText
         android:layout_width="match_parent"
@@ -17,5 +21,8 @@
         android:id="@+id/sensor_data"
         android:layout_gravity="center_horizontal"
         android:editable="false"
-        android:textColor="#4142ff" />
+        android:textColor="#4142ff"
+        android:text="0.0"
+        android:singleLine="true"
+        android:background="@drawable/sensordata_editbox_background_normal" />
 </LinearLayout>
