@@ -1,4 +1,4 @@
-package edu.sjsu.canlog.app;
+package edu.sjsu.canlog.app.frontend;
 import android.os.Parcel;
 import android.os.Parcelable;
 

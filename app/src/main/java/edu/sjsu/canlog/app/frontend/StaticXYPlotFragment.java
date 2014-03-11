@@ -1,18 +1,16 @@
-package edu.sjsu.canlog.app;
+package edu.sjsu.canlog.app.frontend;
 
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.Parcel;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.*;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Arrays;
+
 import edu.sjsu.canlog.app.R;
 
 /**

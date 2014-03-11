@@ -1,4 +1,4 @@
-package edu.sjsu.canlog.app;
+package edu.sjsu.canlog.app.frontend;
 
 import android.database.DataSetObserver;
 import android.provider.ContactsContract;
@@ -12,6 +12,8 @@ import android.app.Activity;
 import java.util.ArrayList;
 import java.util.Iterator;
 import android.widget.TextView;
+
+import edu.sjsu.canlog.app.R;
 
 /**
  * Created by shane on 2/17/14.

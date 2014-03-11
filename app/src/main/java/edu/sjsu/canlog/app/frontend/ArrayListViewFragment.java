@@ -1,15 +1,16 @@
-package edu.sjsu.canlog.app;
+package edu.sjsu.canlog.app.frontend;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import java.util.Iterator;
 
 import java.util.ArrayList;
+
+import edu.sjsu.canlog.app.R;
 
 /**
  * Created by shane on 2/17/14.
@@ -36,10 +37,16 @@ public class ArrayListViewFragment extends Fragment{
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ListView listView = (ListView) rootView.findViewById(R.id.listView);
 
-            ArrayList<String> values = getArguments().getStringArrayList(ARG_LIST_VALUES);
-            //android.util.Log.i("Arguments",getArguments().toString());
+
 
             sensorListAdapter = new SensorListAdapter(getActivity());
+
+            Bundle args = getArguments();
+            ArrayList<String> values = null;
+            if (args != null)
+            {
+                values = args.getStringArrayList(ARG_LIST_VALUES);
+            }
 
             if (values != null)
             {
@@ -50,8 +57,6 @@ public class ArrayListViewFragment extends Fragment{
                 }
             }
             listView.setAdapter(sensorListAdapter);
-
-            sensorListAdapter.updateSensor(0, "fitfsadf");
 
             return rootView;
         }

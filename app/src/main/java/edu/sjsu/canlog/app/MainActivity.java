@@ -13,19 +13,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
+
 import java.util.ArrayList;
-import android.widget.ArrayAdapter;
+
 import android.widget.Toast;
 
+import edu.sjsu.canlog.app.frontend.*;
+import edu.sjsu.canlog.app.frontend.StaticXYPlotFragment;
 
-//TODO android plot
+
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
     public static int REQUEST_ENABLE_BT = 3;
@@ -176,6 +174,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
             else if (position == 1)
             {
+                /*
+                //Live data
                 ArrayList<Number> xVals = new ArrayList<Number>();
                 xVals.add(1);
                 xVals.add(2);
@@ -187,7 +187,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 yVals.add(1);
                 yVals.add(4);
                 StaticXYPlotFragment fragment = StaticXYPlotFragment.newInstance("Garbage",xVals,yVals);
+                */
 
+                LiveDataPage fragment = new LiveDataPage();
                 return fragment;
             }
             else
