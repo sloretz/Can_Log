@@ -15,16 +15,16 @@ import edu.sjsu.canlog.app.R;
 /**
  * Created by shane on 2/17/14.
  */
-public class ArrayListViewFragment extends Fragment{
+public class SensorDataListViewFragment extends Fragment{
         private static final String ARG_LIST_VALUES = "listValues";
-        public SensorListAdapter sensorListAdapter;
+        public SensorDataListAdapter sensorDataListAdapter;
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static ArrayListViewFragment newInstance(ArrayList<String> Values) {
-            ArrayListViewFragment fragment = new ArrayListViewFragment();
+        public static SensorDataListViewFragment newInstance(ArrayList<String> Values) {
+            SensorDataListViewFragment fragment = new SensorDataListViewFragment();
             Bundle args = new Bundle();
             args.putStringArrayList(ARG_LIST_VALUES, Values);
             fragment.setArguments(args);
@@ -37,9 +37,7 @@ public class ArrayListViewFragment extends Fragment{
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ListView listView = (ListView) rootView.findViewById(R.id.listView);
 
-
-
-            sensorListAdapter = new SensorListAdapter(getActivity());
+            sensorDataListAdapter = new SensorDataListAdapter(getActivity());
 
             Bundle args = getArguments();
             ArrayList<String> values = null;
@@ -53,10 +51,10 @@ public class ArrayListViewFragment extends Fragment{
                 Iterator<String> strIter = values.iterator();
                 while (strIter.hasNext())
                 {
-                    sensorListAdapter.addSensor(strIter.next(), "0.0");
+                    sensorDataListAdapter.addSensor(strIter.next(), "0.0");
                 }
             }
-            listView.setAdapter(sensorListAdapter);
+            listView.setAdapter(sensorDataListAdapter);
 
             return rootView;
         }

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import android.widget.Toast;
 
 import edu.sjsu.canlog.app.frontend.*;
-import edu.sjsu.canlog.app.frontend.StaticXYPlotFragment;
 
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -194,7 +193,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             else
             {
                 ArrayList<String> values = new ArrayList<String>(Arrays.asList(new String[]{"hard", "coded", "values"}));
-                return ArrayListViewFragment.newInstance(values);
+                return SensorDataListViewFragment.newInstance(values);
             }
 
 

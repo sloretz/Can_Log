@@ -18,7 +18,7 @@ import edu.sjsu.canlog.app.R;
 /**
  * Created by shane on 2/17/14.
  */
-public class SensorListAdapter implements ListAdapter {
+public class SensorDataListAdapter implements ListAdapter {
 
     public class SensorStruct {
         public SensorStruct(String n, String d) {sensorName = n; sensorData = d;};
@@ -30,7 +30,7 @@ public class SensorListAdapter implements ListAdapter {
     private ArrayList<SensorStruct> sensors;
     private Context context;
 
-    public SensorListAdapter(Context ctx)
+    public SensorDataListAdapter(Context ctx)
     {
         context = ctx;
         observers = new ArrayList<DataSetObserver>();

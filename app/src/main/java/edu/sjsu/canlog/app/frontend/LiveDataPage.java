@@ -5,17 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import edu.sjsu.canlog.app.R;
-
 /**
  * Created by shane on 3/11/14.
  */
-public class LiveDataPage extends ArrayListViewFragment{
+public class LiveDataPage extends SensorDataListViewFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,7 +28,7 @@ public class LiveDataPage extends ArrayListViewFragment{
                 Iterator<String> datIter = data.iterator();
                 while (senIter.hasNext() && datIter.hasNext())
                 {
-                    sensorListAdapter.addSensor(senIter.next(),datIter.next());
+                    sensorDataListAdapter.addSensor(senIter.next(),datIter.next());
                 }
             }
         } );

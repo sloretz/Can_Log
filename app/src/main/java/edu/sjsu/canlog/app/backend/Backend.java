@@ -93,4 +93,42 @@ public class Backend {
         tempResult.putStringArrayList("short_descriptions", descList);
         resultHandler.gotResult(tempResult);
     }
+
+    //Get a list of available sensors from the microcontroller
+    public void fetchAvailableSensors(ResultHandler handler)
+    {
+        lastResult = null;
+        resultHandler = handler;
+
+        //TODO Begin Bluetooth transfer in another thread
+        //That thread should call the result handler when
+        //we get the data from the microcontroller
+        //for now, just call the handler with some debug data
+        Bundle tempResult = new Bundle();
+        ArrayList<String> sensorList = new ArrayList<String>();
+        sensorList.add("RPM");
+        sensorList.add("Oxygen (1)");
+        sensorList.add("Oxygen (2)");
+        sensorList.add("Vehicle Speed");
+        sensorList.add("Barometric Pressure");
+        sensorList.add("Ambient Air Temperature");
+        sensorList.add("Relative Throttle Position");
+        tempResult.putStringArrayList("Sensors", sensorList);
+        resultHandler.gotResult(tempResult);
+    }
+
+    //Get a list of available sensors from the microcontroller
+    public void sendClearDTCs(ResultHandler handler)
+    {
+        lastResult = null;
+        resultHandler = handler;
+
+        //TODO Begin Bluetooth transfer in another thread
+        //That thread should call the result handler when
+        //we get the data from the microcontroller
+        //for now, just call the handler with some debug data
+        Bundle tempResult = new Bundle();
+        tempResult.putBoolean("did_clear",true);
+        resultHandler.gotResult(tempResult);
+    }
 }
