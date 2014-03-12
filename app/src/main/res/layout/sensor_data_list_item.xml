@@ -13,7 +13,8 @@
         android:editable="false"
         android:text="sensor name"
         android:singleLine="true"
-        android:background="@drawable/sensorname_editbox_background_normal" />
+        android:background="@drawable/sensorname_editbox_background_normal"
+        android:textSize="@dimen/sensor_name_font_size" />
 
     <EditText
         android:layout_width="match_parent"
@@ -24,5 +25,6 @@
         android:textColor="#4142ff"
         android:text="0.0"
         android:singleLine="true"
-        android:background="@drawable/sensordata_editbox_background_normal" />
+        android:background="@drawable/sensordata_editbox_background_normal"
+        android:textSize="@dimen/sensor_data_font_size" />
 </LinearLayout>

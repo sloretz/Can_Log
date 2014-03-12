@@ -192,8 +192,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
             else
             {
-                ArrayList<String> values = new ArrayList<String>(Arrays.asList(new String[]{"hard", "coded", "values"}));
-                return SensorDataListViewFragment.newInstance(values);
+                AboutCarPage fragment = new AboutCarPage();
+                return fragment;
             }
 
 

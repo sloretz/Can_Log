@@ -94,8 +94,8 @@ public class Backend {
         resultHandler.gotResult(tempResult);
     }
 
-    //Get a list of available sensors from the microcontroller
-    public void fetchAvailableSensors(ResultHandler handler)
+    //Get car info from the microcontroller
+    public void fetchCarInfo(ResultHandler handler)
     {
         lastResult = null;
         resultHandler = handler;
@@ -105,15 +105,16 @@ public class Backend {
         //we get the data from the microcontroller
         //for now, just call the handler with some debug data
         Bundle tempResult = new Bundle();
-        ArrayList<String> sensorList = new ArrayList<String>();
-        sensorList.add("RPM");
-        sensorList.add("Oxygen (1)");
-        sensorList.add("Oxygen (2)");
-        sensorList.add("Vehicle Speed");
-        sensorList.add("Barometric Pressure");
-        sensorList.add("Ambient Air Temperature");
-        sensorList.add("Relative Throttle Position");
-        tempResult.putStringArrayList("Sensors", sensorList);
+        tempResult.putString("VIN", "LJCPCBLCX11000237");
+        tempResult.putString("Fuel Type", "Diesel");
+        ArrayList<String> carInfo = new ArrayList<String>();
+        ArrayList<String> dataList = new ArrayList<String>();
+        carInfo.add("VIN");
+        dataList.add("LJCPCBLCX11000237");
+        carInfo.add("Fuel Type");
+        dataList.add("Diesel");
+        tempResult.putStringArrayList("carInfoNames", carInfo);
+        tempResult.putStringArrayList("values", dataList);
         resultHandler.gotResult(tempResult);
     }
 

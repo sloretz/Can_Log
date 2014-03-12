@@ -1,11 +1,9 @@
 package edu.sjsu.canlog.app.frontend;
 
 import android.database.DataSetObserver;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.view.LayoutInflater;
 import android.content.Context;
 import android.app.Activity;
@@ -102,7 +100,7 @@ public class SensorDataListAdapter implements ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View rootView = inflater.inflate(R.layout.list_item, null);
+        View rootView = inflater.inflate(R.layout.sensor_data_list_item, null);
         TextView nameView = (TextView) rootView.findViewById(R.id.sensor_name);
         TextView dataView = (TextView) rootView.findViewById(R.id.sensor_data);
 

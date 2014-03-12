@@ -11,4 +11,7 @@
     <dimen name="domain_tick_label_font_size">15dp</dimen>
     <dimen name="legend_text_font_size">20dp</dimen>
 
+    <dimen name="sensor_name_font_size">16dp</dimen>
+    <dimen name="sensor_data_font_size">14dp</dimen>
+
     </resources>
