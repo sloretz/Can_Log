@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    >
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/listname_background_normal"
+    android:layout_marginTop="@dimen/listview_top_padding"
+    android:layout_marginLeft="@dimen/listview_left_padding"
+    android:layout_marginRight="@dimen/listview_right_padding"
+    android:layout_marginBottom="@dimen/listview_bottom_padding"
     >
 
     <TextView
@@ -29,4 +37,5 @@
         android:background="@drawable/sensordata_editbox_background_normal"
         android:textSize="@dimen/sensor_data_font_size"
         />
+</LinearLayout>
 </LinearLayout>

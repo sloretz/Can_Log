@@ -3,6 +3,11 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="listview_top_padding">4dp</dimen>
+    <dimen name="listview_left_padding">4dp</dimen>
+    <dimen name="listview_right_padding">4dp</dimen>
+    <dimen name="listview_bottom_padding">4dp</dimen>
+
     <dimen name="pie_segment_label_font_size">10dp</dimen>
     <dimen name="title_font_size">20dp</dimen>
     <dimen name="domain_label_font_size">13dp</dimen>
