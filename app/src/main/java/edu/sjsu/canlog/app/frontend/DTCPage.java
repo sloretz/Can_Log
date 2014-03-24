@@ -59,7 +59,7 @@ public class DTCPage extends Fragment {
                     {
                         strResult = "Failed to clear DTCs";
                     }
-                    Toast toast = Toast.makeText(_this.getActivity().getApplicationContext(), strResult, Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(_this.getActivity().getApplicationContext(), strResult, Toast.LENGTH_SHORT);
                     toast.show();
                 }
                 });

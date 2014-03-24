@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/listname_background_normal">
+    android:background="@drawable/listname_background_normal"
+    >
 
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/sensor_name"
         android:layout_gravity="center_horizontal"
-        android:editable="false"
         android:text="sensor name"
         android:singleLine="true"
         android:background="@drawable/sensorname_editbox_background_normal"
-        android:textSize="@dimen/sensor_name_font_size" />
+        android:textSize="@dimen/sensor_name_font_size"
+    />
 
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/sensor_data"
         android:layout_gravity="center_horizontal"
-        android:editable="false"
         android:textColor="#4142ff"
         android:text="0.0"
         android:singleLine="true"
         android:background="@drawable/sensordata_editbox_background_normal"
-        android:textSize="@dimen/sensor_data_font_size" />
+        android:textSize="@dimen/sensor_data_font_size"
+        />
 </LinearLayout>
