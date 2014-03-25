@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,16 +18,29 @@ import com.androidplot.xy.*;
  * Created by shane on 3/11/14.
  */
 public class LiveDataPage extends SensorDataListViewFragment implements HandleBack {
+    private static String SENSOR_GRAPH_IDX = "sensorGraphIndex";
     private XYPlot xyPlot;
+    private int sensorGraphIndex = -1;
+
 
     public void onBackPressed()
     {
         //make list view visible and graph invisible
-        View view = getView();
-        View list = view.findViewById(R.id.listView);
-        list.setVisibility(View.VISIBLE);
-        View plot = view.findViewById(R.id.XYPlot);
-        plot.setVisibility(View.GONE);
+        if (sensorGraphIndex >= 0) {
+            View view = getView();
+            View list = view.findViewById(R.id.listView);
+            list.setVisibility(View.VISIBLE);
+            View plot = view.findViewById(R.id.XYPlot);
+            plot.setVisibility(View.GONE);
+            sensorGraphIndex = -1;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle state)
+    {
+        super.onSaveInstanceState(state);
+        state.putInt(SENSOR_GRAPH_IDX, sensorGraphIndex);
     }
 
     @Override
@@ -39,6 +51,11 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         sensorDataListAdapter = new SensorDataListAdapter(getActivity());
         listView.setAdapter(sensorDataListAdapter);
         Backend backend = Backend.getInstance();
+
+        if (savedInstanceState != null)
+        {
+            sensorGraphIndex = savedInstanceState.getInt(SENSOR_GRAPH_IDX);
+        }
 
         backend.fetchAvailableSensorsAndData(new Backend.ResultHandler() {
             public void gotResult(Bundle result) {
@@ -56,13 +73,25 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
             public void onItemClick(AdapterView<?> adapter, View v, int position, long id){
                 getView().findViewById(R.id.listView).setVisibility(View.GONE);
                 getView().findViewById(R.id.XYPlot).setVisibility(View.VISIBLE);
+                sensorGraphIndex = position;
                 //Toast toast = Toast.makeText(getActivity().getApplicationContext(), "TODO show graph of data", Toast.LENGTH_SHORT);
                 //        toast.show();
             }
         });
 
         xyPlot = (XYPlot) rootView.findViewById(R.id.XYPlot);
-        xyPlot.setVisibility(View.GONE);
+
+        if (sensorGraphIndex >= 0)
+        {
+            //make graph visible
+            xyPlot.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
+        }
+        else {
+            //make list visible
+            xyPlot.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
 
         /*
         LineAndPointFormatter seriesFormat = new LineAndPointFormatter();

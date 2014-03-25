@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,6 +27,8 @@ import edu.sjsu.canlog.app.frontend.*;
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
     public static int REQUEST_ENABLE_BT = 3;
+    public static String HAVE_REQUESTED_BT = "HaveRequestedBluetooth";
+    private boolean haveRequestedBluetooth = false;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -42,8 +45,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     ViewPager mViewPager;
 
     @Override
+    public void onSaveInstanceState(Bundle state)
+    {
+        super.onSaveInstanceState(state);
+        state.putBoolean(HAVE_REQUESTED_BT, haveRequestedBluetooth);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //restore state
+        if (savedInstanceState != null) {
+            haveRequestedBluetooth = savedInstanceState.getBoolean(HAVE_REQUESTED_BT);
+        }
+
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.
@@ -88,10 +104,13 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
         else
         {
-            if (!bluetoothAdapter.isEnabled())
+
+            //Request bluetooth, but only do it once
+            if (!haveRequestedBluetooth && !bluetoothAdapter.isEnabled())
             {
                 Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBTIntent, REQUEST_ENABLE_BT);
+                haveRequestedBluetooth = true;
             }
 
             //Assume the user has enabled bluetooth
