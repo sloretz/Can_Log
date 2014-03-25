@@ -100,6 +100,19 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     @Override
+    public void onBackPressed()
+    {
+        int selectedItem = mViewPager.getCurrentItem();
+        //Weird call, this is how we get the actual fragment instance from the
+        //view pager's internal cache
+        Fragment visibleFragment = (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, selectedItem);
+        if (visibleFragment instanceof edu.sjsu.canlog.app.frontend.HandleBack)
+        {
+            ((HandleBack) visibleFragment).onBackPressed();
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
         if (requestCode == REQUEST_ENABLE_BT)
