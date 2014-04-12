@@ -1,7 +1,12 @@
 package edu.sjsu.canlog.app.backend;
 
 import android.os.Bundle;
+import android.os.AsyncTask;
 import java.util.ArrayList;
+import android.bluetooth.BluetoothSocket;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.Random;
 
 /**
  * Created by shane on 3/11/14.
@@ -10,12 +15,54 @@ import java.util.ArrayList;
 public class Backend {
     private static Backend _this = null;
     private Bundle lastResult;
+    private BluetoothSocket socket;
+    private Lock socketLock;
 
     //This is passed in to the fetch functions
     //The backend bluetooth thread calls this
     //when a result for the last query is gotten
+
     public static abstract class ResultHandler {
         public abstract void gotResult(Bundle result);
+    }
+
+    private abstract class BluetoothTask extends AsyncTask<ResultHandler, Void, Bundle> {
+        ResultHandler handler;
+        @Override
+        protected Bundle doInBackground(ResultHandler ... handlers) {
+            this.handler = handlers[0];
+            /**
+             * acquire lock on bluetooth socket
+             * transfer data to socket
+             * get results from socket
+             * put results into bundle
+             * release lock
+             * return bundle
+             */
+            Bundle result = null;
+            android.util.Log.i("Backend", "About to acquire lock");
+            socketLock.lock();
+            try {
+                result = doSocketTransfer();
+            } finally {
+                android.util.Log.i("Backend", "Releasing lock");
+                socketLock.unlock();
+
+            }
+            return result;
+        }
+
+        //This runs on a background thread
+        //As long as we're in this function
+        //we have the bluetooth socket
+        //all to ourselves.
+        protected abstract Bundle doSocketTransfer();
+
+        //This runs in the UI thread
+        protected void onPostExecute(Bundle result)
+        {
+            this.handler.gotResult(result);
+        }
     }
 
     private ResultHandler resultHandler;
@@ -24,6 +71,7 @@ public class Backend {
     {
         lastResult = null;
         resultHandler = null;
+        socketLock = new ReentrantLock();
     }
 
     //Singleton class, only one backend needed
@@ -44,92 +92,99 @@ public class Backend {
     //Get a list of available sensors from the microcontroller
     public void fetchAvailableSensorsAndData(ResultHandler handler)
     {
-        lastResult = null;
-        resultHandler = handler;
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                Random r = new Random();
+                //debug logic
+                Bundle tempResult = new Bundle();
+                ArrayList<String> sensorList = new ArrayList<String>();
+                ArrayList<String> dataList = new ArrayList<String>();
+                sensorList.add("RPM");
+                dataList.add(Integer.toString(r.nextInt(5000) + 500));
+                sensorList.add("Oxygen (1)");
+                dataList.add(Integer.toString(r.nextInt(5) + 13) + "%");
+                sensorList.add("Oxygen (2)");
+                dataList.add(Integer.toString(r.nextInt(5) + 13) + "%");
+                sensorList.add("Vehicle Speed");
+                dataList.add(Integer.toString(r.nextInt(75)) + "mph");
+                sensorList.add("Barometric Pressure");
+                dataList.add(Double.toString(r.nextDouble() + 14) + "PSI");
+                sensorList.add("Ambient Air Temperature");
+                dataList.add(Integer.toString(r.nextInt(75) + 32) + "F");
+                sensorList.add("Relative Throttle Position");
+                dataList.add(Double.toString(r.nextDouble()));
 
-        //TODO Begin Bluetooth transfer in another thread
-        //That thread should call the result handler when
-        //we get the data from the microcontroller
-        //for now, just call the handler with some debug data
-        Bundle tempResult = new Bundle();
-        ArrayList<String> sensorList = new ArrayList<String>();
-        ArrayList<String> dataList = new ArrayList<String>();
-        sensorList.add("RPM");
-        dataList.add("2200");
-        sensorList.add("Oxygen (1)");
-        dataList.add("15%");
-        sensorList.add("Oxygen (2)");
-        dataList.add("12%");
-        sensorList.add("Vehicle Speed");
-        dataList.add("54 mph");
-        sensorList.add("Barometric Pressure");
-        dataList.add("14.1 PSI");
-        sensorList.add("Ambient Air Temperature");
-        dataList.add("56 F");
-        sensorList.add("Relative Throttle Position");
-        dataList.add("0.4");
-        tempResult.putStringArrayList("Sensors", sensorList);
-        tempResult.putStringArrayList("Data", dataList);
-        resultHandler.gotResult(tempResult);
+                tempResult.putStringArrayList("Sensors", sensorList);
+                tempResult.putStringArrayList("Data", dataList);
+                return tempResult;
+            }
+        };
+        task.execute(handler);
     }
 
     public void fetchDTCs(ResultHandler handler)
     {
-        lastResult = null;
-        resultHandler = handler;
-
-        //TODO Begin Bluetooth transfer in another thread
-        //That thread should call the result handler when
-        //we get the data from the microcontroller
-        //for now, just call the handler with some debug data
-        Bundle tempResult = new Bundle();
-        ArrayList<String> DTCList = new ArrayList<String>();
-        ArrayList<String> descList = new ArrayList<String>();
-        DTCList.add("P0638");
-        descList.add("Throttle Actuator Control Range");
-        DTCList.add("P0720");
-        descList.add("Output Speed Sensor Circuit Malfunction");
-        tempResult.putStringArrayList("DTCs", DTCList);
-        tempResult.putStringArrayList("short_descriptions", descList);
-        resultHandler.gotResult(tempResult);
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                //debug logic
+                Bundle tempResult = new Bundle();
+                ArrayList<String> DTCList = new ArrayList<String>();
+                ArrayList<String> descList = new ArrayList<String>();
+                DTCList.add("P0638");
+                descList.add("Throttle Actuator Control Range");
+                DTCList.add("P0720");
+                descList.add("Output Speed Sensor Circuit Malfunction");
+                tempResult.putStringArrayList("DTCs", DTCList);
+                tempResult.putStringArrayList("short_descriptions", descList);
+                return tempResult;
+            }
+        };
+        task.execute(handler);
     }
 
     //Get car info from the microcontroller
     public void fetchCarInfo(ResultHandler handler)
     {
-        lastResult = null;
-        resultHandler = handler;
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                //debug logic
+                Bundle tempResult = new Bundle();
+                tempResult.putString("VIN", "LJCPCBLCX11000237");
+                tempResult.putString("Fuel Type", "Diesel");
+                ArrayList<String> carInfo = new ArrayList<String>();
+                ArrayList<String> dataList = new ArrayList<String>();
+                carInfo.add("VIN");
+                dataList.add("LJCPCBLCX11000237");
+                carInfo.add("Fuel Type");
+                dataList.add("Diesel");
+                tempResult.putStringArrayList("carInfoNames", carInfo);
+                tempResult.putStringArrayList("values", dataList);
+                return tempResult;
+            }
+        };
+        task.execute(handler);
 
-        //TODO Begin Bluetooth transfer in another thread
-        //That thread should call the result handler when
-        //we get the data from the microcontroller
-        //for now, just call the handler with some debug data
-        Bundle tempResult = new Bundle();
-        tempResult.putString("VIN", "LJCPCBLCX11000237");
-        tempResult.putString("Fuel Type", "Diesel");
-        ArrayList<String> carInfo = new ArrayList<String>();
-        ArrayList<String> dataList = new ArrayList<String>();
-        carInfo.add("VIN");
-        dataList.add("LJCPCBLCX11000237");
-        carInfo.add("Fuel Type");
-        dataList.add("Diesel");
-        tempResult.putStringArrayList("carInfoNames", carInfo);
-        tempResult.putStringArrayList("values", dataList);
-        resultHandler.gotResult(tempResult);
     }
 
     //Get a list of available sensors from the microcontroller
     public void sendClearDTCs(ResultHandler handler)
     {
-        lastResult = null;
-        resultHandler = handler;
-
-        //TODO Begin Bluetooth transfer in another thread
-        //That thread should call the result handler when
-        //we get the data from the microcontroller
-        //for now, just call the handler with some debug data
-        Bundle tempResult = new Bundle();
-        tempResult.putBoolean("did_clear",true);
-        resultHandler.gotResult(tempResult);
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                //debug logic
+                Bundle tempResult = new Bundle();
+                tempResult.putBoolean("did_clear",true);
+                return tempResult;
+            }
+        };
+        task.execute(handler);
     }
 }

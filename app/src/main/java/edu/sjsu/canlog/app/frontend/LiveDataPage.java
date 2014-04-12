@@ -11,6 +11,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.androidplot.xy.*;
 
@@ -19,107 +21,179 @@ import com.androidplot.xy.*;
  */
 public class LiveDataPage extends SensorDataListViewFragment implements HandleBack {
     private static String SENSOR_GRAPH_IDX = "sensorGraphIndex";
+    private static String GRAPH_VALUE_LIST = "graphValuesList";
+    private static String DEFAULT_SERIES_NAME = " ERR getting name";
     private XYPlot xyPlot;
+    private ListView listView;
     private int sensorGraphIndex = -1;
+    private ArrayList<GraphValue> graphValues;
+    private Timer updateTimer;
 
 
-    public void onBackPressed()
-    {
-        //make list view visible and graph invisible
-        if (sensorGraphIndex >= 0) {
-            View view = getView();
-            View list = view.findViewById(R.id.listView);
-            list.setVisibility(View.VISIBLE);
-            View plot = view.findViewById(R.id.XYPlot);
-            plot.setVisibility(View.GONE);
-            sensorGraphIndex = -1;
+    private class ListUpdateTask extends TimerTask {
+        @Override
+        public void run() {
+            //Update the GUI
+            Backend backend = Backend.getInstance();
+            backend.fetchAvailableSensorsAndData(new Backend.ResultHandler() {
+                public void gotResult(Bundle result) {
+                    ArrayList<String> sensors = result.getStringArrayList("Sensors");
+                    ArrayList<String> data = result.getStringArrayList("Data");
+                    //First call, populate the sensor list
+                    if (sensorDataListAdapter.getCount() == 0) {
+                        Iterator<String> senIter = sensors.iterator();
+                        Iterator<String> datIter = data.iterator();
+                        while (senIter.hasNext() && datIter.hasNext()) {
+                            sensorDataListAdapter.addSensor(senIter.next(), datIter.next());
+                        }
+                    }
+                    //subsequent calls, update the gui
+                    else {
+                        for (int i = 0; i < sensorDataListAdapter.getCount(); i++){
+                            sensorDataListAdapter.updateSensor(i,data.get(i));
+                        }
+                    }
+                }
+            });
         }
     }
 
+    /**
+     * Switch between the graph or the list
+     * depending on the graph index
+     */
+    private void toggleGraphOrList(int newGraphIndex)
+    {
+        sensorGraphIndex = newGraphIndex;
+        //remove timer tasks
+        updateTimer.cancel();
+        updateTimer = new Timer("UpdateLiveDataPage",true);
+
+        //make list view visible and graph invisible
+        if (sensorGraphIndex < 0) {
+            updateTimer.schedule(new ListUpdateTask(), 0, 1000);
+            listView.setVisibility(View.VISIBLE);
+            xyPlot.setVisibility(View.GONE);
+        }
+        //Make graph visible and list invisible
+        else {
+            listView.setVisibility(View.GONE);
+            xyPlot.setVisibility(View.VISIBLE);
+            //assume only one series
+            xyPlot.setTitle(_findSeriesName());
+        }
+    }
+
+
+
+    /**
+     * If we're displaying the graph page,
+     * switch to the list when the back button
+     * is pressed
+     */
+    public void onBackPressed()
+    {
+        //make list view visible and graph invisible
+        toggleGraphOrList(sensorGraphIndex = -1);
+    }
+
+    /**
+     * Called when the activity is being destroyed, like
+     * when the user rotates their device. We store
+     * values that we want to use to populate the new
+     * instance that is created when the activity is
+     * rebuilt
+     * @param state
+     */
     @Override
     public void onSaveInstanceState(Bundle state)
     {
+        //Timer is gonna die
+        updateTimer.cancel();
+        updateTimer.purge();
+        updateTimer = null;
         super.onSaveInstanceState(state);
         state.putInt(SENSOR_GRAPH_IDX, sensorGraphIndex);
+        state.putParcelableArrayList(GRAPH_VALUE_LIST, graphValues);
     }
 
+    /**
+     * Activity is being created
+     * Create our instance, possibly using the values that
+     * we saved when the last instance was destroyed
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.live_data_page, container, false);
-        ListView listView = (ListView) rootView.findViewById(R.id.listView);
+        listView = (ListView) rootView.findViewById(R.id.listView);
+        xyPlot = (XYPlot) rootView.findViewById(R.id.XYPlot);
         sensorDataListAdapter = new SensorDataListAdapter(getActivity());
         listView.setAdapter(sensorDataListAdapter);
-        Backend backend = Backend.getInstance();
+        updateTimer = new Timer("UpdateLiveDataPage",true);
 
         if (savedInstanceState != null)
         {
+            graphValues = savedInstanceState.getParcelableArrayList(GRAPH_VALUE_LIST);
             sensorGraphIndex = savedInstanceState.getInt(SENSOR_GRAPH_IDX);
-        }
 
-        backend.fetchAvailableSensorsAndData(new Backend.ResultHandler() {
-            public void gotResult(Bundle result) {
-                ArrayList<String> sensors = result.getStringArrayList("Sensors");
-                ArrayList<String> data = result.getStringArrayList("Data");
-                Iterator<String> senIter = sensors.iterator();
-                Iterator<String> datIter = data.iterator();
-                while (senIter.hasNext() && datIter.hasNext()) {
-                    sensorDataListAdapter.addSensor(senIter.next(), datIter.next());
-                }
-            }
-        });
+            //todo restore list item values
+        }
+        else
+        {
+            sensorGraphIndex = -1;
+            graphValues = new ArrayList<GraphValue>();
+        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapter, View v, int position, long id){
-                getView().findViewById(R.id.listView).setVisibility(View.GONE);
-                getView().findViewById(R.id.XYPlot).setVisibility(View.VISIBLE);
-                sensorGraphIndex = position;
-                //Toast toast = Toast.makeText(getActivity().getApplicationContext(), "TODO show graph of data", Toast.LENGTH_SHORT);
-                //        toast.show();
+                toggleGraphOrList(position);
             }
         });
 
-        xyPlot = (XYPlot) rootView.findViewById(R.id.XYPlot);
-
-        if (sensorGraphIndex >= 0)
-        {
-            //make graph visible
-            xyPlot.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.GONE);
-        }
-        else {
-            //make list visible
-            xyPlot.setVisibility(View.GONE);
-            listView.setVisibility(View.VISIBLE);
-        }
-
-        /*
+        //Set up plot series
         LineAndPointFormatter seriesFormat = new LineAndPointFormatter();
         seriesFormat.setPointLabelFormatter(new PointLabelFormatter());
         seriesFormat.configure(getActivity().getApplicationContext(),
                 R.xml.line_point_formatter_with_plf1);
 
-        String seriesName = getArguments().getString(ARG_SERIES_NAME);
-        ArrayList<GraphValue> GraphValues = getArguments().getParcelableArrayList(ARG_VALUES);
-        ArrayList<Number> values = new ArrayList<Number>();
-        Iterator<GraphValue> valueIterator = GraphValues.iterator();
-        while (valueIterator.hasNext())
-        {
-            values.add(valueIterator.next().getValue());
-        }
-
         XYSeries series = new SimpleXYSeries(
-                values,
+                _graphValuesToNumber(graphValues),
                 SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED,
-                seriesName);
+                _findSeriesName());
 
         xyPlot.addSeries(series, seriesFormat);
 
         // reduce the number of range labels
         xyPlot.setTicksPerRangeLabel(3);
         xyPlot.getGraphWidget().setDomainLabelOrientation(-45);
-        */
+
+        toggleGraphOrList(sensorGraphIndex);
 
         return rootView;
+    }
+
+    protected ArrayList<Number> _graphValuesToNumber(ArrayList<GraphValue> graphValues)
+    {
+        ArrayList<Number> values = new ArrayList<Number>();
+        Iterator<GraphValue> valueIterator = graphValues.iterator();
+        while (valueIterator.hasNext())
+        {
+            values.add(valueIterator.next().getValue());
+        }
+        return values;
+    }
+
+    protected String _findSeriesName()
+    {
+        if (sensorGraphIndex >= 0)
+        {
+            return sensorDataListAdapter.getSensorName(sensorGraphIndex);
+        }
+        return DEFAULT_SERIES_NAME;
     }
 }

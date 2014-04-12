@@ -77,6 +77,16 @@ public class SensorDataListAdapter implements ListAdapter {
         }
     }
 
+    public String getSensorName( int position)
+    {
+        return ((SensorStruct) getItem(position)).sensorName;
+    }
+
+    public String getSensorValue( int position)
+    {
+        return ((SensorStruct) getItem(position)).sensorData;
+    }
+
     @Override
     public int getCount() {
         return sensors.size();
