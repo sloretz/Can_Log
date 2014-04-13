@@ -1,10 +1,16 @@
 package edu.sjsu.canlog.app;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -13,22 +19,23 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
 import java.util.ArrayList;
-import android.widget.ArrayAdapter;
+import java.util.Set;
+import android.os.Handler;
 import android.widget.Toast;
 
 
 //TODO android plot
+
+
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
+    public static final int MESSAGE_READ =2;
+    public BluetoothAdapter bluetoothAdapter;
     public static int REQUEST_ENABLE_BT = 3;
+    private BluetoothService mService= null;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -83,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this));
         }
 
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if ( bluetoothAdapter == null)
         {
             Toast toast = Toast.makeText(getApplicationContext(), "Bluetooth not supported", Toast.LENGTH_LONG);
@@ -100,6 +107,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             //Assume the user has enabled bluetooth
 
         }
+        if(mService==null)
+        {
+            mService= new BluetoothService(this,mHandler);
+        }
+        Set<BluetoothDevice> pairedDevices=bluetoothAdapter.getBondedDevices();
+        if(pairedDevices.size()==1) {
+            for (BluetoothDevice device : pairedDevices) {
+                mService.connect(device,true);
+            }
+        }
+
     }
 
     @Override
@@ -201,4 +219,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             return null;
         }
     }
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MESSAGE_READ:
+                    String messageRead = msg.toString();
+                    Toast toast = Toast.makeText(getApplicationContext(), messageRead, Toast.LENGTH_LONG);
+                    toast.show();
+            }
+        }
+    };
 }

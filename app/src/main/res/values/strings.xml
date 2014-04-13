@@ -12,5 +12,7 @@
         <item>The second thing</item>
         <item>How many things do we have?</item>
     </string-array>
+    <string name="bluetooth_socket_name">CAN_LOG_CONNECTION</string>
+
 
 </resources>
