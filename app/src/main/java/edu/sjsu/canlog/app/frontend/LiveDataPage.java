@@ -31,6 +31,35 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     private ArrayList<GraphValue> graphValues;
     private Timer updateTimer;
 
+    private class DynamicSeries implements XYSeries {
+        ArrayList<GraphValue> valuesReference;
+
+        public DynamicSeries(ArrayList<GraphValue> values)
+        {
+            valuesReference = values;
+        }
+
+        @Override
+        public int size() {
+            return valuesReference.size()/2;
+        }
+
+        @Override
+        public Number getX(int index) {
+            return valuesReference.get(index*2).getValue();
+        }
+
+        @Override
+        public Number getY(int index) {
+            return valuesReference.get(index*2 + 1).getValue();
+        }
+
+        @Override
+        public String getTitle() {
+            return "Err:Should not display";
+        }
+    }
+
 
     private class ListUpdateTask extends TimerTask {
         @Override
@@ -60,18 +89,70 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         }
     }
 
+    private class GraphUpdateTask extends TimerTask {
+        private int index = -1;
+        private String sensorName;
+        public GraphUpdateTask(int index)
+        {
+            this.index = index;
+            sensorName = sensorDataListAdapter.getSensorName(index);
+        }
+        @Override
+        public void run() {
+            //Update the GUI
+            Backend backend = Backend.getInstance();
+            backend.fetchSensorData(sensorName, new Backend.ResultHandler() {
+                public void gotResult(Bundle result) {
+                    android.util.Log.d("GraphUpdateTask", "Got result");
+                    //maybe we're not displaying the graph any more?
+                    if (index == sensorGraphIndex) {
+                        Number data = 0;
+                        String type = result.getString("type");
+                        if (type == "int") {
+                            data = result.getInt(sensorName);
+                        } else if (type == "double") {
+                            data = result.getDouble(sensorName);
+                        } else if (type == "float") {
+                            data = result.getFloat(sensorName);
+                        }
+                        //add a new graph value
+                        int seconds = graphValues.size() / 2;
+                        graphValues.add(new GraphValue(seconds)); //X
+                        graphValues.add(new GraphValue(data)); // y
+                        //TODO make dynamic series that works off graph values
+
+                        xyPlot.redraw();
+                    }
+                }
+            });
+        }
+    }
+
     /**
      * Switch between the graph or the list
      * depending on the graph index
      */
     private void toggleGraphOrList(int newGraphIndex)
     {
+        if (updateTimer != null) {
+            //remove timer tasks
+            updateTimer.cancel();
+            updateTimer.purge();
+            updateTimer = null;
+        }
+        updateTimer = new Timer("UpdateLiveDataPage",true);
+        if (sensorGraphIndex != newGraphIndex)
+        {
+            graphValues.clear();
+            xyPlot.redraw();
+        }
         sensorGraphIndex = newGraphIndex;
 
         //make list view visible and graph invisible
         if (sensorGraphIndex < 0) {
             listView.setVisibility(View.VISIBLE);
             xyPlot.setVisibility(View.GONE);
+            updateTimer.schedule(new ListUpdateTask(), 0, 1000);
         }
         //Make graph visible and list invisible
         else {
@@ -79,21 +160,14 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
             xyPlot.setVisibility(View.VISIBLE);
             //assume only one series
             xyPlot.setTitle(_findSeriesName());
+            updateTimer.schedule(new GraphUpdateTask(sensorGraphIndex), 0, 1000);
         }
     }
 
     public void onBecomesVisible()
     {
         android.util.Log.d("LiveDataPage", "onBecomesVisible");
-        updateTimer = new Timer("UpdateLiveDataPage",true);
-        if (sensorGraphIndex < 0)
-        {
-            updateTimer.schedule(new ListUpdateTask(), 0, 1000);
-        }
-        else
-        {
-            //schedule graph update task
-        }
+        toggleGraphOrList(sensorGraphIndex);
     }
 
     public void onBecomesInvisible()
@@ -203,16 +277,17 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         seriesFormat.configure(getActivity().getApplicationContext(),
                 R.xml.line_point_formatter_with_plf1);
 
-        XYSeries series = new SimpleXYSeries(
-                _graphValuesToNumber(graphValues),
-                SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED,
-                _findSeriesName());
+        XYSeries series = new DynamicSeries(graphValues);
+
 
         xyPlot.addSeries(series, seriesFormat);
 
         // reduce the number of range labels
         xyPlot.setTicksPerRangeLabel(3);
         xyPlot.getGraphWidget().setDomainLabelOrientation(-45);
+        //Set fixed width
+        xyPlot.setDomainLowerBoundary(0,BoundaryMode.FIXED);
+        xyPlot.setDomainUpperBoundary(30,BoundaryMode.FIXED);
 
         toggleGraphOrList(sensorGraphIndex);
 

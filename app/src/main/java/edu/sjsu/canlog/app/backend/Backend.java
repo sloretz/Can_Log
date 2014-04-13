@@ -172,6 +172,26 @@ public class Backend {
 
     }
 
+    public void fetchSensorData(final String sensorName, ResultHandler handler)
+    {
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                Random r = new Random();
+                //debug logic
+                Bundle tempResult = new Bundle();
+                //SensorName should be enough to tell what type to return
+                //here assume sensor name is a float
+                tempResult.putString("type", "float");
+                tempResult.putFloat(sensorName, r.nextFloat()*5f + 10f);
+                return tempResult;
+            }
+        };
+        task.execute(handler);
+
+    }
+
     //Get a list of available sensors from the microcontroller
     public void sendClearDTCs(ResultHandler handler)
     {
