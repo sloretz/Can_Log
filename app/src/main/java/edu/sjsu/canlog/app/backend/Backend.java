@@ -42,7 +42,7 @@ public class Backend {
             Bundle result = null;
             android.util.Log.i("Backend", "About to acquire lock");
             socketLock.lock();
-            try {
+                try {
                 result = doSocketTransfer();
             } finally {
                 android.util.Log.i("Backend", "Releasing lock");

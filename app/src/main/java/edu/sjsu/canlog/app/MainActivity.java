@@ -78,9 +78,24 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            private int currentPosition = -1;
             @Override
             public void onPageSelected(int position) {
+                //Hide the old
+                if (currentPosition >= 0) {
+                    Fragment invisibleFragment = (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, currentPosition);
+                    if (invisibleFragment instanceof HandleVisibilityChange) {
+                        ((HandleVisibilityChange) invisibleFragment).onBecomesInvisible();
+                    }
+                }
+                //Bring in the new
                 actionBar.setSelectedNavigationItem(position);
+                Fragment visibleFragment = (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, position);
+                if (visibleFragment instanceof HandleVisibilityChange)
+                {
+                    ((HandleVisibilityChange) visibleFragment).onBecomesVisible();
+                }
+                currentPosition = position;
             }
         });
 
@@ -125,7 +140,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         //Weird call, this is how we get the actual fragment instance from the
         //view pager's internal cache
         Fragment visibleFragment = (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, selectedItem);
-        if (visibleFragment instanceof edu.sjsu.canlog.app.frontend.HandleBack)
+        if (visibleFragment instanceof HandleBack)
         {
             ((HandleBack) visibleFragment).onBackPressed();
         }

@@ -19,9 +19,11 @@ import com.androidplot.xy.*;
 /**
  * Created by shane on 3/11/14.
  */
-public class LiveDataPage extends SensorDataListViewFragment implements HandleBack {
+public class LiveDataPage extends SensorDataListViewFragment implements HandleBack, HandleVisibilityChange {
     private static String SENSOR_GRAPH_IDX = "sensorGraphIndex";
     private static String GRAPH_VALUE_LIST = "graphValuesList";
+    private static String SENSOR_NAME_LIST = "sensorNameList";
+    private static String SENSOR_VALUE_LIST = "sensorValueList";
     private static String DEFAULT_SERIES_NAME = " ERR getting name";
     private XYPlot xyPlot;
     private ListView listView;
@@ -65,13 +67,9 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     private void toggleGraphOrList(int newGraphIndex)
     {
         sensorGraphIndex = newGraphIndex;
-        //remove timer tasks
-        updateTimer.cancel();
-        updateTimer = new Timer("UpdateLiveDataPage",true);
 
         //make list view visible and graph invisible
         if (sensorGraphIndex < 0) {
-            updateTimer.schedule(new ListUpdateTask(), 0, 1000);
             listView.setVisibility(View.VISIBLE);
             xyPlot.setVisibility(View.GONE);
         }
@@ -84,6 +82,30 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         }
     }
 
+    public void onBecomesVisible()
+    {
+        android.util.Log.d("LiveDataPage", "onBecomesVisible");
+        updateTimer = new Timer("UpdateLiveDataPage",true);
+        if (sensorGraphIndex < 0)
+        {
+            updateTimer.schedule(new ListUpdateTask(), 0, 1000);
+        }
+        else
+        {
+            //schedule graph update task
+        }
+    }
+
+    public void onBecomesInvisible()
+    {
+        android.util.Log.d("LiveDataPage", "onBecomesInvisible");
+        if (updateTimer != null) {
+            //remove timer tasks
+            updateTimer.cancel();
+            updateTimer.purge();
+            updateTimer = null;
+        }
+    }
 
 
     /**
@@ -108,13 +130,27 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     @Override
     public void onSaveInstanceState(Bundle state)
     {
+        android.util.Log.d("LiveDataPage", "onSaveInstanceState");
         //Timer is gonna die
-        updateTimer.cancel();
-        updateTimer.purge();
-        updateTimer = null;
+        if (updateTimer != null) {
+            updateTimer.cancel();
+            updateTimer.purge();
+            updateTimer = null;
+        }
         super.onSaveInstanceState(state);
         state.putInt(SENSOR_GRAPH_IDX, sensorGraphIndex);
         state.putParcelableArrayList(GRAPH_VALUE_LIST, graphValues);
+
+        //Save the list
+        ArrayList<String> sensorNames = new ArrayList<String>();
+        ArrayList<String> sensorValues = new ArrayList<String>();
+        for (int i = 0; i < sensorDataListAdapter.getCount(); i++) {
+            sensorNames.add(sensorDataListAdapter.getSensorName(i));
+            sensorValues.add(sensorDataListAdapter.getSensorValue(i));
+        }
+        state.putStringArrayList(SENSOR_NAME_LIST, sensorNames);
+        state.putStringArrayList(SENSOR_VALUE_LIST, sensorValues);
+
     }
 
     /**
@@ -134,14 +170,20 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         xyPlot = (XYPlot) rootView.findViewById(R.id.XYPlot);
         sensorDataListAdapter = new SensorDataListAdapter(getActivity());
         listView.setAdapter(sensorDataListAdapter);
-        updateTimer = new Timer("UpdateLiveDataPage",true);
 
         if (savedInstanceState != null)
         {
             graphValues = savedInstanceState.getParcelableArrayList(GRAPH_VALUE_LIST);
             sensorGraphIndex = savedInstanceState.getInt(SENSOR_GRAPH_IDX);
 
-            //todo restore list item values
+            //restore list item values
+            ArrayList<String> sensors = savedInstanceState.getStringArrayList(SENSOR_NAME_LIST);
+            ArrayList<String> data = savedInstanceState.getStringArrayList(SENSOR_VALUE_LIST);
+            Iterator<String> senIter = sensors.iterator();
+            Iterator<String> datIter = data.iterator();
+            while (senIter.hasNext() && datIter.hasNext()) {
+                sensorDataListAdapter.addSensor(senIter.next(), datIter.next());
+            }
         }
         else
         {
