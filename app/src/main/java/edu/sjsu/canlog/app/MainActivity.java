@@ -1,14 +1,10 @@
 package edu.sjsu.canlog.app;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import java.util.ArrayList;
@@ -32,9 +29,11 @@ import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
+    public static final int MESSAGE_STATE_CHANGE=1;
     public static final int MESSAGE_READ =2;
-    public BluetoothAdapter bluetoothAdapter;
+    public BluetoothAdapter bluetoothAdapter=null;
     public static int REQUEST_ENABLE_BT = 3;
+    public static final int MESSAGE_DEVICE_NAME = 4;
     private BluetoothService mService= null;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -109,15 +108,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
         if(mService==null)
         {
-            mService= new BluetoothService(this,mHandler);
+            mService= new BluetoothService(getApplicationContext(),mHandler);
+            mService.start();
         }
+        //Log.e("BEFORE GET BONDED", "BEFORE");
         Set<BluetoothDevice> pairedDevices=bluetoothAdapter.getBondedDevices();
-        if(pairedDevices.size()==1) {
-            for (BluetoothDevice device : pairedDevices) {
-                mService.connect(device,true);
-            }
-        }
+        //Log.e("AFTER GET BONDED","AFTER");
+        for (BluetoothDevice device : pairedDevices) {
+            Log.e("Size is", Integer.toString(pairedDevices.size()));
+            mService.connect(device);
 
+        }
     }
 
     @Override
