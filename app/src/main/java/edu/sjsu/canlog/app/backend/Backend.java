@@ -31,6 +31,13 @@ public class Backend extends BluetoothService{
         return _this;
     }
 
+    public void dbg_force_continue()
+    {
+        //Continue to UI without connecting to a bluetooth device
+        mSocketLock.unlock();
+    }
+
+
     //Get a list of available sensors from the microcontroller
     public void fetchAvailableSensorsAndData(ResultHandler handler)
     {

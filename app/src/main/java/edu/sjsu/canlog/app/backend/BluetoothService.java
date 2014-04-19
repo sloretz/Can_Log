@@ -125,7 +125,7 @@ public class BluetoothService {
         {
             mConnectThread.cancel();
         }
-        
+
         mConnectedSocket = socket;
         mSocketLock.unlock();
         setState(STATE_CONNECTED);
@@ -173,7 +173,7 @@ public class BluetoothService {
         public void run() {
             mAdapter.cancelDiscovery();
             try {
-                mmSocket.connect();\
+                mmSocket.connect();
             } catch (IOException connectException) {
                 try {
                     Log.e("Device is:", mmSocket.getRemoteDevice().toString());

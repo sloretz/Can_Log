@@ -59,10 +59,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         //Initialize backend first
         Backend backend = new Backend(getApplicationContext());
         backend.start();
-        Set<BluetoothDevice> pairedDevices=BluetoothAdapter.getDefaultAdapter().getBondedDevices();
-        for (BluetoothDevice device : pairedDevices) {
-            backend.connect(device);
-        }
+
         //Create dialog that will block until a device is paired
         final PairDeviceDialog blockingDialog = new PairDeviceDialog();
         blockingDialog.setCancelable(false);
