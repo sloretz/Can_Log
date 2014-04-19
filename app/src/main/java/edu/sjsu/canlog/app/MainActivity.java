@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import android.widget.Toast;
 
 import edu.sjsu.canlog.app.frontend.*;
+import edu.sjsu.canlog.app.backend.Backend;
 
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -54,6 +55,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Initialize backend first
+        Backend backend = new Backend(getApplicationContext());
+        //Create dialog that will block until a device is paired
+        final PairDeviceDialog blockingDialog = new PairDeviceDialog();
+        blockingDialog.setCancelable(false);
+        blockingDialog.show(getSupportFragmentManager(), "PairDeviceDialog");
+        backend.waitForConnection(new Backend.ResultHandler() {
+            public void gotResult(Bundle result) {
+                blockingDialog.dismiss();
+            }
+        });
 
         //restore state
         if (savedInstanceState != null) {

@@ -1,19 +1,23 @@
-package edu.sjsu.canlog.app;
+package edu.sjsu.canlog.app.backend;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.telephony.TelephonyManager;
-import android.os.Bundle;
-import android.os.Message;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
+
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import edu.sjsu.canlog.app.MainActivity;
 
 
 /**
@@ -21,27 +25,76 @@ import android.util.Log;
  */
 public class BluetoothService {
 
-    private final Handler mHandler;
+    //private final Handler mHandler;
     private final BluetoothAdapter mAdapter;
     private ConnectThread mConnectThread;
-    private ConnectedThread mConnectedThread;
+    protected BluetoothSocket mConnectedSocket;
+    protected Lock mSocketLock;
+    //private ConnectedThread mConnectedThread;
     private Context mContext;
     private int mState;
     private static final int STATE_NONE=0;
     private static final int STATE_LISTEN=1;
     private static final int STATE_CONNECTING=2;
     private static final int STATE_CONNECTED=3;
-    public BluetoothService(Context context, Handler handler)
+
+
+    public static abstract class ResultHandler {
+        public abstract void gotResult(Bundle result);
+    }
+
+    protected abstract class BluetoothTask extends AsyncTask<ResultHandler, Void, Bundle> {
+        ResultHandler handler;
+        @Override
+        protected Bundle doInBackground(ResultHandler ... handlers) {
+            this.handler = handlers[0];
+            /**
+             * acquire lock on bluetooth socket
+             * transfer data to socket
+             * get results from socket
+             * put results into bundle
+             * release lock
+             * return bundle
+             */
+            Bundle result = null;
+            android.util.Log.i("Backend", "About to acquire lock");
+            mSocketLock.lock();
+            try {
+                result = doSocketTransfer();
+            } finally {
+                android.util.Log.i("Backend", "Releasing lock");
+                mSocketLock.unlock();
+
+            }
+            return result;
+        }
+
+        //This runs on a background thread
+        //As long as we're in this function
+        //we have the bluetooth socket
+        //all to ourselves.
+        protected abstract Bundle doSocketTransfer();
+
+        //This runs in the UI thread
+        protected void onPostExecute(Bundle result)
+        {
+            this.handler.gotResult(result);
+        }
+    }
+
+    protected BluetoothService(Context context)
     {
         mAdapter= BluetoothAdapter.getDefaultAdapter();
         mContext = context;
-        mHandler = handler;
+        mSocketLock = new ReentrantLock();
+        mSocketLock.lock(); //We release this once we've connected
+        //mHandler = handler;
         mState = STATE_NONE;
     }
     private synchronized void setState(int state)
     {
         mState=state;
-        mHandler.obtainMessage(MainActivity.MESSAGE_STATE_CHANGE, state,-1).sendToTarget();
+        //mHandler.obtainMessage(MainActivity.MESSAGE_STATE_CHANGE, state,-1).sendToTarget();
     }
 
     public synchronized void connect(BluetoothDevice device)
@@ -54,11 +107,12 @@ public class BluetoothService {
                 mConnectThread.cancel();
                 mConnectThread=null;
             }
+            /*
             if(mConnectedThread != null)
             {
                 mConnectedThread.cancel();
                 mConnectedThread=null;
-            }
+            }*/
         }
         mConnectThread = new ConnectThread(device);
         mConnectThread.start();
@@ -70,8 +124,9 @@ public class BluetoothService {
         if (mConnectThread != null)
         {
             mConnectThread.cancel();
-            mConnectedThread=null;
+            //mConnectedThread=null;
         }
+        /*
         if(mConnectedThread != null)
         {
             mConnectedThread.cancel();
@@ -79,7 +134,10 @@ public class BluetoothService {
         }
         mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
+        */
         //Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_DEVICE_NAME);
+        mConnectedSocket = socket;
+        mSocketLock.unlock();
         setState(STATE_CONNECTED);
     }
     public synchronized void start()
@@ -90,11 +148,13 @@ public class BluetoothService {
             mConnectThread.cancel();
             mConnectThread=null;
         }
+        /*
         if(mConnectedThread != null)
         {
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
+        */
         setState(STATE_NONE);
     }
     public synchronized void stop()
@@ -104,11 +164,13 @@ public class BluetoothService {
             mConnectThread.cancel();
             mConnectThread = null;
         }
+        /*
         if(mConnectedThread != null)
         {
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
+        */
         setState(STATE_NONE);
     }
 
@@ -125,7 +187,7 @@ public class BluetoothService {
             //TelephonyManager tManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
             mmDevice = device;
             try {
-                tmp = device.createInsecureRfcommSocketToServiceRecord((UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d")));
+                tmp = device.createInsecureRfcommSocketToServiceRecord((UUID.fromString("1101000000001000800000805F9B34FB")));
             } catch (Exception e) {
                 Log.e("FAILED IN CREATING RFCOMMSOCKET","ERROR");
             }
@@ -162,6 +224,7 @@ public class BluetoothService {
             }
         }
     }
+    /*
     public class ConnectedThread extends Thread{
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
@@ -189,7 +252,7 @@ public class BluetoothService {
             while(true) {
                 try {
                     bytes = mmInStream.read(buffer);
-                    mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    //mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
                     break;
                 }
@@ -202,5 +265,5 @@ public class BluetoothService {
                 Log.e("EXCEPTION CANCELING", "ERROR");
             }
         }
-    }
+    }*/
 }

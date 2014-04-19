@@ -3,90 +3,32 @@ package edu.sjsu.canlog.app.backend;
 import android.os.Bundle;
 import android.os.AsyncTask;
 import java.util.ArrayList;
-import android.bluetooth.BluetoothSocket;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.Random;
+import android.content.Context;
 
 /**
  * Created by shane on 3/11/14.
  * GUI calls this when it wants data
  */
-public class Backend {
+public class Backend extends BluetoothService{
     private static Backend _this = null;
-    private Bundle lastResult;
-    private BluetoothSocket socket;
-    private Lock socketLock;
+
 
     //This is passed in to the fetch functions
     //The backend bluetooth thread calls this
     //when a result for the last query is gotten
 
-    public static abstract class ResultHandler {
-        public abstract void gotResult(Bundle result);
-    }
 
-    private abstract class BluetoothTask extends AsyncTask<ResultHandler, Void, Bundle> {
-        ResultHandler handler;
-        @Override
-        protected Bundle doInBackground(ResultHandler ... handlers) {
-            this.handler = handlers[0];
-            /**
-             * acquire lock on bluetooth socket
-             * transfer data to socket
-             * get results from socket
-             * put results into bundle
-             * release lock
-             * return bundle
-             */
-            Bundle result = null;
-            android.util.Log.i("Backend", "About to acquire lock");
-            socketLock.lock();
-                try {
-                result = doSocketTransfer();
-            } finally {
-                android.util.Log.i("Backend", "Releasing lock");
-                socketLock.unlock();
-
-            }
-            return result;
-        }
-
-        //This runs on a background thread
-        //As long as we're in this function
-        //we have the bluetooth socket
-        //all to ourselves.
-        protected abstract Bundle doSocketTransfer();
-
-        //This runs in the UI thread
-        protected void onPostExecute(Bundle result)
-        {
-            this.handler.gotResult(result);
-        }
-    }
-
-    private ResultHandler resultHandler;
-
-    private Backend()
+    public Backend(Context context)
     {
-        lastResult = null;
-        resultHandler = null;
-        socketLock = new ReentrantLock();
+        super(context);
+        _this = this;
     }
 
     //Singleton class, only one backend needed
     public static Backend getInstance()
     {
-        if (_this == null)
-            _this = new Backend();
         return _this;
-    }
-
-    //Gets the last result when it is finished loading.
-    //Returns NULL if the result hasn't finished loading
-    public Bundle getResult()
-    {
-        return lastResult;
     }
 
     //Get a list of available sensors from the microcontroller
@@ -118,6 +60,22 @@ public class Backend {
 
                 tempResult.putStringArrayList("Sensors", sensorList);
                 tempResult.putStringArrayList("Data", dataList);
+                return tempResult;
+            }
+        };
+        task.execute(handler);
+    }
+
+    public void waitForConnection(ResultHandler handler)
+    {
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                //No socket transfer,we're connected
+                //when this function is called
+                Bundle tempResult = new Bundle();
+                tempResult.putBoolean("connected", true);
                 return tempResult;
             }
         };
