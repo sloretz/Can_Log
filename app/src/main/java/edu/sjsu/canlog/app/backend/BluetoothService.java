@@ -124,18 +124,8 @@ public class BluetoothService {
         if (mConnectThread != null)
         {
             mConnectThread.cancel();
-            //mConnectedThread=null;
         }
-        /*
-        if(mConnectedThread != null)
-        {
-            mConnectedThread.cancel();
-            mConnectedThread = null;
-        }
-        mConnectedThread = new ConnectedThread(socket);
-        mConnectedThread.start();
-        */
-        //Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_DEVICE_NAME);
+        
         mConnectedSocket = socket;
         mSocketLock.unlock();
         setState(STATE_CONNECTED);
@@ -148,13 +138,6 @@ public class BluetoothService {
             mConnectThread.cancel();
             mConnectThread=null;
         }
-        /*
-        if(mConnectedThread != null)
-        {
-            mConnectedThread.cancel();
-            mConnectedThread = null;
-        }
-        */
         setState(STATE_NONE);
     }
     public synchronized void stop()
@@ -164,13 +147,6 @@ public class BluetoothService {
             mConnectThread.cancel();
             mConnectThread = null;
         }
-        /*
-        if(mConnectedThread != null)
-        {
-            mConnectedThread.cancel();
-            mConnectedThread = null;
-        }
-        */
         setState(STATE_NONE);
     }
 
@@ -187,7 +163,7 @@ public class BluetoothService {
             //TelephonyManager tManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
             mmDevice = device;
             try {
-                tmp = device.createInsecureRfcommSocketToServiceRecord((UUID.fromString("1101000000001000800000805F9B34FB")));
+                tmp = device.createInsecureRfcommSocketToServiceRecord((UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")));
             } catch (Exception e) {
                 Log.e("FAILED IN CREATING RFCOMMSOCKET","ERROR");
             }
@@ -197,8 +173,7 @@ public class BluetoothService {
         public void run() {
             mAdapter.cancelDiscovery();
             try {
-                mmSocket.connect();
-                Log.e("AFTER CONNECT","AFTER");
+                mmSocket.connect();\
             } catch (IOException connectException) {
                 try {
                     Log.e("Device is:", mmSocket.getRemoteDevice().toString());
@@ -224,46 +199,4 @@ public class BluetoothService {
             }
         }
     }
-    /*
-    public class ConnectedThread extends Thread{
-        private final BluetoothSocket mmSocket;
-        private final InputStream mmInStream;
-        private final OutputStream mmOutStream;
-
-        public ConnectedThread(BluetoothSocket socket) {
-            Log.e("Starting connected thread", "starting");
-            mmSocket=socket;
-            InputStream tmpIn=null;
-            OutputStream tmpOut=null;
-
-            try {
-                tmpIn = socket.getInputStream();
-                tmpOut = socket.getOutputStream();
-            } catch (IOException e) { }
-
-            mmInStream = tmpIn;
-            mmOutStream = tmpOut;
-        }
-
-        public void run() {
-            byte[] buffer = new byte[1024];
-            int bytes;
-
-            while(true) {
-                try {
-                    bytes = mmInStream.read(buffer);
-                    //mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-                } catch (IOException e) {
-                    break;
-                }
-            }
-        }
-        public void cancel() {
-            try {
-                mmSocket.close();
-            } catch (IOException e) {
-                Log.e("EXCEPTION CANCELING", "ERROR");
-            }
-        }
-    }*/
 }

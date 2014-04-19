@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -18,7 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
-
+import java.util.Set;
 import android.widget.Toast;
 
 import edu.sjsu.canlog.app.frontend.*;
@@ -57,6 +58,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         //Initialize backend first
         Backend backend = new Backend(getApplicationContext());
+        backend.start();
+        Set<BluetoothDevice> pairedDevices=BluetoothAdapter.getDefaultAdapter().getBondedDevices();
+        for (BluetoothDevice device : pairedDevices) {
+            backend.connect(device);
+        }
         //Create dialog that will block until a device is paired
         final PairDeviceDialog blockingDialog = new PairDeviceDialog();
         blockingDialog.setCancelable(false);

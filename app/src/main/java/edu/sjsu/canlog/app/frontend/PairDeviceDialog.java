@@ -2,6 +2,7 @@ package edu.sjsu.canlog.app.frontend;
 
 import android.app.Dialog;
 import android.support.v4.app.DialogFragment;
+import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import edu.sjsu.canlog.app.R;
@@ -16,6 +17,12 @@ public class PairDeviceDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.pair_bluetooth_demand)
                 .setPositiveButton(null,null)
+                .setPositiveButton(R.string.debug_continue, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dismiss();
+                    }
+                })
+
                 .setNegativeButton(null, null);
         return builder.create();
     }
