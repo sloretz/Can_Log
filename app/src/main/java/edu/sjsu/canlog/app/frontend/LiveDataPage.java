@@ -2,6 +2,7 @@ package edu.sjsu.canlog.app.frontend;
 
 import edu.sjsu.canlog.app.R;
 import edu.sjsu.canlog.app.backend.Backend;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,16 +26,17 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     private static String SENSOR_NAME_LIST = "sensorNameList";
     private static String SENSOR_VALUE_LIST = "sensorValueList";
     private static String DEFAULT_SERIES_NAME = " ERR getting name";
+    private static int HISTORY_SIZE = 30;
     private XYPlot xyPlot;
     private ListView listView;
     private int sensorGraphIndex = -1;
     private ArrayList<GraphValue> graphValues;
     private Timer updateTimer;
 
-    private class DynamicSeries implements XYSeries {
+    private class DynamicRollingSeries implements XYSeries {
         ArrayList<GraphValue> valuesReference;
 
-        public DynamicSeries(ArrayList<GraphValue> values)
+        public DynamicRollingSeries(ArrayList<GraphValue> values)
         {
             valuesReference = values;
         }
@@ -46,7 +48,8 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
 
         @Override
         public Number getX(int index) {
-            return valuesReference.get(index*2).getValue();
+            //return valuesReference.get(index*2).getValue();
+            return index;
         }
 
         @Override
@@ -119,7 +122,13 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
                         int seconds = graphValues.size() / 2;
                         graphValues.add(new GraphValue(seconds)); //X
                         graphValues.add(new GraphValue(data)); // y
-                        //TODO make dynamic series that works off graph values
+
+                        if (graphValues.size()/2 > HISTORY_SIZE)
+                        {
+                            //Remove first x and Y value
+                            graphValues.remove(0);
+                            graphValues.remove(0);
+                        }
 
                         xyPlot.redraw();
                     }
@@ -273,18 +282,23 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
 
         //Set up plot series
         LineAndPointFormatter seriesFormat = new LineAndPointFormatter();
+        seriesFormat.setPointLabeler(null);
         seriesFormat.setPointLabelFormatter(new PointLabelFormatter());
         seriesFormat.configure(getActivity().getApplicationContext(),
                 R.xml.line_point_formatter_with_plf1);
 
-        XYSeries series = new DynamicSeries(graphValues);
+        XYSeries series = new DynamicRollingSeries(graphValues);
 
 
         xyPlot.addSeries(series, seriesFormat);
 
         // reduce the number of range labels
         xyPlot.setTicksPerRangeLabel(3);
-        xyPlot.getGraphWidget().setDomainLabelOrientation(-45);
+        xyPlot.setDomainLabel(null);
+        xyPlot.setRangeLabel(null);
+        xyPlot.getGraphWidget().setGridPadding(10f,25f,50f,25f);
+        xyPlot.getGraphWidget().setDomainLabelPaint(null);
+        xyPlot.getGraphWidget().setDomainOriginLabelPaint(null);
         //Set fixed width
         xyPlot.setDomainLowerBoundary(0,BoundaryMode.FIXED);
         xyPlot.setDomainUpperBoundary(30,BoundaryMode.FIXED);
