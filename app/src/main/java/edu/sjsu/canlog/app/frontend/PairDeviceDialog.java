@@ -26,7 +26,7 @@ public class PairDeviceDialog extends DialogFragment {
         ArrayList<CharSequence> deviceNames = new ArrayList<CharSequence>();
         for (BluetoothDevice device : pairedDevices) {
             devices.add(device);
-            deviceNames.add(device.getName());
+            deviceNames.add(device.getName() + "\n" + device.getAddress());
         }
         // Build the dialog and set up the button click handlers
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
