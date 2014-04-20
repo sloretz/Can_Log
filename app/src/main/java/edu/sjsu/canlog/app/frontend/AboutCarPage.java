@@ -50,8 +50,6 @@ public class AboutCarPage extends SensorDataListViewFragment implements HandleVi
                              Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
-        //Populate gui at startup
-        onBecomesVisible();
         return rootView;
     }
 }

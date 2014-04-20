@@ -81,8 +81,6 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
                 });
         }});
 
-        //Populate the GUI when we're created
-        onBecomesVisible();
         return rootView;
     }
 }

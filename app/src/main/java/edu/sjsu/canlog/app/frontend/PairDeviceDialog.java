@@ -40,12 +40,12 @@ public class PairDeviceDialog extends DialogFragment {
                     }
                 })
                 .setPositiveButton(null, null)
-                .setPositiveButton(R.string.debug_continue, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Backend.getInstance().dbg_force_continue();
-                        dismiss();
-                    }
-                })
+                //.setPositiveButton(R.string.debug_continue, new DialogInterface.OnClickListener() {
+                //    public void onClick(DialogInterface dialog, int id) {
+                //        Backend.getInstance().dbg_force_continue();
+                //        dismiss();
+                //    }
+                //})
 
                 .setNegativeButton(null, null);
         return builder.create();

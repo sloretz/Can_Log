@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.util.Log;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Condition;
 
 import edu.sjsu.canlog.app.MainActivity;
 
@@ -30,6 +31,7 @@ public class BluetoothService {
     private ConnectThread mConnectThread;
     protected BluetoothSocket mConnectedSocket;
     protected Lock mSocketLock;
+    protected Condition isConnected;
     //private ConnectedThread mConnectedThread;
     private Context mContext;
     private int mState;
@@ -46,7 +48,7 @@ public class BluetoothService {
     protected abstract class BluetoothTask extends AsyncTask<ResultHandler, Void, Bundle> {
         ResultHandler handler;
         @Override
-        protected Bundle doInBackground(ResultHandler ... handlers) {
+        protected Bundle doInBackground(ResultHandler ... handlers){
             this.handler = handlers[0];
             /**
              * acquire lock on bluetooth socket
@@ -60,6 +62,16 @@ public class BluetoothService {
             android.util.Log.i("Backend", "About to acquire lock");
             mSocketLock.lock();
             try {
+                while (mConnectedSocket == null)
+                {
+                    try {
+                        isConnected.await();
+                    } catch (InterruptedException ie) {
+                        //I don't think this should happen on android...
+                        Log.e("Unsupported", "The threading environment is unsupported");
+                        return null;
+                    }
+                }
                 result = doSocketTransfer();
             } finally {
                 android.util.Log.i("Backend", "Releasing lock");
@@ -87,6 +99,7 @@ public class BluetoothService {
         mAdapter= BluetoothAdapter.getDefaultAdapter();
         mContext = context;
         mSocketLock = new ReentrantLock();
+        isConnected = mSocketLock.newCondition();
         //mHandler = handler;
         mState = STATE_NONE;
     }
@@ -98,7 +111,7 @@ public class BluetoothService {
 
     public synchronized void connect(BluetoothDevice device)
     {
-        Log.d("dontcARE", "connect to: " + device);
+        Log.d("ConnectThread", "connect to: " + device);
         if(mState==STATE_CONNECTING)
         {
             if(mConnectThread!=null)
@@ -114,13 +127,21 @@ public class BluetoothService {
 
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device)
     {
+        Log.d("Connected", "We are connected");
         if (mConnectThread != null)
         {
             mConnectThread.cancel();
         }
 
         mConnectedSocket = socket;
-        mSocketLock.unlock();
+
+        //Wake everyone up, we're connected!
+        mSocketLock.lock();
+        try {
+            isConnected.signalAll();
+        } finally {
+            mSocketLock.unlock();
+        }
         setState(STATE_CONNECTED);
     }
     public synchronized void start()
@@ -157,6 +178,7 @@ public class BluetoothService {
             mmDevice = device;
             try {
                 tmp = device.createInsecureRfcommSocketToServiceRecord((UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")));
+                //tmp = device.createInsecureRfcommSocketToServiceRecord(device.getUuids()[0].getUuid());
             } catch (Exception e) {
                 Log.e("FAILED IN CREATING RFCOMMSOCKET","ERROR");
             }
@@ -164,7 +186,6 @@ public class BluetoothService {
         }
 
         public void run() {
-            mSocketLock.lock(); //We release this once we've connected
             mAdapter.cancelDiscovery();
             try {
                 mmSocket.connect();

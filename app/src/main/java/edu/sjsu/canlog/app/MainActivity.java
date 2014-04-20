@@ -60,15 +60,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         Backend backend = new Backend(getApplicationContext());
         backend.start();
 
-        //Create dialog that will block until a device is paired
-        final PairDeviceDialog blockingDialog = new PairDeviceDialog();
+        final ConnectingDialog blockingDialog = new ConnectingDialog();
         blockingDialog.setCancelable(false);
-        blockingDialog.show(getSupportFragmentManager(), "PairDeviceDialog");
+        blockingDialog.show(getSupportFragmentManager(), "ConnectDeviceDialog");
+
         backend.waitForConnection(new Backend.ResultHandler() {
             public void gotResult(Bundle result) {
+                Log.d("PairDeviceDialog", "We must be connected, dismissing dialog");
                 blockingDialog.dismiss();
             }
         });
+
+        //Create dialog that will block until a device is paired
+        final PairDeviceDialog pairDeviceDialog = new PairDeviceDialog();
+        pairDeviceDialog.setCancelable(false);
+        pairDeviceDialog.show(getSupportFragmentManager(), "PairDeviceDialog");
+
+
 
         //restore state
         if (savedInstanceState != null) {
@@ -96,6 +104,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             private int currentPosition = -1;
             @Override
             public void onPageSelected(int position) {
+                Log.i("visible", "onPageSelected " + Integer.toString(position));
                 //Hide the old
                 if (currentPosition >= 0) {
                     Fragment invisibleFragment = (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, currentPosition);

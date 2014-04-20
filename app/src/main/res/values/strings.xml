@@ -10,6 +10,7 @@
 
     <string name="pair_bluetooth_demand">Choose a device</string>
     <string name="debug_continue">Continue with debug data</string>
+    <string name="connecting">Connecting...</string>
 
     <string-array name="dtc_page_names">
         <item>DTC page 1</item>

@@ -2,9 +2,20 @@ package edu.sjsu.canlog.app.backend;
 
 import android.os.Bundle;
 import android.os.AsyncTask;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.nio.Buffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Random;
 import android.content.Context;
+import android.util.Log;
 
 /**
  * Created by shane on 3/11/14.
@@ -30,13 +41,6 @@ public class Backend extends BluetoothService{
     {
         return _this;
     }
-
-    public void dbg_force_continue()
-    {
-        //Continue to UI without connecting to a bluetooth device
-        mSocketLock.unlock();
-    }
-
 
     //Get a list of available sensors from the microcontroller
     public void fetchAvailableSensorsAndData(ResultHandler handler)
@@ -164,9 +168,27 @@ public class Backend extends BluetoothService{
             @Override
             protected Bundle doSocketTransfer()
             {
-                //debug logic
                 Bundle tempResult = new Bundle();
-                tempResult.putBoolean("did_clear",true);
+                try {
+                    Log.d("mConnectedSocket", (mConnectedSocket == null) ? "is null" : "is not null");
+                    InputStream is = mConnectedSocket.getInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is,"UTF-8"));
+                    OutputStream os = mConnectedSocket.getOutputStream();
+                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
+
+                    Log.i("DTC", "about to send ping");
+                    bw.write("ping");
+                    bw.flush();
+                    Log.i("dtc", "about to read line");
+                    String input = br.readLine();
+                    Log.i("dtc Got BT data", input);
+
+                    tempResult.putBoolean("did_clear",true);
+                } catch (IOException ioe) {
+                    Log.e("DTC task", "connect but got exception " + ioe.getMessage());
+                    tempResult.putBoolean("did_clear",false);
+                }
+
                 return tempResult;
             }
         };
