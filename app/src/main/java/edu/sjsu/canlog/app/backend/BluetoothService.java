@@ -87,7 +87,6 @@ public class BluetoothService {
         mAdapter= BluetoothAdapter.getDefaultAdapter();
         mContext = context;
         mSocketLock = new ReentrantLock();
-        mSocketLock.lock(); //We release this once we've connected
         //mHandler = handler;
         mState = STATE_NONE;
     }
@@ -107,12 +106,6 @@ public class BluetoothService {
                 mConnectThread.cancel();
                 mConnectThread=null;
             }
-            /*
-            if(mConnectedThread != null)
-            {
-                mConnectedThread.cancel();
-                mConnectedThread=null;
-            }*/
         }
         mConnectThread = new ConnectThread(device);
         mConnectThread.start();
@@ -171,6 +164,7 @@ public class BluetoothService {
         }
 
         public void run() {
+            mSocketLock.lock(); //We release this once we've connected
             mAdapter.cancelDiscovery();
             try {
                 mmSocket.connect();

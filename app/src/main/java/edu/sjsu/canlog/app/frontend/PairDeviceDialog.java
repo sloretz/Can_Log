@@ -7,6 +7,8 @@ import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
+
 import edu.sjsu.canlog.app.backend.Backend;
 
 import java.util.Set;
@@ -25,12 +27,13 @@ public class PairDeviceDialog extends DialogFragment {
         final ArrayList<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
         ArrayList<CharSequence> deviceNames = new ArrayList<CharSequence>();
         for (BluetoothDevice device : pairedDevices) {
+            Log.i("Paired device", device.getName());
             devices.add(device);
             deviceNames.add(device.getName() + "\n" + device.getAddress());
         }
         // Build the dialog and set up the button click handlers
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.pair_bluetooth_demand)
+        builder.setTitle(R.string.pair_bluetooth_demand)
                 .setItems((CharSequence[]) deviceNames.toArray(new CharSequence[devices.size()]), new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialog, int id) {
                         Backend.getInstance().connect(devices.get(id));
