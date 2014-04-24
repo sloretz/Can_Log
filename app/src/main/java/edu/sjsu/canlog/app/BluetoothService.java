@@ -2,12 +2,8 @@ package edu.sjsu.canlog.app;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.telephony.TelephonyManager;
-import android.os.Bundle;
-import android.os.Message;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,6 +36,7 @@ public class BluetoothService {
     }
     private synchronized void setState(int state)
     {
+        Log.d("State Change", "setState() " + mState + " -> " + state);
         mState=state;
         mHandler.obtainMessage(MainActivity.MESSAGE_STATE_CHANGE, state,-1).sendToTarget();
     }
@@ -125,7 +122,8 @@ public class BluetoothService {
             //TelephonyManager tManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
             mmDevice = device;
             try {
-                tmp = device.createInsecureRfcommSocketToServiceRecord((UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d")));
+                Log.e("Device being connected to", device.toString());
+                tmp = device.createRfcommSocketToServiceRecord((UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")));
             } catch (Exception e) {
                 Log.e("FAILED IN CREATING RFCOMMSOCKET","ERROR");
             }
@@ -133,6 +131,8 @@ public class BluetoothService {
         }
 
         public void run() {
+            Log.i("Thread","Begin ConnectThread");
+            setName("ConnectThread");
             mAdapter.cancelDiscovery();
             try {
                 mmSocket.connect();
@@ -168,11 +168,10 @@ public class BluetoothService {
         private final OutputStream mmOutStream;
 
         public ConnectedThread(BluetoothSocket socket) {
-            Log.e("Starting connected thread", "starting");
-            mmSocket=socket;
+            Log.e("Thread","Creating Connected Thread");
             InputStream tmpIn=null;
             OutputStream tmpOut=null;
-
+            mmSocket = socket;
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
@@ -193,6 +192,17 @@ public class BluetoothService {
                 } catch (IOException e) {
                     break;
                 }
+            }
+        }
+        public void write(byte[] buffer) {
+            try {
+                mmOutStream.write(buffer);
+
+                // Share the sent message back to the UI Activity
+                mHandler.obtainMessage(MainActivity.MESSAGE_WRITE, buffer.length, -1, buffer)
+                        .sendToTarget();
+            } catch (IOException e) {
+                Log.e("Write Exception", "Exception during write", e);
             }
         }
         public void cancel() {

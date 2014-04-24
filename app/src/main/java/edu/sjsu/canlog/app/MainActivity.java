@@ -31,6 +31,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     public static final int MESSAGE_STATE_CHANGE=1;
     public static final int MESSAGE_READ =2;
+    public static final int MESSAGE_WRITE = 3;
     public BluetoothAdapter bluetoothAdapter=null;
     public static int REQUEST_ENABLE_BT = 3;
     public static final int MESSAGE_DEVICE_NAME = 4;
@@ -225,8 +226,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MESSAGE_READ:
-                    String messageRead = msg.toString();
-                    Toast toast = Toast.makeText(getApplicationContext(), messageRead, Toast.LENGTH_LONG);
+                    byte[] readBuf = (byte[]) msg.obj;
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    Toast toast = Toast.makeText(getApplicationContext(), readMessage, Toast.LENGTH_LONG);
                     toast.show();
             }
         }
