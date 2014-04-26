@@ -38,6 +38,7 @@ public class SensorDataListAdapter implements ListAdapter {
     public int addSensor(String name, String data)
     {
         sensors.add(new SensorStruct(name,data));
+        notifyObservers();
         return sensors.size()-1;
     }
 

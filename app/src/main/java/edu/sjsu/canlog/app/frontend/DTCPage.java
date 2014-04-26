@@ -24,24 +24,33 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
     public void onBecomesVisible()
     {
         android.util.Log.d("DTCPage", "onBecomesVisible");
+        android.util.Log.d("DTCPage", "who am i? " + this.hashCode() + " " + getActivity().hashCode());
         Backend backend = Backend.getInstance();
         backend.fetchDTCs(new Backend.ResultHandler() {
             public void gotResult(Bundle result) {
                 android.util.Log.d("DTCPage", "Got results from backend");
+
                 ArrayList<String> DTCs = result.getStringArrayList("DTCs");
                 ArrayList<String> descriptions = result.getStringArrayList("short_descriptions");
+                android.util.Log.d("DTCPage", "current count " + sensorDataListAdapter.getCount() + " numDTCs "
+                        + DTCs.size() + " numDesc " + descriptions.size());
                 if (sensorDataListAdapter.getCount() == 0) {
                     Iterator<String> dtcIter = DTCs.iterator();
                     Iterator<String> descIter = descriptions.iterator();
                     while (dtcIter.hasNext() && descIter.hasNext()) {
-                        sensorDataListAdapter.addSensor(dtcIter.next(), descIter.next());
+                        String name = dtcIter.next();
+                        String desc = descIter.next();
+                        android.util.Log.d("DTCPage", "New sensor " + name + " " + desc);
+                        sensorDataListAdapter.addSensor(name, desc);
                     }
                 }
                 else{
                     for (int i = 0; i < sensorDataListAdapter.getCount(); i++){
+                        android.util.Log.d("DTCPage", "Old sensor " + DTCs.get(i) + " " + descriptions.get(i));
                         sensorDataListAdapter.updateSensor(i,descriptions.get(i));
                     }
                 }
+                android.util.Log.d("DTCPage", "Done processing results");
             }
         } );
     }
@@ -53,6 +62,7 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        android.util.Log.d("DTCPage", "Creating view " + this.hashCode() + " " + getActivity().hashCode());
         View rootView = inflater.inflate(R.layout.dtc_page, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
         Button button = (Button) rootView.findViewById(R.id.button);
@@ -61,7 +71,6 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
         sensorDataListAdapter = new SensorDataListAdapter(getActivity());
 
         listView.setAdapter(sensorDataListAdapter);
-        final DTCPage _this = this;
 
         //On button tap, have the backend clear DTCs
         button.setOnClickListener(new View.OnClickListener() {
@@ -75,12 +84,14 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
                     {
                         strResult = "Failed to clear DTCs";
                     }
-                    Toast toast = Toast.makeText(_this.getActivity().getApplicationContext(), strResult, Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getActivity().getApplicationContext(), strResult, Toast.LENGTH_SHORT);
                     toast.show();
                 }
                 });
         }});
 
+        //populate our GUI asap
+        //onBecomesVisible();
         return rootView;
     }
 }

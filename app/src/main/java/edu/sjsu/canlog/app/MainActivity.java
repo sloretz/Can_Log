@@ -54,29 +54,19 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     @Override
+    public void onStop(){
+        super.onStop();
+        Backend backend = Backend.getInstance();
+        backend.stop();
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Initialize backend first
         Backend backend = new Backend(getApplicationContext());
         backend.start();
-
-        final ConnectingDialog blockingDialog = new ConnectingDialog();
-        blockingDialog.setCancelable(false);
-        blockingDialog.show(getSupportFragmentManager(), "ConnectDeviceDialog");
-
-        backend.waitForConnection(new Backend.ResultHandler() {
-            public void gotResult(Bundle result) {
-                Log.d("PairDeviceDialog", "We must be connected, dismissing dialog");
-                blockingDialog.dismiss();
-            }
-        });
-
-        //Create dialog that will block until a device is paired
-        final PairDeviceDialog pairDeviceDialog = new PairDeviceDialog();
-        pairDeviceDialog.setCancelable(false);
-        pairDeviceDialog.show(getSupportFragmentManager(), "PairDeviceDialog");
-
-
 
         //restore state
         if (savedInstanceState != null) {
@@ -135,6 +125,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this));
         }
 
+
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if ( bluetoothAdapter == null)
         {
@@ -144,12 +135,29 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         else
         {
 
-            //Request bluetooth, but only do it once
-            if (!haveRequestedBluetooth && !bluetoothAdapter.isEnabled())
-            {
+            if (!bluetoothAdapter.isEnabled()) {
                 Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBTIntent, REQUEST_ENABLE_BT);
+            }
+            //Request bluetooth, but only do it once
+            if (!backend.isConnected())//!haveRequestedBluetooth)
+            {
                 haveRequestedBluetooth = true;
+                final ConnectingDialog blockingDialog = new ConnectingDialog();
+                blockingDialog.setCancelable(false);
+                blockingDialog.show(getSupportFragmentManager(), "ConnectDeviceDialog");
+
+                backend.waitForConnection(new Backend.ResultHandler() {
+                    public void gotResult(Bundle result) {
+                        Log.d("PairDeviceDialog", "We must be connected, dismissing dialog");
+                        blockingDialog.dismiss();
+                    }
+                });
+
+                //Create dialog that will block until a device is paired
+                final PairDeviceDialog pairDeviceDialog = new PairDeviceDialog();
+                pairDeviceDialog.setCancelable(false);
+                pairDeviceDialog.show(getSupportFragmentManager(), "PairDeviceDialog");
             }
 
             //Assume the user has enabled bluetooth

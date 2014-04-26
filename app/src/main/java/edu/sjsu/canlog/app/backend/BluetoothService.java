@@ -59,7 +59,7 @@ public class BluetoothService {
              * return bundle
              */
             Bundle result = null;
-            android.util.Log.i("Backend", "About to acquire lock");
+            //android.util.Log.i("Backend", "About to acquire lock");
             mSocketLock.lock();
             try {
                 while (mConnectedSocket == null)
@@ -74,7 +74,7 @@ public class BluetoothService {
                 }
                 result = doSocketTransfer();
             } finally {
-                android.util.Log.i("Backend", "Releasing lock");
+                //android.util.Log.i("Backend", "Releasing lock");
                 mSocketLock.unlock();
 
             }
@@ -125,6 +125,12 @@ public class BluetoothService {
         setState(STATE_CONNECTING);
     }
 
+    public boolean isConnected()
+    {
+        return mConnectedSocket != null;
+    }
+
+
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device)
     {
         Log.d("Connected", "We are connected");
@@ -161,6 +167,13 @@ public class BluetoothService {
             mConnectThread.cancel();
             mConnectThread = null;
         }
+        if (mConnectedSocket != null) {
+            try {
+                mConnectedSocket.close();
+            } catch (IOException e){
+                //...
+            }
+        }
         setState(STATE_NONE);
     }
 
@@ -177,8 +190,8 @@ public class BluetoothService {
             //TelephonyManager tManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
             mmDevice = device;
             try {
-                tmp = device.createInsecureRfcommSocketToServiceRecord((UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")));
-                //tmp = device.createInsecureRfcommSocketToServiceRecord(device.getUuids()[0].getUuid());
+                Log.e("Device being connected to", device.toString());
+                tmp = device.createRfcommSocketToServiceRecord((UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")));
             } catch (Exception e) {
                 Log.e("FAILED IN CREATING RFCOMMSOCKET","ERROR");
             }
