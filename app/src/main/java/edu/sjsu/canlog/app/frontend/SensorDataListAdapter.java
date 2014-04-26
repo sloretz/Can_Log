@@ -61,11 +61,13 @@ public class SensorDataListAdapter implements ListAdapter {
 
     @Override
     public void registerDataSetObserver(DataSetObserver observer) {
+        android.util.Log.d("DataListAdapter DTCPage", "Adding observer");
         observers.add(observer);
     }
 
     @Override
     public void unregisterDataSetObserver(DataSetObserver observer) {
+        android.util.Log.d("DataListAdapter DTCPage", "Removing observer");
         observers.remove(observer);
     }
 
