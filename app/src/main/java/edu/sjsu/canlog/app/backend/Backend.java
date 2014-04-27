@@ -194,4 +194,43 @@ public class Backend extends BluetoothService{
         };
         task.execute(handler);
     }
+
+    public void fetchLoggedVINs(ResultHandler handler)
+    {
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                Random r = new Random();
+                //debug logic
+                Bundle tempResult = new Bundle();
+                ArrayList<String> vinList = new ArrayList<String>();
+                vinList.add("LJCPCBLCX11000237");
+                vinList.add("JBMHSRLCX11999567");
+                tempResult.putStringArrayList("VIN", vinList);
+                return tempResult;
+            }
+        };
+        task.execute(handler);
+    }
+
+    public void beginHistoryDownload(ResultHandler handler)
+    {
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                Random r = new Random();
+
+                //TODO there is a way to do
+                //progress with AsyncTask, It's what
+                //they're designed for. Figure it out.
+                //debug logic
+                Bundle tempResult = new Bundle();
+                tempResult.putBoolean("done", true);
+                return tempResult;
+            }
+        };
+        task.execute(handler);
+    }
 }
