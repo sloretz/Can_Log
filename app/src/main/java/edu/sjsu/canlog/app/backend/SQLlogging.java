@@ -21,7 +21,7 @@ public class SQLlogging {
         @Override
         public void onCreate(SQLiteDatabase db)
         {
-            String CREATE_TABLE= "CREATE TABLE " + tableVIN + "(time Integer PRIMARY KEY, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x1f Integer, x21 Integer, x2f Integer, x30 Integer, x31 Integer, x4d Integer, x5c Integer, x5e Integer);";
+            String CREATE_TABLE= "CREATE TABLE IF NOT EXISTS" + tableVIN + "(time Integer PRIMARY KEY, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x1f Integer, x21 Integer, x2f Integer, x30 Integer, x31 Integer, x4d Integer, x5c Integer, x5e Integer);";
             db.execSQL(CREATE_TABLE);
         }
         @Override
@@ -30,6 +30,8 @@ public class SQLlogging {
             db.execSQL("DROP TABLE IF EXISTS " + tableVIN);
             onCreate(db);
         }
+
+        public void addRow
 
     }
 }
