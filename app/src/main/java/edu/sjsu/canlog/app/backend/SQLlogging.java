@@ -32,7 +32,7 @@ public class SQLlogging {
 
         public void addRow(SQLiteDatabase db, int time, int x03, int x04, int x05, int x0c, int x0d, int x11, int x1f, int x21, int x2f, int x30, int x31, int x4d, int x5c, int x5e)
         {
-            db.execSQL("INSERT INTO " + tableVIN + " VALUES (" + time + "," + x03 +"," + x04 + "," + x05 + "," + x0c + "," + x0d + "," + x11 + "," + x1f + "," + x21 + "," +x2f + "," + x30 + "," + x31 + "," + x4d +"," + x5c + "," +x5e);
+            db.execSQL("INSERT INTO " + tableVIN + " VALUES (" + time + "," + x03 +"," + x04 + "," + x05 + "," + x0c + "," + x0d + "," + x11 + "," + x1f + "," + x21 + "," +x2f + "," + x30 + "," + x31 + "," + x4d +"," + x5c + "," +x5e +");");
         }
 
     }
