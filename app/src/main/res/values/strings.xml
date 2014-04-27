@@ -4,13 +4,18 @@
     <string name="app_name">Can Log</string>
     <string name="title_section1">DTCs</string>
     <string name="title_section2">Live Data</string>
-    <string name="title_section3">About Car</string>
+    <string name="title_section3">History</string>
+    <string name="title_section4">About Car</string>
     <string name="action_settings">Settings</string>
     <string name="clear_dtc_button">Clear DTCs</string>
+    <string name="download_history_button">Download History</string>
+    <string name="use_old_history_button">Continue Without Downloading</string>
 
     <string name="pair_bluetooth_demand">Choose a device</string>
     <string name="debug_continue">Continue with debug data</string>
     <string name="connecting">Connecting...</string>
+
+    <string name="dl_hist_title">Fetch History</string>
 
     <string-array name="dtc_page_names">
         <item>DTC page 1</item>

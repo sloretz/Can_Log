@@ -214,6 +214,48 @@ public class Backend extends BluetoothService{
         task.execute(handler);
     }
 
+    public void fetchLoggedPIDs(String vin, ResultHandler handler)
+    {
+        //Don't need to ask the microcontroller about this one
+        //it's hard coded here
+        //values taken from http://en.wikipedia.org/wiki/OBD-II_PIDs
+        Random r = new Random();
+        Bundle tempResult = new Bundle();
+        ArrayList<String> pidList = new ArrayList<String>();
+        ArrayList<String> prettyList = new ArrayList<String>();
+        pidList.add("x03");
+        prettyList.add("Fuel system status");
+        pidList.add("x04");
+        prettyList.add("Calculated engine load value");
+        pidList.add("x05");
+        prettyList.add("Engine coolant temperature");
+        pidList.add("x0c");
+        prettyList.add("Engine RPM");
+        pidList.add("x0d");
+        prettyList.add("Vehicle speed");
+        pidList.add("x11");
+        prettyList.add("Throttle position");
+        pidList.add("x1f");
+        prettyList.add("Run time since engine start");
+        pidList.add("x21");
+        prettyList.add("Distance traveled with malfunction indicator lamp (MIL) on");
+        pidList.add("x2f");
+        prettyList.add("Fuel Level Input");
+        pidList.add("x30");
+        prettyList.add("# of warm-ups since codes cleared");
+        pidList.add("x31");
+        prettyList.add("Distance traveled since codes cleared");
+        pidList.add("x4d");
+        prettyList.add("Time run with MIL on");
+        pidList.add("x5c");
+        prettyList.add("Engine oil temperature");
+        pidList.add("x5e");
+        prettyList.add("Engine fuel rate");
+        tempResult.putStringArrayList("PID", pidList);
+        tempResult.putStringArrayList("Desc", prettyList);
+        handler.gotResult(tempResult);
+    }
+
     public void beginHistoryDownload(ResultHandler handler)
     {
         BluetoothTask task = new BluetoothTask() {
@@ -221,7 +263,11 @@ public class Backend extends BluetoothService{
             protected Bundle doSocketTransfer()
             {
                 Random r = new Random();
-
+                try {
+                    Thread.sleep(4000);
+                } catch (InterruptedException e) {
+                    //uh yeah, this is debug code
+                }
                 //TODO there is a way to do
                 //progress with AsyncTask, It's what
                 //they're designed for. Figure it out.

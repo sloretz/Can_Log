@@ -60,6 +60,20 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         backend.stop();
     }
 
+    /* Busted
+    @Override
+    public void onResume()
+    {
+        //When we resume, tell the current window we're visible again
+        int currentPosition = mViewPager.getCurrentItem();
+        if (currentPosition >= 0) {
+            Fragment invisibleFragment = (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, currentPosition);
+            if (invisibleFragment instanceof HandleVisibilityChange) {
+                ((HandleVisibilityChange) invisibleFragment).onBecomesVisible();
+            }
+        }
+    }*/
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +172,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 final PairDeviceDialog pairDeviceDialog = new PairDeviceDialog();
                 pairDeviceDialog.setCancelable(false);
                 pairDeviceDialog.show(getSupportFragmentManager(), "PairDeviceDialog");
+
+                //Create dialog that will block until a device is paired
+                //final DatePickerFragment dateDialog = new DatePickerFragment();
+                //dateDialog.setCancelable(false);
+                //dateDialog.show(getSupportFragmentManager(), "DateDialog");
             }
 
             //Assume the user has enabled bluetooth
@@ -252,21 +271,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
             else if (position == 1)
             {
-                /*
-                //Live data
-                ArrayList<Number> xVals = new ArrayList<Number>();
-                xVals.add(1);
-                xVals.add(2);
-                xVals.add(3);
-                xVals.add(4);
-                ArrayList<Number> yVals = new ArrayList<Number>();
-                yVals.add(4);
-                yVals.add(3);
-                yVals.add(1);
-                yVals.add(4);
-                StaticXYPlotFragment fragment = StaticXYPlotFragment.newInstance("Garbage",xVals,yVals);
-                */
                 LiveDataPage fragment = new LiveDataPage();
+                return fragment;
+            }
+            else if (position == 2)
+            {
+                LoggedDataPage fragment = new LoggedDataPage();
                 return fragment;
             }
             else
@@ -280,8 +290,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            return 4;
         }
 
         @Override
@@ -294,6 +303,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     return getString(R.string.title_section2).toUpperCase(l);
                 case 2:
                     return getString(R.string.title_section3).toUpperCase(l);
+                case 3:
+                    return getString(R.string.title_section4).toUpperCase(l);
             }
             return null;
         }
