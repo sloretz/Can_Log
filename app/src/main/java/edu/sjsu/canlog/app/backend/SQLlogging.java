@@ -1,12 +1,26 @@
 package edu.sjsu.canlog.app.backend;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
+import java.util.List;
+import java.util.ArrayList;
 /**
  * Created by Brian on 4/27/2014.
  */
 public class SQLlogging {
+    public class SQLdata {
+
+        public int time;
+        public int data;
+
+        SQLdata (int t, int d){
+            time =t;
+            data=d;
+        }
+    }
     public class DatabaseHandler extends SQLiteOpenHelper {
 
         private static final int DATABASE_VERSION = 1;
@@ -30,9 +44,43 @@ public class SQLlogging {
             onCreate(db);
         }
 
-        public void addRow(SQLiteDatabase db, int time, int x03, int x04, int x05, int x0c, int x0d, int x11, int x1f, int x21, int x2f, int x30, int x31, int x4d, int x5c, int x5e)
+        public void addRow(int time, int x03, int x04, int x05, int x0c, int x0d, int x11, int x1f, int x21, int x2f, int x30, int x31, int x4d, int x5c, int x5e)
         {
-            db.execSQL("INSERT INTO " + tableVIN + " VALUES (" + time + "," + x03 +"," + x04 + "," + x05 + "," + x0c + "," + x0d + "," + x11 + "," + x1f + "," + x21 + "," +x2f + "," + x30 + "," + x31 + "," + x4d +"," + x5c + "," +x5e +");");
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values= new ContentValues();
+            values.put("time", time);
+            values.put("x03",x03);
+            values.put("x04",x04);
+            values.put("x05",x05);
+            values.put("x0c",x0c);
+            values.put("x0d",x0d);
+            values.put("x11",x11);
+            values.put("x1f",x1f);
+            values.put("x21",x21);
+            values.put("x2f",x30);
+            values.put("x30",x30);
+            values.put("x31",x31);
+            values.put("x4d",x4d);
+            values.put("x5c",x5c);
+            values.put("x5e",x5e);
+
+            db.insert(tableVIN, null, values);
+        }
+
+        public List<SQLdata> getAllData(String column){
+
+            List<SQLdata> data = new ArrayList<SQLdata>();
+            String selectQuery= "SELECT time " + column + " FROM " + tableVIN +";";
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if(cursor.moveToFirst()) {
+                do {
+                    SQLdata sqldata = new SQLdata(cursor.getInt(0), cursor.getInt(1));
+                    data.add(sqldata);
+
+                } while(cursor.moveToNext());
+            }
+            return data;
         }
 
     }
