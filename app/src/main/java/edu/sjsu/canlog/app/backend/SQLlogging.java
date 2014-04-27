@@ -21,7 +21,7 @@ public class SQLlogging {
         @Override
         public void onCreate(SQLiteDatabase db)
         {
-            String CREATE_TABLE= "CREATE TABLE " + tableVIN + "(time Integer PRIMARY KEY, 0x03 Integer, 0x04 Integer, 0x05 Integer, 0x0c Integer, 0x0d Integer, 0x11 Integer, 0x1f Integer, 0x21 Integer, 0x2f Integer, 0x30 Integer, 0x31 Integer, 0x4d Integer, 0x5c Integer, 0x5e Integer);";
+            String CREATE_TABLE= "CREATE TABLE " + tableVIN + "(time Integer PRIMARY KEY, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x1f Integer, x21 Integer, x2f Integer, x30 Integer, x31 Integer, x4d Integer, x5c Integer, x5e Integer);";
             db.execSQL(CREATE_TABLE);
         }
         @Override
