@@ -69,7 +69,6 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
         final Backend backend = Backend.getInstance();
 
         sensorDataListAdapter = new SensorDataListAdapter(getActivity());
-
         listView.setAdapter(sensorDataListAdapter);
 
         //On button tap, have the backend clear DTCs

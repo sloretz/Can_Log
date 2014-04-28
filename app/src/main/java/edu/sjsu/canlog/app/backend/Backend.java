@@ -122,6 +122,15 @@ public class Backend extends BluetoothService{
         btWriter.flush();
     }
 
+    protected String bt_readln() throws IOException
+    {
+        //readline, ignoring empty lines
+        String nextLine = "";
+        while (nextLine.equals(""))
+            nextLine = btReader.readLine();
+        return nextLine;
+    }
+
     //Singleton class, only one backend needed
     public static Backend getInstance()
     {
@@ -152,7 +161,7 @@ public class Backend extends BluetoothService{
                         pidList.add("x" + Integer.toHexString(pid));
                         prettyList.add(PrettyPID.getDescription(pid));
                         bt_writeln("pid " + pid);
-                        dataList.add(btReader.readLine());
+                        dataList.add(bt_readln());
                     }
                     Log.d("Backend", "got sen and dat res");
                     result.putStringArrayList("Sensors", prettyList);
@@ -228,12 +237,17 @@ public class Backend extends BluetoothService{
                     String nextLine = "";
                     while (true)
                     {
-                        nextLine = btReader.readLine();
-                        if (nextLine == "~")
+                        Log.d("Backend", "fetch DTC about readline");
+                        nextLine = bt_readln();
+                        Log.d("Backend", "Got dtc " + nextLine);
+                        if (nextLine.equals("~"))
                             break;
                         DTCList.add(nextLine);
                         descList.add("TODO explanation");
                     }
+                    result.putStringArrayList("DTCs", DTCList);
+                    result.putStringArrayList("short_descriptions", descList);
+                    Log.d("Backend", "fetch dtc post readlines");
                 } catch (IOException e)
                 {
                     result.putString("error", e.getLocalizedMessage());
@@ -295,15 +309,18 @@ public class Backend extends BluetoothService{
                 Bundle result = new Bundle();
                 try {
 
+                    Log.d("Backend", "Fetch sensor data begin writing");
                     bt_writeln("pid " + PrettyPID.toInteger(sensorHandle));
-                    String data = btReader.readLine();
+                    String data = bt_readln();
+                    Log.d("Backend", "Getting type for handle " + sensorHandle);
                     String type = PrettyPID.getType(sensorHandle);
+                    Log.d("Backend", "Type is " + type);
                     result.putString("type", type);
-                    if (type == "int")
+                    if (type.equals("int"))
                         result.putInt(sensorHandle, Integer.valueOf(data));
-                    else if (type == "double")
+                    else if (type.equals("double"))
                         result.putDouble(sensorHandle, Double.valueOf(data));
-
+                    Log.d("Backend", "Fetch sensor data done fetch");
                 } catch (IOException e)
                 {
                     result.putString("error", e.getLocalizedMessage());
@@ -325,7 +342,9 @@ public class Backend extends BluetoothService{
             {
                 Bundle result = new Bundle();
                 try {
+                    Log.d("Backend", "About to clear dtc");
                     bt_writeln("cdtc");
+                    Log.d("Backend", "Cleared dtcs");
                     //No response from the car, just assume it worked
                     result.putBoolean("did_clear", true);
                 } catch (IOException ioe) {
