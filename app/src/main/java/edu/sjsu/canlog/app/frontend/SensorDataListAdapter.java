@@ -19,9 +19,10 @@ import edu.sjsu.canlog.app.R;
 public class SensorDataListAdapter implements ListAdapter {
 
     public class SensorStruct {
-        public SensorStruct(String n, String d) {sensorName = n; sensorData = d;};
+        public SensorStruct(String n, String d, String ud) {sensorName = n; sensorData = d; userData = ud;};
         public String sensorName;
         public String sensorData;
+        public String userData;
     }
 
     private ArrayList<DataSetObserver> observers;
@@ -35,9 +36,9 @@ public class SensorDataListAdapter implements ListAdapter {
         sensors = new ArrayList<SensorStruct>();
     }
 
-    public int addSensor(String name, String data)
+    public int addSensor(String name, String data, String userData)
     {
-        sensors.add(new SensorStruct(name,data));
+        sensors.add(new SensorStruct(name,data,userData));
         notifyObservers();
         return sensors.size()-1;
     }
@@ -88,6 +89,11 @@ public class SensorDataListAdapter implements ListAdapter {
     public String getSensorValue( int position)
     {
         return ((SensorStruct) getItem(position)).sensorData;
+    }
+
+    public String getUserData( int position)
+    {
+        return ((SensorStruct) getItem(position)).userData;
     }
 
     @Override

@@ -25,6 +25,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     private static String GRAPH_VALUE_LIST = "graphValuesList";
     private static String SENSOR_NAME_LIST = "sensorNameList";
     private static String SENSOR_VALUE_LIST = "sensorValueList";
+    private static String SENSOR_USERDATA_LIST = "sensorUserDataList";
     private static String DEFAULT_SERIES_NAME = " ERR getting name";
     private static int HISTORY_SIZE = 30;
     private XYPlot xyPlot;
@@ -32,6 +33,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     private int sensorGraphIndex = -1;
     private ArrayList<GraphValue> graphValues;
     private Timer updateTimer;
+    private boolean BTrequestOutstanding = false;
 
     private class DynamicRollingSeries implements XYSeries {
         ArrayList<GraphValue> valuesReference;
@@ -68,17 +70,22 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         @Override
         public void run() {
             //Update the GUI
+            if (BTrequestOutstanding)
+                return;
+            BTrequestOutstanding = true;
             Backend backend = Backend.getInstance();
             backend.fetchAvailableSensorsAndData(new Backend.ResultHandler() {
                 public void gotResult(Bundle result) {
                     ArrayList<String> sensors = result.getStringArrayList("Sensors");
                     ArrayList<String> data = result.getStringArrayList("Data");
+                    ArrayList<String> pids = result.getStringArrayList("PIDs");
                     //First call, populate the sensor list
                     if (sensorDataListAdapter.getCount() == 0) {
                         Iterator<String> senIter = sensors.iterator();
                         Iterator<String> datIter = data.iterator();
-                        while (senIter.hasNext() && datIter.hasNext()) {
-                            sensorDataListAdapter.addSensor(senIter.next(), datIter.next());
+                        Iterator<String> pidIter = data.iterator();
+                        while (senIter.hasNext() && datIter.hasNext() && pidIter.hasNext()) {
+                            sensorDataListAdapter.addSensor(senIter.next(), datIter.next(), pidIter.next());
                         }
                     }
                     //subsequent calls, update the gui
@@ -87,6 +94,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
                             sensorDataListAdapter.updateSensor(i,data.get(i));
                         }
                     }
+                    BTrequestOutstanding = false;
                 }
             });
         }
@@ -94,17 +102,20 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
 
     private class GraphUpdateTask extends TimerTask {
         private int index = -1;
-        private String sensorName;
+        private String sensorHandle;
         public GraphUpdateTask(int index)
         {
             this.index = index;
-            sensorName = sensorDataListAdapter.getSensorName(index);
+            sensorHandle = sensorDataListAdapter.getUserData(index);
         }
         @Override
         public void run() {
+            if (BTrequestOutstanding)
+                return;
+            BTrequestOutstanding = true;
             //Update the GUI
             Backend backend = Backend.getInstance();
-            backend.fetchSensorData(sensorName, new Backend.ResultHandler() {
+            backend.fetchSensorData(sensorHandle, new Backend.ResultHandler() {
                 public void gotResult(Bundle result) {
                     android.util.Log.d("GraphUpdateTask", "Got result");
                     //maybe we're not displaying the graph any more?
@@ -112,11 +123,11 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
                         Number data = 0;
                         String type = result.getString("type");
                         if (type == "int") {
-                            data = result.getInt(sensorName);
+                            data = result.getInt(sensorHandle);
                         } else if (type == "double") {
-                            data = result.getDouble(sensorName);
+                            data = result.getDouble(sensorHandle);
                         } else if (type == "float") {
-                            data = result.getFloat(sensorName);
+                            data = result.getFloat(sensorHandle);
                         }
                         //add a new graph value
                         int seconds = graphValues.size() / 2;
@@ -131,6 +142,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
                         }
 
                         xyPlot.redraw();
+                        BTrequestOutstanding = false;
                     }
                 }
             });
@@ -227,12 +239,15 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         //Save the list
         ArrayList<String> sensorNames = new ArrayList<String>();
         ArrayList<String> sensorValues = new ArrayList<String>();
+        ArrayList<String> userData = new ArrayList<String>();
         for (int i = 0; i < sensorDataListAdapter.getCount(); i++) {
             sensorNames.add(sensorDataListAdapter.getSensorName(i));
             sensorValues.add(sensorDataListAdapter.getSensorValue(i));
+            userData.add(sensorDataListAdapter.getUserData(i));
         }
         state.putStringArrayList(SENSOR_NAME_LIST, sensorNames);
         state.putStringArrayList(SENSOR_VALUE_LIST, sensorValues);
+        state.putStringArrayList(SENSOR_VALUE_LIST, userData);
 
     }
 
@@ -262,10 +277,12 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
             //restore list item values
             ArrayList<String> sensors = savedInstanceState.getStringArrayList(SENSOR_NAME_LIST);
             ArrayList<String> data = savedInstanceState.getStringArrayList(SENSOR_VALUE_LIST);
+            ArrayList<String> userData = savedInstanceState.getStringArrayList(SENSOR_USERDATA_LIST);
             Iterator<String> senIter = sensors.iterator();
             Iterator<String> datIter = data.iterator();
+            Iterator<String> udIter = userData.iterator();
             while (senIter.hasNext() && datIter.hasNext()) {
-                sensorDataListAdapter.addSensor(senIter.next(), datIter.next());
+                sensorDataListAdapter.addSensor(senIter.next(), datIter.next(), udIter.next());
             }
         }
         else

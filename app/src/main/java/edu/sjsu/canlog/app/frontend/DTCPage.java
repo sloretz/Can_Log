@@ -41,7 +41,7 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
                         String name = dtcIter.next();
                         String desc = descIter.next();
                         android.util.Log.d("DTCPage", "New sensor " + name + " " + desc);
-                        sensorDataListAdapter.addSensor(name, desc);
+                        sensorDataListAdapter.addSensor(name, desc, "");
                     }
                 }
                 else{

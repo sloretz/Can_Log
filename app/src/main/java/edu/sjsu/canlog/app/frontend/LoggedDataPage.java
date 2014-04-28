@@ -113,7 +113,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
                     ArrayList<String> VINs = result.getStringArrayList("VIN");
                     Iterator<String> vinIter = VINs.iterator();
                     while (vinIter.hasNext()) {
-                        sensorDataListAdapter.addSensor("Vehicle", vinIter.next());
+                        sensorDataListAdapter.addSensor("Vehicle", vinIter.next(), "");
                     }
                 }
             });
@@ -147,7 +147,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
                     Iterator<String> pidIter = PIDs.iterator();
                     Iterator<String> descIter = descriptions.iterator();
                     while (pidIter.hasNext() && descIter.hasNext()) {
-                        sensorDataListAdapter.addSensor(descIter.next(), pidIter.next());
+                        sensorDataListAdapter.addSensor(descIter.next(), pidIter.next(), "");
                     }
                 }
             });
@@ -175,7 +175,8 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
 
     public void onBecomesVisible()
     {
-        android.util.Log.d("LiveDataPage", "onBecomesVisible");
+        android.util.Log.d("LoggedDataPage", "onBecomesVisible");
+        set_visible(page_t.DOWNLOAD_PAGE);
     }
 
     public void onBecomesInvisible()
@@ -244,7 +245,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             restore_state(savedInstanceState);
         }
         else {
-            set_visible(page_t.DOWNLOAD_PAGE);
+            //do nothing
         }
 
         return rootView;

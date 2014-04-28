@@ -1,7 +1,6 @@
 package edu.sjsu.canlog.app.backend;
 
 import android.os.Bundle;
-import android.os.AsyncTask;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,11 +9,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.nio.Buffer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 import android.content.Context;
+import android.text.format.Time;
 import android.util.Log;
 
 /**
@@ -23,6 +22,10 @@ import android.util.Log;
  */
 public class Backend extends BluetoothService{
     private static Backend _this = null;
+
+    private ArrayList<Integer> loggedDataPIDs;
+    private ArrayList<Integer> liveDataPIDs;
+    private ArrayList<Integer> aboutCarPIDs;
 
 
     //This is passed in to the fetch functions
@@ -34,6 +37,89 @@ public class Backend extends BluetoothService{
     {
         super(context);
         _this = this;
+
+        loggedDataPIDs = new ArrayList<Integer>();
+        liveDataPIDs = new ArrayList<Integer>();
+
+        loggedDataPIDs.add(0x3);
+        loggedDataPIDs.add(0x4);
+        loggedDataPIDs.add(0x5);
+        loggedDataPIDs.add(0xc);
+        loggedDataPIDs.add(0xd);
+        loggedDataPIDs.add(0x11);
+        loggedDataPIDs.add(0x1f);
+        loggedDataPIDs.add(0x21);
+        loggedDataPIDs.add(0x2f);
+        loggedDataPIDs.add(0x30);
+        loggedDataPIDs.add(0x31);
+        loggedDataPIDs.add(0x4d);
+        loggedDataPIDs.add(0x5c);
+        loggedDataPIDs.add(0x5e);
+
+        liveDataPIDs.add(0x4);
+        liveDataPIDs.add(0x5);
+        liveDataPIDs.add(0x6);
+        liveDataPIDs.add(0x7);
+        liveDataPIDs.add(0x8);
+        liveDataPIDs.add(0x9);
+        liveDataPIDs.add(0xa);
+        liveDataPIDs.add(0xb);
+        liveDataPIDs.add(0xc);
+        liveDataPIDs.add(0xd);
+        liveDataPIDs.add(0xe);
+        liveDataPIDs.add(0xf);
+        liveDataPIDs.add(0x10);
+        liveDataPIDs.add(0x11);
+        liveDataPIDs.add(0x1f);
+        liveDataPIDs.add(0x21);
+        liveDataPIDs.add(0x22);
+        liveDataPIDs.add(0x23);
+        liveDataPIDs.add(0x2c);
+        liveDataPIDs.add(0x2d);
+        liveDataPIDs.add(0x2e);
+        liveDataPIDs.add(0x2f);
+        liveDataPIDs.add(0x30);
+        liveDataPIDs.add(0x31);
+        liveDataPIDs.add(0x32);
+        liveDataPIDs.add(0x33);
+        liveDataPIDs.add(0x3c);
+        liveDataPIDs.add(0x3d);
+        liveDataPIDs.add(0x3e);
+        liveDataPIDs.add(0x3f);
+        liveDataPIDs.add(0x42);
+        liveDataPIDs.add(0x43);
+        liveDataPIDs.add(0x44);
+        liveDataPIDs.add(0x45);
+        liveDataPIDs.add(0x46);
+        liveDataPIDs.add(0x47);
+        liveDataPIDs.add(0x48);
+        liveDataPIDs.add(0x49);
+        liveDataPIDs.add(0x4a);
+        liveDataPIDs.add(0x4b);
+        liveDataPIDs.add(0x4c);
+        liveDataPIDs.add(0x4d);
+        liveDataPIDs.add(0x4e);
+        liveDataPIDs.add(0x50);
+        liveDataPIDs.add(0x52);
+        liveDataPIDs.add(0x53);
+        liveDataPIDs.add(0x54);
+        //liveDataPIDs.add(0x55);
+        //liveDataPIDs.add(0x56);
+        //liveDataPIDs.add(0x57);
+        //liveDataPIDs.add(0x58);
+        liveDataPIDs.add(0x59);
+        liveDataPIDs.add(0x5a);
+        liveDataPIDs.add(0x5b);
+        liveDataPIDs.add(0x5c);
+        liveDataPIDs.add(0x5d);
+        liveDataPIDs.add(0x5e);
+
+    }
+
+    protected void bt_writeln(String cmd) throws IOException
+    {
+        btWriter.write(cmd + "\r\n");
+        btWriter.flush();
     }
 
     //Singleton class, only one backend needed
@@ -45,33 +131,63 @@ public class Backend extends BluetoothService{
     //Get a list of available sensors from the microcontroller
     public void fetchAvailableSensorsAndData(ResultHandler handler)
     {
+        Log.d("Backend", "Fetch available sensors and data called");
         BluetoothTask task = new BluetoothTask() {
             @Override
             protected Bundle doSocketTransfer()
             {
-                Random r = new Random();
-                //debug logic
-                Bundle tempResult = new Bundle();
-                ArrayList<String> sensorList = new ArrayList<String>();
-                ArrayList<String> dataList = new ArrayList<String>();
-                sensorList.add("RPM");
-                dataList.add(Integer.toString(r.nextInt(5000) + 500));
-                sensorList.add("Oxygen (1)");
-                dataList.add(Integer.toString(r.nextInt(5) + 13) + "%");
-                sensorList.add("Oxygen (2)");
-                dataList.add(Integer.toString(r.nextInt(5) + 13) + "%");
-                sensorList.add("Vehicle Speed");
-                dataList.add(Integer.toString(r.nextInt(75)) + "mph");
-                sensorList.add("Barometric Pressure");
-                dataList.add(Double.toString(r.nextDouble() + 14) + "PSI");
-                sensorList.add("Ambient Air Temperature");
-                dataList.add(Integer.toString(r.nextInt(75) + 32) + "F");
-                sensorList.add("Relative Throttle Position");
-                dataList.add(Double.toString(r.nextDouble()));
+                Log.d("Backend", "Fetch avail sen and dat sock tran run");
+                Bundle result = new Bundle();
+                try {
+                    ArrayList<String> pidList = new ArrayList<String>();
+                    ArrayList<String> prettyList = new ArrayList<String>();
+                    ArrayList<String> dataList = new ArrayList<String>();
 
-                tempResult.putStringArrayList("Sensors", sensorList);
-                tempResult.putStringArrayList("Data", dataList);
-                return tempResult;
+
+                    Log.d("Backend", "Starting to run PID commands");
+                    //Get the live data for supported PIDs
+                    Iterator<Integer> pidIter = liveDataPIDs.iterator();
+                    while (pidIter.hasNext()) {
+                        Integer pid = pidIter.next();
+                        pidList.add("x" + Integer.toHexString(pid));
+                        prettyList.add(PrettyPID.getDescription(pid));
+                        bt_writeln("pid " + pid);
+                        dataList.add(btReader.readLine());
+                    }
+                    Log.d("Backend", "got sen and dat res");
+                    result.putStringArrayList("Sensors", prettyList);
+                    result.putStringArrayList("PIDs", pidList);
+                    result.putStringArrayList("Data", dataList);
+
+                } catch (IOException e)
+                {
+                    Log.d("Backend", "Fetch sensors and data exception " + e.getLocalizedMessage());
+                    result.putString("error", e.getLocalizedMessage());
+                }
+                return result;
+            }
+        };
+        task.execute(handler);
+    }
+
+
+    public void setBoardTime(ResultHandler handler)
+    {
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                Bundle result = new Bundle();
+                try {
+                    Time now = new Time();
+                    now.setToNow();
+                    long milliSeconds = now.toMillis(false) / 1000;
+                    bt_writeln("settime " + Long.toString(milliSeconds));
+                } catch (IOException e)
+                {
+                    result.putString("error", e.getLocalizedMessage());
+                }
+                return result;
             }
         };
         task.execute(handler);
@@ -83,10 +199,12 @@ public class Backend extends BluetoothService{
             @Override
             protected Bundle doSocketTransfer()
             {
+                Log.d("Backend", "Wait for connection called");
                 //No socket transfer,we're connected
                 //when this function is called
                 Bundle tempResult = new Bundle();
                 tempResult.putBoolean("connected", true);
+                Log.d("Backend", "wait for connection returned");
                 return tempResult;
             }
         };
@@ -95,21 +213,32 @@ public class Backend extends BluetoothService{
 
     public void fetchDTCs(ResultHandler handler)
     {
+        Log.d("Backend", "Fetch dtcs called");
         BluetoothTask task = new BluetoothTask() {
             @Override
             protected Bundle doSocketTransfer()
             {
-                //debug logic
-                Bundle tempResult = new Bundle();
+                //variable length return
+                //End of data is ~/n
+                Bundle result = new Bundle();
                 ArrayList<String> DTCList = new ArrayList<String>();
                 ArrayList<String> descList = new ArrayList<String>();
-                DTCList.add("P0638");
-                descList.add("Throttle Actuator Control Range");
-                DTCList.add("P0720");
-                descList.add("Output Speed Sensor Circuit Malfunction");
-                tempResult.putStringArrayList("DTCs", DTCList);
-                tempResult.putStringArrayList("short_descriptions", descList);
-                return tempResult;
+                try {
+                    bt_writeln("dtc");
+                    String nextLine = "";
+                    while (true)
+                    {
+                        nextLine = btReader.readLine();
+                        if (nextLine == "~")
+                            break;
+                        DTCList.add(nextLine);
+                        descList.add("TODO explanation");
+                    }
+                } catch (IOException e)
+                {
+                    result.putString("error", e.getLocalizedMessage());
+                }
+                return result;
             }
         };
         task.execute(handler);
@@ -118,10 +247,13 @@ public class Backend extends BluetoothService{
     //Get car info from the microcontroller
     public void fetchCarInfo(ResultHandler handler)
     {
+        Log.d("Backend", "Fetch car info called");
         BluetoothTask task = new BluetoothTask() {
             @Override
             protected Bundle doSocketTransfer()
             {
+                //TODO fetch car info PIDs
+                Log.d("Backend", "Fetch car info running");
                 //debug logic
                 Bundle tempResult = new Bundle();
                 tempResult.putString("VIN", "LJCPCBLCX11000237");
@@ -134,6 +266,7 @@ public class Backend extends BluetoothService{
                 dataList.add("Diesel");
                 tempResult.putStringArrayList("carInfoNames", carInfo);
                 tempResult.putStringArrayList("values", dataList);
+                Log.d("Backend", "fetch car info returning");
                 return tempResult;
             }
         };
@@ -141,12 +274,15 @@ public class Backend extends BluetoothService{
 
     }
 
-    public void fetchSensorData(final String sensorName, ResultHandler handler)
+    public void fetchSensorData(final String sensorHandle, ResultHandler handler)
     {
+        Log.d("Backend", "Fetch sensor data called");
         BluetoothTask task = new BluetoothTask() {
             @Override
             protected Bundle doSocketTransfer()
             {
+                Log.d("Backend", "Fetch sensor data running");
+                /*
                 Random r = new Random();
                 //debug logic
                 Bundle tempResult = new Bundle();
@@ -155,6 +291,25 @@ public class Backend extends BluetoothService{
                 tempResult.putString("type", "float");
                 tempResult.putFloat(sensorName, r.nextFloat()*5f + 10f);
                 return tempResult;
+                */
+                Bundle result = new Bundle();
+                try {
+
+                    bt_writeln("pid " + PrettyPID.toInteger(sensorHandle));
+                    String data = btReader.readLine();
+                    String type = PrettyPID.getType(sensorHandle);
+                    result.putString("type", type);
+                    if (type == "int")
+                        result.putInt(sensorHandle, Integer.valueOf(data));
+                    else if (type == "double")
+                        result.putDouble(sensorHandle, Double.valueOf(data));
+
+                } catch (IOException e)
+                {
+                    result.putString("error", e.getLocalizedMessage());
+                }
+                Log.d("Backend", "fetch sensor data returning");
+                return result;
             }
         };
         task.execute(handler);
@@ -168,39 +323,31 @@ public class Backend extends BluetoothService{
             @Override
             protected Bundle doSocketTransfer()
             {
-                Bundle tempResult = new Bundle();
+                Bundle result = new Bundle();
                 try {
-                    Log.d("mConnectedSocket", (mConnectedSocket == null) ? "is null" : "is not null");
-                    InputStream is = mConnectedSocket.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(is,"UTF-8"));
-                    OutputStream os = mConnectedSocket.getOutputStream();
-                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
-
-                    Log.i("DTC", "about to send ping");
-                    bw.write("ping");
-                    bw.flush();
-                    Log.i("dtc", "about to read line");
-                    String input = br.readLine();
-                    Log.i("dtc Got BT data", input);
-
-                    tempResult.putBoolean("did_clear",true);
+                    bt_writeln("cdtc");
+                    //No response from the car, just assume it worked
+                    result.putBoolean("did_clear", true);
                 } catch (IOException ioe) {
-                    Log.e("DTC task", "connect but got exception " + ioe.getMessage());
-                    tempResult.putBoolean("did_clear",false);
+                    Log.e("Backend task", "connect but got exception " + ioe.getMessage());
+                    result.putBoolean("did_clear", false);
                 }
-
-                return tempResult;
+                Log.d("Backend", "send clear dtcs returning");
+                return result;
             }
         };
+        Log.d("Backend", "Executing BluetoothTask for clear dtcs");
         task.execute(handler);
     }
 
     public void fetchLoggedVINs(ResultHandler handler)
     {
+        //
         BluetoothTask task = new BluetoothTask() {
             @Override
             protected Bundle doSocketTransfer()
             {
+                Log.d("Backend", "fetch logged VINs running");
                 Random r = new Random();
                 //debug logic
                 Bundle tempResult = new Bundle();
@@ -208,6 +355,7 @@ public class Backend extends BluetoothService{
                 vinList.add("LJCPCBLCX11000237");
                 vinList.add("JBMHSRLCX11999567");
                 tempResult.putStringArrayList("VIN", vinList);
+                Log.d("Backend", "fetch logged VINs returning");
                 return tempResult;
             }
         };
@@ -219,41 +367,22 @@ public class Backend extends BluetoothService{
         //Don't need to ask the microcontroller about this one
         //it's hard coded here
         //values taken from http://en.wikipedia.org/wiki/OBD-II_PIDs
+        Log.d("Backend", "fetch logged PIDs called");
         Random r = new Random();
         Bundle tempResult = new Bundle();
         ArrayList<String> pidList = new ArrayList<String>();
         ArrayList<String> prettyList = new ArrayList<String>();
-        pidList.add("x03");
-        prettyList.add("Fuel system status");
-        pidList.add("x04");
-        prettyList.add("Calculated engine load value");
-        pidList.add("x05");
-        prettyList.add("Engine coolant temperature");
-        pidList.add("x0c");
-        prettyList.add("Engine RPM");
-        pidList.add("x0d");
-        prettyList.add("Vehicle speed");
-        pidList.add("x11");
-        prettyList.add("Throttle position");
-        pidList.add("x1f");
-        prettyList.add("Run time since engine start");
-        pidList.add("x21");
-        prettyList.add("Distance traveled with malfunction indicator lamp (MIL) on");
-        pidList.add("x2f");
-        prettyList.add("Fuel Level Input");
-        pidList.add("x30");
-        prettyList.add("# of warm-ups since codes cleared");
-        pidList.add("x31");
-        prettyList.add("Distance traveled since codes cleared");
-        pidList.add("x4d");
-        prettyList.add("Time run with MIL on");
-        pidList.add("x5c");
-        prettyList.add("Engine oil temperature");
-        pidList.add("x5e");
-        prettyList.add("Engine fuel rate");
+
+        Iterator<Integer> pidIter = loggedDataPIDs.iterator();
+        while (pidIter.hasNext()) {
+            Integer pid = pidIter.next();
+            pidList.add("x" + Integer.toHexString(pid));
+            prettyList.add(PrettyPID.getDescription(pid));
+        }
         tempResult.putStringArrayList("PID", pidList);
         tempResult.putStringArrayList("Desc", prettyList);
         handler.gotResult(tempResult);
+        Log.d("Backend", "fetch logged PIDs returning");
     }
 
     public void beginHistoryDownload(ResultHandler handler)
@@ -262,6 +391,7 @@ public class Backend extends BluetoothService{
             @Override
             protected Bundle doSocketTransfer()
             {
+                Log.d("Backend", "begin history download running");
                 Random r = new Random();
                 try {
                     Thread.sleep(4000);
@@ -274,6 +404,7 @@ public class Backend extends BluetoothService{
                 //debug logic
                 Bundle tempResult = new Bundle();
                 tempResult.putBoolean("done", true);
+                Log.d("Backend", "begin history download returning");
                 return tempResult;
             }
         };
