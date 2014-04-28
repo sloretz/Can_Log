@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import android.content.Context;
+import android.text.format.Time;
 import android.util.Log;
 
 /**
@@ -23,6 +24,8 @@ public class Backend extends BluetoothService{
     private static Backend _this = null;
 
     private ArrayList<Integer> loggedDataPIDs;
+    private ArrayList<Integer> liveDataPIDs;
+    private ArrayList<Integer> aboutCarPIDs;
 
 
     //This is passed in to the fetch functions
@@ -36,6 +39,8 @@ public class Backend extends BluetoothService{
         _this = this;
 
         loggedDataPIDs = new ArrayList<Integer>();
+        liveDataPIDs = new ArrayList<Integer>();
+
         loggedDataPIDs.add(0x3);
         loggedDataPIDs.add(0x4);
         loggedDataPIDs.add(0x5);
@@ -50,6 +55,64 @@ public class Backend extends BluetoothService{
         loggedDataPIDs.add(0x4d);
         loggedDataPIDs.add(0x5c);
         loggedDataPIDs.add(0x5e);
+
+        liveDataPIDs.add(0x4);
+        liveDataPIDs.add(0x5);
+        liveDataPIDs.add(0x6);
+        liveDataPIDs.add(0x7);
+        liveDataPIDs.add(0x8);
+        liveDataPIDs.add(0x9);
+        liveDataPIDs.add(0xa);
+        liveDataPIDs.add(0xb);
+        liveDataPIDs.add(0xc);
+        liveDataPIDs.add(0xd);
+        liveDataPIDs.add(0xe);
+        liveDataPIDs.add(0xf);
+        liveDataPIDs.add(0x10);
+        liveDataPIDs.add(0x11);
+        liveDataPIDs.add(0x1f);
+        liveDataPIDs.add(0x21);
+        liveDataPIDs.add(0x22);
+        liveDataPIDs.add(0x23);
+        liveDataPIDs.add(0x2c);
+        liveDataPIDs.add(0x2d);
+        liveDataPIDs.add(0x2e);
+        liveDataPIDs.add(0x2f);
+        liveDataPIDs.add(0x30);
+        liveDataPIDs.add(0x31);
+        liveDataPIDs.add(0x32);
+        liveDataPIDs.add(0x33);
+        liveDataPIDs.add(0x3c);
+        liveDataPIDs.add(0x3d);
+        liveDataPIDs.add(0x3e);
+        liveDataPIDs.add(0x3f);
+        liveDataPIDs.add(0x42);
+        liveDataPIDs.add(0x43);
+        liveDataPIDs.add(0x44);
+        liveDataPIDs.add(0x45);
+        liveDataPIDs.add(0x46);
+        liveDataPIDs.add(0x47);
+        liveDataPIDs.add(0x48);
+        liveDataPIDs.add(0x49);
+        liveDataPIDs.add(0x4a);
+        liveDataPIDs.add(0x4b);
+        liveDataPIDs.add(0x4c);
+        liveDataPIDs.add(0x4d);
+        liveDataPIDs.add(0x4e);
+        liveDataPIDs.add(0x50);
+        liveDataPIDs.add(0x52);
+        liveDataPIDs.add(0x53);
+        liveDataPIDs.add(0x54);
+        //liveDataPIDs.add(0x55);
+        //liveDataPIDs.add(0x56);
+        //liveDataPIDs.add(0x57);
+        //liveDataPIDs.add(0x58);
+        liveDataPIDs.add(0x59);
+        liveDataPIDs.add(0x5a);
+        liveDataPIDs.add(0x5b);
+        liveDataPIDs.add(0x5c);
+        liveDataPIDs.add(0x5d);
+        liveDataPIDs.add(0x5e);
 
     }
 
@@ -83,7 +146,7 @@ public class Backend extends BluetoothService{
 
                     Log.d("Backend", "Starting to run PID commands");
                     //Get the live data for supported PIDs
-                    Iterator<Integer> pidIter = loggedDataPIDs.iterator();
+                    Iterator<Integer> pidIter = liveDataPIDs.iterator();
                     while (pidIter.hasNext()) {
                         Integer pid = pidIter.next();
                         pidList.add("x" + Integer.toHexString(pid));
@@ -99,6 +162,29 @@ public class Backend extends BluetoothService{
                 } catch (IOException e)
                 {
                     Log.d("Backend", "Fetch sensors and data exception " + e.getLocalizedMessage());
+                    result.putString("error", e.getLocalizedMessage());
+                }
+                return result;
+            }
+        };
+        task.execute(handler);
+    }
+
+
+    public void setBoardTime(ResultHandler handler)
+    {
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                Bundle result = new Bundle();
+                try {
+                    Time now = new Time();
+                    now.setToNow();
+                    long milliSeconds = now.toMillis(false) / 1000;
+                    bt_writeln("settime " + Long.toString(milliSeconds));
+                } catch (IOException e)
+                {
                     result.putString("error", e.getLocalizedMessage());
                 }
                 return result;
@@ -132,22 +218,27 @@ public class Backend extends BluetoothService{
             @Override
             protected Bundle doSocketTransfer()
             {
-
-                //TODO variable length return
+                //variable length return
                 //End of data is ~/n
-                Log.d("Backend", "fetch dtcs running");
-                //debug logic
-                Bundle tempResult = new Bundle();
+                Bundle result = new Bundle();
                 ArrayList<String> DTCList = new ArrayList<String>();
                 ArrayList<String> descList = new ArrayList<String>();
-                DTCList.add("P0638");
-                descList.add("Throttle Actuator Control Range");
-                DTCList.add("P0720");
-                descList.add("Output Speed Sensor Circuit Malfunction");
-                tempResult.putStringArrayList("DTCs", DTCList);
-                tempResult.putStringArrayList("short_descriptions", descList);
-                Log.d("Backend", "fetch dtcs returning");
-                return tempResult;
+                try {
+                    bt_writeln("dtc");
+                    String nextLine = "";
+                    while (true)
+                    {
+                        nextLine = btReader.readLine();
+                        if (nextLine == "~")
+                            break;
+                        DTCList.add(nextLine);
+                        descList.add("TODO explanation");
+                    }
+                } catch (IOException e)
+                {
+                    result.putString("error", e.getLocalizedMessage());
+                }
+                return result;
             }
         };
         task.execute(handler);
@@ -212,8 +303,6 @@ public class Backend extends BluetoothService{
                         result.putInt(sensorHandle, Integer.valueOf(data));
                     else if (type == "double")
                         result.putDouble(sensorHandle, Double.valueOf(data));
-                    else if (type == "float")
-                        result.putFloat(sensorHandle, Float.valueOf(data));
 
                 } catch (IOException e)
                 {

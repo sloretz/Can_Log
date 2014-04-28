@@ -7,13 +7,15 @@ import java.util.HashMap;
  */
 public class PrettyPID {
     private static HashMap<Integer,String> descriptions;
+    private static HashMap<Integer,String> types;
 
     protected static void _init()
     {
         if (descriptions == null)
         {
-            //taken from http://en.wikipedia.org/wiki/OBD-II_PIDs
             descriptions = new HashMap<Integer, String>();
+            types = new HashMap<Integer, String>();
+            //taken from http://en.wikipedia.org/wiki/OBD-II_PIDs
             descriptions.put(null, "ERR PrettyPID Unknown");
             descriptions.put(0x1, "Monitor status since DTCs cleared");
             descriptions.put(0x2, "Freeze DTC");
@@ -98,37 +100,37 @@ public class PrettyPID {
             descriptions.put(0x31, "Distance traveled since codes cleared");
             descriptions.put(0x32, "Evap. System Vapor Pressure");
             descriptions.put(0x33, "Barometric pressure");
-            descriptions.put(0x34, "O2S1_WR_lambda(1):\n" +
-                    "Equivalence Ratio\n" +
+            descriptions.put(0x34, "O2S1_WR_lambda(1):" +
+                    "Equivalence Ratio" +
                     "Current");
-            descriptions.put(0x35, "O2S2_WR_lambda(1):\n" +
-                    "Equivalence Ratio\n" +
+            descriptions.put(0x35, "O2S2_WR_lambda(1):" +
+                    "Equivalence Ratio" +
                     "Current");
-            descriptions.put(0x36, "O2S3_WR_lambda(1):\n" +
-                    "Equivalence Ratio\n" +
+            descriptions.put(0x36, "O2S3_WR_lambda(1):" +
+                    "Equivalence Ratio" +
                     "Current");
-            descriptions.put(0x37, "O2S4_WR_lambda(1):\n" +
-                    "Equivalence Ratio\n" +
+            descriptions.put(0x37, "O2S4_WR_lambda(1):" +
+                    "Equivalence Ratio" +
                     "Current");
-            descriptions.put(0x38, "O2S5_WR_lambda(1):\n" +
-                    "Equivalence Ratio\n" +
+            descriptions.put(0x38, "O2S5_WR_lambda(1):" +
+                    "Equivalence Ratio" +
                     "Current");
-            descriptions.put(0x39, "O2S6_WR_lambda(1):\n" +
-                    "Equivalence Ratio\n" +
+            descriptions.put(0x39, "O2S6_WR_lambda(1):" +
+                    "Equivalence Ratio" +
                     "Current");
-            descriptions.put(0x3a, "O2S7_WR_lambda(1):\n" +
-                    "Equivalence Ratio\n" +
+            descriptions.put(0x3a, "O2S7_WR_lambda(1):" +
+                    "Equivalence Ratio" +
                     "Current");
-            descriptions.put(0x3b, "O2S8_WR_lambda(1):\n" +
-                    "Equivalence Ratio\n" +
+            descriptions.put(0x3b, "O2S8_WR_lambda(1):" +
+                    "Equivalence Ratio" +
                     "Current");
-            descriptions.put(0x3c, "Catalyst Temperature\n" +
+            descriptions.put(0x3c, "Catalyst Temperature" +
                     "Bank 1, Sensor 1");
-            descriptions.put(0x3d, "Catalyst Temperature\n" +
+            descriptions.put(0x3d, "Catalyst Temperature" +
                     "Bank 2, Sensor 1");
-            descriptions.put(0x3e, "Catalyst Temperature\n" +
+            descriptions.put(0x3e, "Catalyst Temperature" +
                     "Bank 1, Sensor 2");
-            descriptions.put(0x3f, "Catalyst Temperature\n" +
+            descriptions.put(0x3f, "Catalyst Temperature" +
                     "Bank 2, Sensor 2");
             descriptions.put(0x40, "PIDs supported [41 - 60]");
             descriptions.put(0x41, "Monitor status this drive cycle");
@@ -163,34 +165,68 @@ public class PrettyPID {
             descriptions.put(0x5e, "Engine fuel rate");
             descriptions.put(0x5f, "Emission requirements to which vehicle is designed");
             descriptions.put(0x60, "PIDs supported [61 - 80]");
+
+
+            types.put(0x4, "int");
+            types.put(0x5, "int");
+            types.put(0x6, "double");
+            types.put(0x7, "double");
+            types.put(0x8, "double");
+            types.put(0x9, "double");
+            types.put(0xa, "int");
+            types.put(0xb, "int");
+            types.put(0xc, "double");
+            types.put(0xd, "int");
+            types.put(0xe, "double");
+            types.put(0xf, "int");
+            types.put(0x10, "double");
+            types.put(0x11, "int");
+            types.put(0x1f, "int");
+            types.put(0x21, "int");
+            types.put(0x22, "double");
+            types.put(0x23, "int");
+            types.put(0x2c, "double");
+            types.put(0x2d, "double");
+            types.put(0x2e, "double");
+            types.put(0x2f, "double");
+            types.put(0x30, "int");
+            types.put(0x31, "int");
+            types.put(0x32, "double");
+            types.put(0x33, "int");
+            types.put(0x3c, "double");
+            types.put(0x3d, "double");
+            types.put(0x3e, "double");
+            types.put(0x3f, "double");
+            types.put(0x42, "double");
+            types.put(0x43, "double");
+            types.put(0x44, "double");
+            types.put(0x45, "double");
+            types.put(0x46, "int");
+            types.put(0x47, "double");
+            types.put(0x48, "double");
+            types.put(0x49, "double");
+            types.put(0x4a, "double");
+            types.put(0x4b, "double");
+            types.put(0x4c, "double");
+            types.put(0x4d, "int");
+            types.put(0x4e, "int");
+            types.put(0x50, "int");
+            types.put(0x52, "double");
+            types.put(0x53, "double");
+            types.put(0x54, "int");
+            //types.put(0x55, "double");
+            //types.put(0x56, "double");
+            //types.put(0x57, "double");
+            //types.put(0x58, "double");
+            types.put(0x59, "int");
+            types.put(0x5a, "double");
+            types.put(0x5b, "double");
+            types.put(0x5c, "int");
+            types.put(0x5d, "double");
+            types.put(0x5e, "double");
         }
     }
 
-    public static Number formatData(String PID, String raw)
-    {
-        return formatData(toInteger(PID), raw);
-    }
-
-    public static Number formatData(Integer PID, String raw)
-    {
-        _init();
-        //Return the right format
-        String type = getType(PID);
-
-        if (type == "int")
-        {
-            return Integer.valueOf(raw);
-        }
-        if (type == "float")
-        {
-            return Float.valueOf(raw);
-        }
-        if (type == "double")
-        {
-            return Double.valueOf(raw);
-        }
-        return 0;
-    }
 
     public static String getType(String PID)
     {
@@ -200,9 +236,8 @@ public class PrettyPID {
     public static String getType(Integer PID)
     {
         _init();
-        //This should give the type for
         //ret values: "int", "double", "float"
-        return "int";
+        return types.get(PID);
     }
 
     public static String getDescription(String PID)
