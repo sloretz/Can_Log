@@ -5,9 +5,13 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.UUID;
 
 import android.os.AsyncTask;
@@ -30,6 +34,8 @@ public class BluetoothService {
     private final BluetoothAdapter mAdapter;
     private ConnectThread mConnectThread;
     protected BluetoothSocket mConnectedSocket;
+    protected BufferedWriter btWriter;
+    protected BufferedReader btReader;
     protected Lock mSocketLock;
     protected Condition isConnected;
     //private ConnectedThread mConnectedThread;
@@ -59,22 +65,26 @@ public class BluetoothService {
              * return bundle
              */
             Bundle result = null;
-            //android.util.Log.i("Backend", "About to acquire lock");
+            android.util.Log.d("Backend", "About to acquire lock");
             mSocketLock.lock();
+            Log.d("Backend", "Acquired lock");
             try {
                 while (mConnectedSocket == null)
                 {
                     try {
+                        Log.d("Backend", "Waiting for isConnected");
                         isConnected.await();
                     } catch (InterruptedException ie) {
                         //I don't think this should happen on android...
-                        Log.e("Unsupported", "The threading environment is unsupported");
+                        Log.e("Backend", "The threading environment is unsupported");
                         return null;
                     }
                 }
+                Log.d("Backend", "Calling socket transfer function");
                 result = doSocketTransfer();
+                Log.d("Backend", "Returned from socket transfer function");
             } finally {
-                //android.util.Log.i("Backend", "Releasing lock");
+                Log.d("Backend", "Releasing lock");
                 mSocketLock.unlock();
 
             }
@@ -140,12 +150,23 @@ public class BluetoothService {
         }
 
         mConnectedSocket = socket;
+        try {
+            InputStream is = mConnectedSocket.getInputStream();
+            btReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            OutputStream os = mConnectedSocket.getOutputStream();
+            btWriter = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+        } catch (IOException e)
+        {
+            //uuh yeah, this shouldn't happen
+        }
 
         //Wake everyone up, we're connected!
+        Log.d("Backend", "Locking to signal connected");
         mSocketLock.lock();
         try {
             isConnected.signalAll();
         } finally {
+            Log.d("Backend", "Unlocking after signalling connected");
             mSocketLock.unlock();
         }
         setState(STATE_CONNECTED);

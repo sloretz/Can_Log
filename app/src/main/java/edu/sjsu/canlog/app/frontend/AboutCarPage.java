@@ -27,7 +27,7 @@ public class AboutCarPage extends SensorDataListViewFragment implements HandleVi
                     Iterator<String> nameIter = names.iterator();
                     Iterator<String> valIter = values.iterator();
                     while (nameIter.hasNext() && valIter.hasNext()) {
-                        sensorDataListAdapter.addSensor(nameIter.next(), valIter.next());
+                        sensorDataListAdapter.addSensor(nameIter.next(), valIter.next(),"");
                     }
                 }
                 else

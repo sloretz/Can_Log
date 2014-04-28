@@ -51,7 +51,7 @@ public class SensorDataListViewFragment extends Fragment{
                 Iterator<String> strIter = values.iterator();
                 while (strIter.hasNext())
                 {
-                    sensorDataListAdapter.addSensor(strIter.next(), "0.0");
+                    sensorDataListAdapter.addSensor(strIter.next(), "0.0", "");
                 }
             }
             listView.setAdapter(sensorDataListAdapter);
