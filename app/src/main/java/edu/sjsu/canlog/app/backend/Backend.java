@@ -121,7 +121,7 @@ public class Backend extends BluetoothService{
     {
         btWriter.write(cmd + "\r\n");
         btWriter.flush();
-        Log.d("Backend", "Wrote " + cmd);
+        //Log.d("Backend", "Wrote " + cmd);
     }
 
     protected String bt_readln() throws IOException
@@ -129,8 +129,12 @@ public class Backend extends BluetoothService{
         //readline, ignoring empty lines
         String nextLine = "";
         while (nextLine.equals(""))
-            nextLine = btReader.readLine();
-        Log.d("Backend", "Read " + nextLine);
+            if (btReader.ready())
+            {
+                //Log.d("Backend", "r");
+                nextLine = btReader.readLine();
+            }
+        //Log.d("Backend", "Read " + nextLine);
         return nextLine;
     }
 
