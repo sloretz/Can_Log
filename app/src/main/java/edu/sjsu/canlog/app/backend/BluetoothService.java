@@ -39,7 +39,7 @@ public class BluetoothService {
     protected Lock mSocketLock;
     protected Condition isConnected;
     //private ConnectedThread mConnectedThread;
-    private Context mContext;
+    protected Context mContext;
     private int mState;
     private static final int STATE_NONE=0;
     private static final int STATE_LISTEN=1;

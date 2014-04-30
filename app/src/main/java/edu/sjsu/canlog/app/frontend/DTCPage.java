@@ -20,14 +20,17 @@ import android.widget.Toast;
  */
 public class DTCPage extends Fragment implements HandleVisibilityChange {
     public SensorDataListAdapter sensorDataListAdapter;
+    public static boolean firstCreate = true;
 
     public void onBecomesVisible()
     {
         android.util.Log.d("DTCPage", "onBecomesVisible");
         android.util.Log.d("DTCPage", "who am i? " + this.hashCode() + " " + getActivity().hashCode());
-        Backend backend = Backend.getInstance();
+        final Backend backend = Backend.getInstance();
         backend.fetchDTCs(new Backend.ResultHandler() {
             public void gotResult(Bundle result) {
+                if (backend.wasError(result))
+                    return;
                 android.util.Log.d("DTCPage", "Got results from backend");
 
                 ArrayList<String> DTCs = result.getStringArrayList("DTCs");
@@ -89,8 +92,11 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
                 });
         }});
 
-        //populate our GUI asap because we're the first page
-        onBecomesVisible();
+        //Special case, we're the first page on the GUI so we become visible on create
+        if (firstCreate)
+            onBecomesVisible();
+
+        firstCreate = false;
         return rootView;
     }
 }

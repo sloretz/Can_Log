@@ -15,6 +15,7 @@ import java.util.Random;
 import android.content.Context;
 import android.text.format.Time;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by shane on 3/11/14.
@@ -120,6 +121,7 @@ public class Backend extends BluetoothService{
     {
         btWriter.write(cmd + "\r\n");
         btWriter.flush();
+        Log.d("Backend", "Wrote " + cmd);
     }
 
     protected String bt_readln() throws IOException
@@ -128,7 +130,20 @@ public class Backend extends BluetoothService{
         String nextLine = "";
         while (nextLine.equals(""))
             nextLine = btReader.readLine();
+        Log.d("Backend", "Read " + nextLine);
         return nextLine;
+    }
+
+    public boolean wasError(Bundle result)
+    {
+        String error = result.getString("error");
+        if (error == null)
+            return false;
+
+        //Toast if an error happens
+        Toast toast = Toast.makeText(mContext, error, Toast.LENGTH_LONG);
+        toast.show();
+        return true;
     }
 
     //Singleton class, only one backend needed
@@ -163,7 +178,7 @@ public class Backend extends BluetoothService{
                         bt_writeln("pid " + pid);
                         dataList.add(bt_readln());
                     }
-                    Log.d("Backend", "got sen and dat res");
+                    Log.d("Backend", "Finished running PID commands");
                     result.putStringArrayList("Sensors", prettyList);
                     result.putStringArrayList("PIDs", pidList);
                     result.putStringArrayList("Data", dataList);
@@ -245,13 +260,14 @@ public class Backend extends BluetoothService{
                         DTCList.add(nextLine);
                         descList.add("TODO explanation");
                     }
-                    result.putStringArrayList("DTCs", DTCList);
-                    result.putStringArrayList("short_descriptions", descList);
+
                     Log.d("Backend", "fetch dtc post readlines");
                 } catch (IOException e)
                 {
                     result.putString("error", e.getLocalizedMessage());
                 }
+                result.putStringArrayList("DTCs", DTCList);
+                result.putStringArrayList("short_descriptions", descList);
                 return result;
             }
         };
@@ -296,26 +312,17 @@ public class Backend extends BluetoothService{
             protected Bundle doSocketTransfer()
             {
                 Log.d("Backend", "Fetch sensor data running");
-                /*
-                Random r = new Random();
-                //debug logic
-                Bundle tempResult = new Bundle();
-                //SensorName should be enough to tell what type to return
-                //here assume sensor name is a float
-                tempResult.putString("type", "float");
-                tempResult.putFloat(sensorName, r.nextFloat()*5f + 10f);
-                return tempResult;
-                */
                 Bundle result = new Bundle();
+                String data = "";
+                String type = "";
                 try {
 
                     Log.d("Backend", "Fetch sensor data begin writing");
                     bt_writeln("pid " + PrettyPID.toInteger(sensorHandle));
-                    String data = bt_readln();
+                    data = bt_readln();
                     Log.d("Backend", "Getting type for handle " + sensorHandle);
-                    String type = PrettyPID.getType(sensorHandle);
+                    type = PrettyPID.getType(sensorHandle);
                     Log.d("Backend", "Type is " + type);
-                    result.putString("type", type);
                     if (type.equals("int"))
                         result.putInt(sensorHandle, Integer.valueOf(data));
                     else if (type.equals("double"))
@@ -325,6 +332,7 @@ public class Backend extends BluetoothService{
                 {
                     result.putString("error", e.getLocalizedMessage());
                 }
+                result.putString("type", type);
                 Log.d("Backend", "fetch sensor data returning");
                 return result;
             }

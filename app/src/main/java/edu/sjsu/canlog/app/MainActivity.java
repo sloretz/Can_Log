@@ -104,7 +104,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             private int currentPosition = -1;
             @Override
             public void onPageSelected(int position) {
@@ -125,7 +125,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 }
                 currentPosition = position;
             }
-        });
+        };
+        mViewPager.setOnPageChangeListener( pageChangeListener );
 
         // For each of the sections in the app, add a tab to the action bar.
         for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {

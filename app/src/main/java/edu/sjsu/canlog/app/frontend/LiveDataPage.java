@@ -4,6 +4,7 @@ import edu.sjsu.canlog.app.R;
 import edu.sjsu.canlog.app.backend.Backend;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +31,13 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     private static int HISTORY_SIZE = 30;
     private XYPlot xyPlot;
     private ListView listView;
-    private int sensorGraphIndex = -1;
+    private Integer currentPID = null;
     private ArrayList<GraphValue> graphValues;
     private Timer updateTimer;
     private boolean BTrequestOutstanding = false;
+    private page_t displayed_page = page_t.NO_PAGE;
+
+    private enum page_t {NO_PAGE, PID_PICKER, PID_GRAPH};
 
     private class DynamicRollingSeries implements XYSeries {
         ArrayList<GraphValue> valuesReference;
@@ -73,9 +77,11 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
             if (BTrequestOutstanding)
                 return;
             BTrequestOutstanding = true;
-            Backend backend = Backend.getInstance();
+            final Backend backend = Backend.getInstance();
             backend.fetchAvailableSensorsAndData(new Backend.ResultHandler() {
                 public void gotResult(Bundle result) {
+                    if (backend.wasError(result))
+                        return;
                     ArrayList<String> sensors = result.getStringArrayList("Sensors");
                     ArrayList<String> data = result.getStringArrayList("Data");
                     ArrayList<String> pids = result.getStringArrayList("PIDs");
@@ -83,7 +89,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
                     if (sensorDataListAdapter.getCount() == 0) {
                         Iterator<String> senIter = sensors.iterator();
                         Iterator<String> datIter = data.iterator();
-                        Iterator<String> pidIter = data.iterator();
+                        Iterator<String> pidIter = pids.iterator();
                         while (senIter.hasNext() && datIter.hasNext() && pidIter.hasNext()) {
                             sensorDataListAdapter.addSensor(senIter.next(), datIter.next(), pidIter.next());
                         }
@@ -114,81 +120,87 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
                 return;
             BTrequestOutstanding = true;
             //Update the GUI
-            Backend backend = Backend.getInstance();
+            final Backend backend = Backend.getInstance();
             backend.fetchSensorData(sensorHandle, new Backend.ResultHandler() {
                 public void gotResult(Bundle result) {
+                    if (backend.wasError(result))
+                        return;
                     android.util.Log.d("GraphUpdateTask", "Got result");
-                    //maybe we're not displaying the graph any more?
-                    if (index == sensorGraphIndex) {
-                        Number data = 0;
-                        String type = result.getString("type");
-                        if (type == "int") {
-                            data = result.getInt(sensorHandle);
-                        } else if (type == "double") {
-                            data = result.getDouble(sensorHandle);
-                        } else if (type == "float") {
-                            data = result.getFloat(sensorHandle);
-                        }
-                        //add a new graph value
-                        int seconds = graphValues.size() / 2;
-                        graphValues.add(new GraphValue(seconds)); //X
-                        graphValues.add(new GraphValue(data)); // y
-
-                        if (graphValues.size()/2 > HISTORY_SIZE)
-                        {
-                            //Remove first x and Y value
-                            graphValues.remove(0);
-                            graphValues.remove(0);
-                        }
-
-                        xyPlot.redraw();
-                        BTrequestOutstanding = false;
+                    Number data = 0;
+                    String type = result.getString("type");
+                    if (type.equals("int")) {
+                        data = result.getInt(sensorHandle);
+                    } else if (type.equals("double")) {
+                        data = result.getDouble(sensorHandle);
+                    } else if (type.equals("float")) {
+                        data = result.getFloat(sensorHandle);
                     }
+                    //add a new graph value
+                    int seconds = graphValues.size() / 2;
+                    graphValues.add(new GraphValue(seconds)); //X
+                    graphValues.add(new GraphValue(data)); // y
+
+                    if (graphValues.size()/2 > HISTORY_SIZE)
+                    {
+                        //Remove first x and Y value
+                        graphValues.remove(0);
+                        graphValues.remove(0);
+                    }
+
+                    xyPlot.redraw();
+                    BTrequestOutstanding = false;
                 }
             });
         }
     }
-
-    /**
-     * Switch between the graph or the list
-     * depending on the graph index
-     */
-    private void toggleGraphOrList(int newGraphIndex)
+    public void set_visible(page_t nextPage)
     {
+        if (nextPage == displayed_page)
+        {
+            //nothing to do, go away
+            return;
+        }
+
+        //remove timer tasks
         if (updateTimer != null) {
-            //remove timer tasks
             updateTimer.cancel();
             updateTimer.purge();
-            updateTimer = null;
         }
-        updateTimer = new Timer("UpdateLiveDataPage",true);
-        if (sensorGraphIndex != newGraphIndex)
-        {
-            graphValues.clear();
-            xyPlot.redraw();
-        }
-        sensorGraphIndex = newGraphIndex;
+        updateTimer = new Timer();
 
-        //make list view visible and graph invisible
-        if (sensorGraphIndex < 0) {
+        if (nextPage == page_t.PID_GRAPH)
+        {
+            //hide the list, show the graph
+            listView.setVisibility(View.GONE);
+            xyPlot.setVisibility(View.VISIBLE);
+
+            //get the graph data from the backend
+            xyPlot.setTitle(_findSeriesName());
+            updateTimer.schedule(new GraphUpdateTask(currentPID), 0, 1000);
+        }
+        else if (nextPage == page_t.PID_PICKER)
+        {
+            //show the list, hide the graph
+            listView.setVisibility(View.VISIBLE);
+            xyPlot.setVisibility(View.GONE);
+
+            currentPID = null;
+
             listView.setVisibility(View.VISIBLE);
             xyPlot.setVisibility(View.GONE);
             updateTimer.schedule(new ListUpdateTask(), 0, 1000);
+
         }
-        //Make graph visible and list invisible
-        else {
-            listView.setVisibility(View.GONE);
-            xyPlot.setVisibility(View.VISIBLE);
-            //assume only one series
-            xyPlot.setTitle(_findSeriesName());
-            updateTimer.schedule(new GraphUpdateTask(sensorGraphIndex), 0, 1000);
-        }
+        displayed_page = nextPage;
     }
 
     public void onBecomesVisible()
     {
         android.util.Log.d("LiveDataPage", "onBecomesVisible");
-        toggleGraphOrList(sensorGraphIndex);
+        if (currentPID != null)
+            set_visible(page_t.PID_GRAPH);
+        else
+            set_visible(page_t.PID_PICKER);
     }
 
     public void onBecomesInvisible()
@@ -211,7 +223,8 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     public void onBackPressed()
     {
         //make list view visible and graph invisible
-        toggleGraphOrList(sensorGraphIndex = -1);
+        if (displayed_page == page_t.PID_GRAPH)
+            set_visible(page_t.PID_PICKER);
     }
 
     /**
@@ -233,7 +246,8 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
             updateTimer = null;
         }
         super.onSaveInstanceState(state);
-        state.putInt(SENSOR_GRAPH_IDX, sensorGraphIndex);
+        if (currentPID != null)
+            state.putInt(SENSOR_GRAPH_IDX, currentPID);
         state.putParcelableArrayList(GRAPH_VALUE_LIST, graphValues);
 
         //Save the list
@@ -272,7 +286,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         if (savedInstanceState != null)
         {
             graphValues = savedInstanceState.getParcelableArrayList(GRAPH_VALUE_LIST);
-            sensorGraphIndex = savedInstanceState.getInt(SENSOR_GRAPH_IDX);
+            currentPID = savedInstanceState.getInt(SENSOR_GRAPH_IDX);
 
             //restore list item values
             ArrayList<String> sensors = savedInstanceState.getStringArrayList(SENSOR_NAME_LIST);
@@ -287,13 +301,13 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         }
         else
         {
-            sensorGraphIndex = -1;
             graphValues = new ArrayList<GraphValue>();
         }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapter, View v, int position, long id){
-                toggleGraphOrList(position);
+                currentPID = position;
+                set_visible(page_t.PID_GRAPH);
             }
         });
 
@@ -320,7 +334,14 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         xyPlot.setDomainLowerBoundary(0,BoundaryMode.FIXED);
         xyPlot.setDomainUpperBoundary(30,BoundaryMode.FIXED);
 
-        toggleGraphOrList(sensorGraphIndex);
+        //Don't begin BT transfers until
+        if (currentPID != null)
+            set_visible(page_t.PID_GRAPH);
+        else
+        {
+            listView.setVisibility(View.GONE);
+            xyPlot.setVisibility(View.GONE);
+        }
 
         return rootView;
     }
@@ -338,9 +359,9 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
 
     protected String _findSeriesName()
     {
-        if (sensorGraphIndex >= 0)
+        if (currentPID >= 0)
         {
-            return sensorDataListAdapter.getSensorName(sensorGraphIndex);
+            return sensorDataListAdapter.getSensorName(currentPID);
         }
         return DEFAULT_SERIES_NAME;
     }

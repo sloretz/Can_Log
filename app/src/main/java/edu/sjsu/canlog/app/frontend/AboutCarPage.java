@@ -18,9 +18,11 @@ public class AboutCarPage extends SensorDataListViewFragment implements HandleVi
     public void onBecomesVisible()
     {
         android.util.Log.d("AboutCarPage", "onBecomesVisible");
-        Backend backend = Backend.getInstance();
+        final Backend backend = Backend.getInstance();
         backend.fetchCarInfo(new Backend.ResultHandler() {
             public void gotResult(Bundle result) {
+                if (backend.wasError(result))
+                    return;
                 ArrayList<String> names = result.getStringArrayList("carInfoNames");
                 ArrayList<String> values = result.getStringArrayList("values");
                 if (sensorDataListAdapter.getCount() == 0) {
