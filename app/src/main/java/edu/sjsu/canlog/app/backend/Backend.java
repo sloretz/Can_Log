@@ -1,5 +1,6 @@
 package edu.sjsu.canlog.app.backend;
 
+import android.app.ExpandableListActivity;
 import android.os.Bundle;
 
 import java.io.IOException;
@@ -285,14 +286,101 @@ public class Backend extends BluetoothService{
                 Log.d("Backend", "Fetch car info running");
                 //debug logic
                 Bundle tempResult = new Bundle();
-                tempResult.putString("VIN", "LJCPCBLCX11000237");
-                tempResult.putString("Fuel Type", "Diesel");
+                //tempResult.putString("VIN", "LJCPCBLCX11000237");
+                //tempResult.putString("Fuel Type", "Diesel");
                 ArrayList<String> carInfo = new ArrayList<String>();
                 ArrayList<String> dataList = new ArrayList<String>();
-                carInfo.add("VIN");
-                dataList.add("LJCPCBLCX11000237");
-                carInfo.add("Fuel Type");
-                dataList.add("Diesel");
+                try {
+                    carInfo.add("VIN");
+                    bt_writeln("vin");
+                    dataList.add(bt_readln());
+                } catch (Exception e) {}
+                try {
+                    carInfo.add("Fuel Type");
+                    bt_writeln("pid 51");
+                    int fuelTypeInt=Integer.valueOf(bt_readln());
+                    String fuelType;
+                    switch (fuelTypeInt)
+                    {
+                        case 1:
+                            fuelType = "Gasoline";
+                            break;
+                        case 2:
+                            fuelType = "Methanol";
+                            break;
+                        case 3:
+                            fuelType = "Ethanol";
+                            break;
+                        case 4:
+                            fuelType = "Diesel";
+                            break;
+                        case 5:
+                            fuelType = "LPG";
+                            break;
+                        case 6:
+                            fuelType = "CNG";
+                            break;
+                        case 7:
+                            fuelType = "Propane";
+                            break;
+                        case 8:
+                            fuelType = "Electric";
+                            break;
+                        case 9:
+                            fuelType = "Bifuel running Gasoline";
+                            break;
+                        case 10:
+                            fuelType = "Bifuel running Methanol";
+                            break;
+                        case 11:
+                            fuelType = "Bifuel running Ethanol";
+                            break;
+                        case 12:
+                            fuelType = "Bifuel running LPG";
+                            break;
+                        case 13:
+                            fuelType = "Bifuel running CNG";
+                            break;
+                        case 14:
+                            fuelType = "Bifuel running Propane";
+                            break;
+                        case 15:
+                            fuelType = "Bifuel running Electricity";
+                            break;
+                        case 16:
+                            fuelType = "Bifuel running electric and combustion engine";
+                            break;
+                        case 17:
+                            fuelType = "Hybrid gasoline";
+                            break;
+                        case 18:
+                            fuelType = "Hybrid Ethanol";
+                            break;
+                        case 19:
+                            fuelType = "Hybrid Diesel";
+                            break;
+                        case 20:
+                            fuelType = "Hybrid Electric";
+                            break;
+                        case 21:
+                            fuelType = "Hybrid running electric and combustion engine";
+                            break;
+                        case 22:
+                            fuelType = "Hybrid Regenerative";
+                            break;
+                        case 23:
+                            fuelType = "Bifuel running diesel";
+                            break;
+                        default:
+                            fuelType = "idk";
+                            break;
+                    }
+                    dataList.add(fuelType);
+                } catch (Exception e) {}
+                try {
+                    carInfo.add("");
+                } catch (Exception e) {}
+                //dataList.add("Diesel");
                 tempResult.putStringArrayList("carInfoNames", carInfo);
                 tempResult.putStringArrayList("values", dataList);
                 Log.d("Backend", "fetch car info returning");
