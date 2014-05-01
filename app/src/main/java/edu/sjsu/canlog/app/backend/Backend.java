@@ -372,7 +372,7 @@ public class Backend extends BluetoothService{
                             fuelType = "Bifuel running diesel";
                             break;
                         default:
-                            fuelType = "idk";
+                            fuelType = "IDK";
                             break;
                     }
                     dataList.add(fuelType);
