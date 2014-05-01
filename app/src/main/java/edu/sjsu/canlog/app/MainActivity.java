@@ -82,6 +82,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         Backend backend = new Backend(getApplicationContext());
         backend.start();
 
+        backend.setBoardTime(null);
+
         //restore state
         if (savedInstanceState != null) {
             haveRequestedBluetooth = savedInstanceState.getBoolean(HAVE_REQUESTED_BT);

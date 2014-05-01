@@ -210,7 +210,8 @@ public class Backend extends BluetoothService{
                     Time now = new Time();
                     now.setToNow();
                     long milliSeconds = now.toMillis(false) / 1000;
-                    bt_writeln("settime " + Long.toString(milliSeconds));
+                    bt_writeln("set " + Long.toString(milliSeconds));
+                    bt_readln(); //Read but, we don't care
                 } catch (IOException e)
                 {
                     result.putString("error", e.getLocalizedMessage());
@@ -320,18 +321,13 @@ public class Backend extends BluetoothService{
                 String data = "";
                 String type = "";
                 try {
-
-                    Log.d("Backend", "Fetch sensor data begin writing");
                     bt_writeln("pid " + PrettyPID.toInteger(sensorHandle));
                     data = bt_readln();
-                    Log.d("Backend", "Getting type for handle " + sensorHandle);
                     type = PrettyPID.getType(sensorHandle);
-                    Log.d("Backend", "Type is " + type);
                     if (type.equals("int"))
                         result.putInt(sensorHandle, Integer.valueOf(data));
                     else if (type.equals("double"))
                         result.putDouble(sensorHandle, Double.valueOf(data));
-                    Log.d("Backend", "Fetch sensor data done fetch");
                 } catch (IOException e)
                 {
                     result.putString("error", e.getLocalizedMessage());
