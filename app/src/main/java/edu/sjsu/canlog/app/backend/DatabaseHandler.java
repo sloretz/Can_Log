@@ -60,14 +60,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<SQLdata> getAllData(String column){
 
         List<SQLdata> data = new ArrayList<SQLdata>();
-        String selectQuery= "SELECT time " + column + " FROM " + tableVIN +";";
+        String selectQuery= "SELECT time, " + column + " FROM " + tableVIN +";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if(cursor.moveToFirst()) {
             do {
                 SQLdata sqldata = new SQLdata(cursor.getInt(0), cursor.getInt(1));
                 data.add(sqldata);
-
+            } while(cursor.moveToNext());
+        }
+        return data;
+    }
+    public List<SQLdata> getAllDataRange(String column, long begin, long end)
+    {
+        List<SQLdata> data = new ArrayList<SQLdata>();
+        String selectQuery= "SELECT time, " + column + " FROM " + tableVIN + " WHERE time > " + begin +" AND time < " + end + ";";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if(cursor.moveToFirst()) {
+            do {
+                SQLdata sqldata = new SQLdata(cursor.getInt(0), cursor.getInt(1));
+                data.add(sqldata);
             } while(cursor.moveToNext());
         }
         return data;
