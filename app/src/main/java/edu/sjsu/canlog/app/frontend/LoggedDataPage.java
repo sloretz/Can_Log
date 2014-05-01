@@ -2,8 +2,6 @@ package edu.sjsu.canlog.app.frontend;
 
 import edu.sjsu.canlog.app.R;
 import edu.sjsu.canlog.app.backend.Backend;
-import edu.sjsu.canlog.app.backend.BluetoothService;
-
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -14,12 +12,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Timer;
-import java.util.TimerTask;
-
 import com.androidplot.xy.*;
 
 

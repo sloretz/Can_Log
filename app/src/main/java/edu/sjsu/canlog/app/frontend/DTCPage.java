@@ -6,10 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Button;
-
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import edu.sjsu.canlog.app.R;
 import edu.sjsu.canlog.app.backend.Backend;
 import android.support.v4.app.Fragment;

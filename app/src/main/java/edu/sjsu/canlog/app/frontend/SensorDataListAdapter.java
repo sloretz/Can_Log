@@ -10,7 +10,6 @@ import android.app.Activity;
 import java.util.ArrayList;
 import java.util.Iterator;
 import android.widget.TextView;
-
 import edu.sjsu.canlog.app.R;
 
 /**

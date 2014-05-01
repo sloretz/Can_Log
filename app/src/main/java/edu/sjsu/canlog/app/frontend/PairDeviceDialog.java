@@ -8,12 +8,9 @@ import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
-
 import edu.sjsu.canlog.app.backend.Backend;
-
 import java.util.Set;
 import java.util.ArrayList;
-
 import edu.sjsu.canlog.app.R;
 
 /**
