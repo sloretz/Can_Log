@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import edu.sjsu.canlog.app.frontend.*;
 import edu.sjsu.canlog.app.backend.Backend;
 
