@@ -146,7 +146,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
                         graphValues.remove(0);
                         graphValues.remove(0);
                     }
-                    Log.d("LiveDataPage", "Graph is redrawing plot");
+                    Log.d("LiveDataPage", "Graph is redrawing plot size:" + graphValues.size() + " added:" + data);
                     xyPlot.redraw();
                     BTrequestOutstanding = false;
                 }
@@ -166,7 +166,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
             updateTimer.cancel();
             updateTimer.purge();
         }
-        updateTimer = new Timer();
+        updateTimer = new Timer("UpdateLiveDataPage",true);
 
         if (nextPage == page_t.PID_GRAPH)
         {
@@ -175,7 +175,9 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
             xyPlot.setVisibility(View.VISIBLE);
 
             //get the graph data from the backend
+            graphValues.clear();
             xyPlot.setTitle(_findSeriesName());
+            xyPlot.redraw();
             updateTimer.schedule(new GraphUpdateTask(currentPID), 0, 1000);
         }
         else if (nextPage == page_t.PID_PICKER)

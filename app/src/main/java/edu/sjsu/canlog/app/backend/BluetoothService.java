@@ -100,7 +100,8 @@ public class BluetoothService {
         //This runs in the UI thread
         protected void onPostExecute(Bundle result)
         {
-            this.handler.gotResult(result);
+            if (this.handler != null)
+                this.handler.gotResult(result);
         }
     }
 
