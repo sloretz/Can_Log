@@ -7,11 +7,12 @@ import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created by shane on 4/26/14.
  */
-public class DatePickerFragment extends DialogFragment
+public abstract class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
     @Override
@@ -26,7 +27,12 @@ public class DatePickerFragment extends DialogFragment
         return new DatePickerDialog(getActivity(), this, year, month, day);
     }
 
+    abstract public void onDateSet(long unixTime);
+
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // Do something with the date chosen by the user
+        GregorianCalendar c = new GregorianCalendar();
+        c.set(year, month, day);
+        onDateSet(c.getTimeInMillis()/1000);
     }
 }

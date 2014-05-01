@@ -39,14 +39,13 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
     private ListView listView;
     private ArrayList<GraphValue> graphValues;
     private Timer updateTimer;
-    private page_t displayed_page = page_t.NO_PAGE;
+    private page_t displayed_page = null;
     private String currentVIN = null;
     private String currentPID = null;
-    private int startDate = 0;
-    private int endDate = 0;
+    private long startDate = Long.MIN_VALUE;
+    private long endDate = Long.MAX_VALUE;
 
     private enum page_t {NO_PAGE, DOWNLOAD_PAGE, VIN_PICKER, PID_PICKER, PID_GRAPH};
-
     private class DynamicRollingSeries implements XYSeries {
         ArrayList<GraphValue> valuesReference;
 
@@ -75,6 +74,39 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
         public String getTitle() {
             return "Err:Should not display";
         }
+    }
+
+    protected void redraw_graph()
+    {
+        //TODO
+    }
+
+    public void promptForStartDate()
+    {
+        final DatePickerFragment dateDialog = new DatePickerFragment()
+        {
+            @Override
+            public void onDateSet(long unixTime)
+            {
+                startDate = unixTime;
+                redraw_graph();
+            }
+        };
+        dateDialog.show(getActivity().getSupportFragmentManager(), "DateDialog");
+    }
+
+    public void promptForEndDate()
+    {
+        final DatePickerFragment dateDialog = new DatePickerFragment()
+        {
+            @Override
+            public void onDateSet(long unixTime)
+            {
+                endDate = unixTime;
+                redraw_graph();
+            }
+        };
+        dateDialog.show(getActivity().getSupportFragmentManager(), "DateDialog");
     }
 
     public void set_visible(page_t nextPage)
@@ -162,7 +194,13 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             listView.setVisibility(View.GONE);
             xyPlot.setVisibility(View.GONE);
             DownloadHistoryDialog dl_dialog = new DownloadHistoryDialog();
+            dl_dialog.setCancelable(false);
             dl_dialog.show(getFragmentManager(), "dialog");
+        }
+        else if (nextPage == page_t.NO_PAGE)
+        {
+            listView.setVisibility(View.GONE);
+            xyPlot.setVisibility(View.GONE);
         }
 
         displayed_page = nextPage;
@@ -240,7 +278,8 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             restore_state(savedInstanceState);
         }
         else {
-            //do nothing
+            //do nothing. onBecomesVisible will set the current page as download page
+            set_visible(page_t.NO_PAGE);
         }
 
         return rootView;

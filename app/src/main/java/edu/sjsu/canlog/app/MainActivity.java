@@ -53,21 +53,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         backend.stop();
     }
 
-    /* Busted
-    @Override
-    public void onResume()
-    {
-        //When we resume, tell the current window we're visible again
-        int currentPosition = mViewPager.getCurrentItem();
-        if (currentPosition >= 0) {
-            Fragment invisibleFragment = (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, currentPosition);
-            if (invisibleFragment instanceof HandleVisibilityChange) {
-                ((HandleVisibilityChange) invisibleFragment).onBecomesVisible();
-            }
-        }
-    }*/
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,13 +165,19 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
     }
 
-    @Override
-    public void onBackPressed()
+    private Fragment getVisiblePage()
     {
         int selectedItem = mViewPager.getCurrentItem();
         //Weird call, this is how we get the actual fragment instance from the
         //view pager's internal cache
-        Fragment visibleFragment = (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, selectedItem);
+        return (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, selectedItem);
+    }
+
+
+    @Override
+    public void onBackPressed()
+    {
+        Fragment visibleFragment = getVisiblePage();
         if (visibleFragment instanceof HandleBack)
         {
             ((HandleBack) visibleFragment).onBackPressed();
@@ -213,9 +204,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        super.onCreateOptionsMenu(menu);
+
         return true;
     }
 
@@ -225,10 +215,30 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        Fragment visibleFragment = getVisiblePage();
+        if (visibleFragment instanceof LoggedDataPage)
+        {
+            if (id == R.id.start_date)
+                ((LoggedDataPage)visibleFragment).promptForStartDate();
+            else if (id == R.id.end_date)
+                ((LoggedDataPage)visibleFragment).promptForEndDate();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        menu.clear();
+        //if page is the Logged data page, make a menu with
+        //startDate and endDate
+        Fragment visibleFragment = getVisiblePage();
+        if (visibleFragment instanceof LoggedDataPage)
+        {
+            getMenuInflater().inflate(R.menu.history, menu);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -260,9 +270,13 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            //about
+            //live data
+            //dtc
+            //history
             if (position == 0) //DTC page
             {
-                DTCPage fragment = new DTCPage();
+                AboutCarPage fragment = new AboutCarPage();
                 return fragment;
             }
             else if (position == 1)
@@ -272,12 +286,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
             else if (position == 2)
             {
-                LoggedDataPage fragment = new LoggedDataPage();
+                DTCPage fragment = new DTCPage();
                 return fragment;
             }
             else
             {
-                AboutCarPage fragment = new AboutCarPage();
+                LoggedDataPage fragment = new LoggedDataPage();
                 return fragment;
             }
 
