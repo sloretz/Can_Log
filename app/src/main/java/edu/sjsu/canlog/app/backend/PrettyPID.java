@@ -254,7 +254,8 @@ public class PrettyPID {
     public static Integer toInteger(String PID)
     {
         //x05 -> 5
-        return Integer.valueOf("0"+PID);
+        PID = PID.substring(1);
+        return Integer.parseInt(PID,16);
     }
 
 }

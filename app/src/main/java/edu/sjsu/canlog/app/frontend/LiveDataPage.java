@@ -146,7 +146,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
                         graphValues.remove(0);
                         graphValues.remove(0);
                     }
-
+                    Log.d("LiveDataPage", "Graph is redrawing plot");
                     xyPlot.redraw();
                     BTrequestOutstanding = false;
                 }
