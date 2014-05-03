@@ -560,14 +560,14 @@ public class Backend extends BluetoothService{
         //it's hard coded here
         //values taken from http://en.wikipedia.org/wiki/OBD-II_PIDs
         Log.d("Backend", "fetch logged PIDs called");
-        Random r = new Random();
+        //Random r = new Random();
         Bundle tempResult = new Bundle();
         ArrayList<String> pidList = new ArrayList<String>();
         ArrayList<String> prettyList = new ArrayList<String>();
 
-        Iterator<Integer> pidIter = loggedDataPIDs.iterator();
-        while (pidIter.hasNext()) {
-            Integer pid = pidIter.next();
+        //Iterator<Integer> pidIter = loggedDataPIDs.iterator();
+        for (Integer pid : loggedDataPIDs) {
+            //Integer pid = pidIter.next();
             pidList.add("x" + Integer.toHexString(pid));
             prettyList.add(PrettyPID.getDescription(pid));
         }
@@ -584,7 +584,7 @@ public class Backend extends BluetoothService{
             protected Bundle doSocketTransfer()
             {
                 Log.d("Backend", "begin history download running");
-                Random r = new Random();
+                //Random r = new Random();
                 try {
                     Thread.sleep(4000);
                 } catch (InterruptedException e) {
