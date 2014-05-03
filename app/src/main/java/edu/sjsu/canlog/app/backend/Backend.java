@@ -45,12 +45,12 @@ public class Backend extends BluetoothService{
         loggedDataPIDs.add(0xc);
         loggedDataPIDs.add(0xd);
         loggedDataPIDs.add(0x11);
-        loggedDataPIDs.add(0x1f);
-        loggedDataPIDs.add(0x21);
-        loggedDataPIDs.add(0x2f);
-        loggedDataPIDs.add(0x30);
-        loggedDataPIDs.add(0x31);
-        loggedDataPIDs.add(0x4d);
+        //loggedDataPIDs.add(0x1f);
+        //loggedDataPIDs.add(0x21);
+        //loggedDataPIDs.add(0x2f);
+        //loggedDataPIDs.add(0x30);
+        //loggedDataPIDs.add(0x31);
+        //loggedDataPIDs.add(0x4d);
         loggedDataPIDs.add(0x5c);
         loggedDataPIDs.add(0x5e);
 
@@ -244,8 +244,7 @@ public class Backend extends BluetoothService{
                     while (pidIter.hasNext()) {
                         Integer pid = pidIter.next();
                         boolean isSupported = false;
-                        Iterator<Integer> supportedIterator = supportedPIDs.iterator();
-                        while(supportedIterator.hasNext())
+                        for(Iterator<Integer> supportedIterator = supportedPIDs.iterator(); supportedIterator.hasNext();)
                         {
                             if(pid == supportedIterator.next())
                             {
