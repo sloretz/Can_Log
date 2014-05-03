@@ -24,7 +24,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        String CREATE_TABLE= "CREATE TABLE IF NOT EXISTS" + tableVIN + " (time Integer PRIMARY KEY, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x1f Integer, x21 Integer, x2f Integer, x30 Integer, x31 Integer, x4d Integer, x5c Integer, x5e Integer);";
+        String CREATE_TABLE= "CREATE TABLE IF NOT EXISTS" + tableVIN + " (time Integer PRIMARY KEY, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x2f Integer, x5c Integer, x5e Integer);";
         db.execSQL(CREATE_TABLE);
     }
     @Override
@@ -45,12 +45,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("x0c",x0c);
         values.put("x0d",x0d);
         values.put("x11",x11);
-        values.put("x1f",x1f);
-        values.put("x21",x21);
-        values.put("x2f",x30);
-        values.put("x30",x30);
-        values.put("x31",x31);
-        values.put("x4d",x4d);
+        values.put("x2f",x2f);
         values.put("x5c",x5c);
         values.put("x5e",x5e);
 
