@@ -23,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        String CREATE_TABLE= "CREATE TABLE IF NOT EXISTS" + tableVIN + " (time Integer PRIMARY KEY, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x2f Integer, x5c Integer, x5e Integer);";
+        String CREATE_TABLE= "CREATE TABLE IF NOT EXISTS " + tableVIN + " (time Integer PRIMARY KEY, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x2f Integer, x5c Integer, x5e Integer);";
         db.execSQL(CREATE_TABLE);
     }
     @Override
