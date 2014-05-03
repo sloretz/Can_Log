@@ -131,7 +131,7 @@ public class Backend extends BluetoothService{
                 Bundle result = new Bundle();
                 try {
                     bt_writeln("pid 00");
-                    int PIDs= Integer.valueOf(bt_readln(),16);
+                    int PIDs= Integer.valueOf("0x"+bt_readln(),16);
                     //start finding them from 19 to 1, because its easier to declare to 2 and bit shift that way
                     int PIDsComparator =2;
                     int PIDadder=0x1F;
@@ -145,7 +145,7 @@ public class Backend extends BluetoothService{
                         PIDsComparator=PIDsComparator << 1;
                     }
                     bt_writeln("pid 32");
-                    PIDs= Integer.valueOf(bt_readln(),16);
+                    PIDs= Integer.valueOf("0x"+bt_readln(),16);
                     PIDsComparator =2;
                     PIDadder=0x3F;
                     while(PIDsComparator != 0)
@@ -158,7 +158,7 @@ public class Backend extends BluetoothService{
                         PIDsComparator=PIDsComparator << 1;
                     }
                     bt_writeln("pid 64");
-                    PIDs= Integer.valueOf(bt_readln(),16);
+                    PIDs= Integer.valueOf("0x"+bt_readln(),16);
                     PIDsComparator =2;
                     PIDadder=0x5F;
                     while(PIDsComparator != 0)
