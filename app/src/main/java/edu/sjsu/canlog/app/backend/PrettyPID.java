@@ -263,6 +263,15 @@ public class PrettyPID {
         return descriptions.get(PID);
     }
 
+    public static String toString(Integer PID)
+    {
+        String pid = Integer.toString(PID);
+        if (pid.length() < 2)
+            pid = "0"+pid;
+        pid = "x" + pid;
+        return pid;
+    }
+
     public static Integer toInteger(String PID)
     {
         //x05 -> 5
