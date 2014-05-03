@@ -18,7 +18,6 @@ import android.widget.Toast;
  */
 public class DTCPage extends Fragment implements HandleVisibilityChange {
     public SensorDataListAdapter sensorDataListAdapter;
-    public static boolean firstCreate = true;
 
     public void onBecomesVisible()
     {
@@ -90,11 +89,6 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
                 });
         }});
 
-        //Special case, we're the first page on the GUI so we become visible on create
-        if (firstCreate)
-            onBecomesVisible();
-
-        firstCreate = false;
         return rootView;
     }
 }

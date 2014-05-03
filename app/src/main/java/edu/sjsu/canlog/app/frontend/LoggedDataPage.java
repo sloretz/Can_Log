@@ -79,6 +79,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
     protected void redraw_graph()
     {
         //TODO
+        Log.d("LoggedDataPage", "Start time " + startDate + " end time " + endDate);
     }
 
     public void promptForStartDate()
@@ -174,7 +175,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
                     Iterator<String> pidIter = PIDs.iterator();
                     Iterator<String> descIter = descriptions.iterator();
                     while (pidIter.hasNext() && descIter.hasNext()) {
-                        sensorDataListAdapter.addSensor(descIter.next(), pidIter.next(), "");
+                        sensorDataListAdapter.addSensor(descIter.next(), "", "");
                     }
                 }
             });
@@ -231,6 +232,10 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
      */
     public void onBackPressed()
     {
+        if (displayed_page == page_t.PID_GRAPH)
+            set_visible(page_t.PID_PICKER);
+        else if (displayed_page == page_t.PID_PICKER)
+            set_visible(page_t.VIN_PICKER);
     }
 
     /**

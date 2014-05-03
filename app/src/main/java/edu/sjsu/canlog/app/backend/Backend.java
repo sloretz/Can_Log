@@ -52,63 +52,112 @@ public class Backend extends BluetoothService{
         loggedDataPIDs.add(0x5c);
         loggedDataPIDs.add(0x5e);
 
-        liveDataPIDs.add(0x4);
-        liveDataPIDs.add(0x5);
-        liveDataPIDs.add(0x6);
-        liveDataPIDs.add(0x7);
-        liveDataPIDs.add(0x8);
-        liveDataPIDs.add(0x9);
-        liveDataPIDs.add(0xa);
-        liveDataPIDs.add(0xb);
-        liveDataPIDs.add(0xc);
-        liveDataPIDs.add(0xd);
-        liveDataPIDs.add(0xe);
-        liveDataPIDs.add(0xf);
-        liveDataPIDs.add(0x10);
-        liveDataPIDs.add(0x11);
-        liveDataPIDs.add(0x1f);
-        liveDataPIDs.add(0x21);
-        liveDataPIDs.add(0x22);
-        liveDataPIDs.add(0x23);
-        liveDataPIDs.add(0x2c);
-        liveDataPIDs.add(0x2d);
-        liveDataPIDs.add(0x2e);
-        liveDataPIDs.add(0x2f);
-        liveDataPIDs.add(0x30);
-        liveDataPIDs.add(0x31);
-        liveDataPIDs.add(0x32);
-        liveDataPIDs.add(0x33);
-        liveDataPIDs.add(0x3c);
-        liveDataPIDs.add(0x3d);
-        liveDataPIDs.add(0x3e);
-        liveDataPIDs.add(0x3f);
-        liveDataPIDs.add(0x42);
-        liveDataPIDs.add(0x43);
-        liveDataPIDs.add(0x44);
-        liveDataPIDs.add(0x45);
-        liveDataPIDs.add(0x46);
-        liveDataPIDs.add(0x47);
-        liveDataPIDs.add(0x48);
-        liveDataPIDs.add(0x49);
-        liveDataPIDs.add(0x4a);
-        liveDataPIDs.add(0x4b);
-        liveDataPIDs.add(0x4c);
-        liveDataPIDs.add(0x4d);
-        liveDataPIDs.add(0x4e);
-        liveDataPIDs.add(0x50);
-        liveDataPIDs.add(0x52);
-        liveDataPIDs.add(0x53);
-        liveDataPIDs.add(0x54);
+        //pids supported 1-20
+        //190,63,168,19
+        //10111110 00111111 10101000 00010011
+
+        //pids supported 21-40
+        //144,21,176,21
+        //10010000 00010101 10110000 00010101
+
+        //pids supported 41-60
+        //250,28,32,0
+        //11111010 00011100 00100000 00000000
+
+        liveDataPIDs.add(0x4); //Calculated engine load value
+        liveDataPIDs.add(0x5); //Engine coolant temperature
+        //liveDataPIDs.add(0x6);
+        //liveDataPIDs.add(0x7); //Long term fuel % trim—Bank 1
+        //liveDataPIDs.add(0x8);
+        //liveDataPIDs.add(0x9);
+        //liveDataPIDs.add(0xa);
+        //liveDataPIDs.add(0xb);
+        liveDataPIDs.add(0xc); //Engine RPM
+        liveDataPIDs.add(0xd); //Vehicle speed
+        liveDataPIDs.add(0xe); //Timing advance
+        //liveDataPIDs.add(0xf);
+        //liveDataPIDs.add(0x10);
+        //liveDataPIDs.add(0x11);
+        //liveDataPIDs.add(0x1f);
+        liveDataPIDs.add(0x21); //Distance traveled with malfunction indicator lamp (MIL) on
+        //liveDataPIDs.add(0x22);
+        //liveDataPIDs.add(0x23);
+        //liveDataPIDs.add(0x2c); //Commanded EGR
+        //liveDataPIDs.add(0x2d);
+        //liveDataPIDs.add(0x2e); //Commanded evaporative purge
+        //liveDataPIDs.add(0x2f);
+        liveDataPIDs.add(0x30); //# of warm-ups since codes cleared
+        liveDataPIDs.add(0x31); //Distance traveled since codes cleared
+        //liveDataPIDs.add(0x32);
+        //liveDataPIDs.add(0x33); //Barometric pressure
+        //liveDataPIDs.add(0x3c); //Catalyst Temperature
+        //liveDataPIDs.add(0x3d);
+        //liveDataPIDs.add(0x3e); //Catalyst Temperature
+        //liveDataPIDs.add(0x3f);
+        //liveDataPIDs.add(0x42); //Control module voltage
+        liveDataPIDs.add(0x43); //Absolute load value
+        //liveDataPIDs.add(0x44); //Command equivalence ratio
+        liveDataPIDs.add(0x45); //Relative throttle position
+        //liveDataPIDs.add(0x46);
+        liveDataPIDs.add(0x47); //Absolute throttle position B
+        //liveDataPIDs.add(0x48);
+        //liveDataPIDs.add(0x49);
+        //liveDataPIDs.add(0x4a);
+        //liveDataPIDs.add(0x4b);
+        liveDataPIDs.add(0x4c); //Commanded throttle actuator
+        liveDataPIDs.add(0x4d); //Time run with MIL on
+        liveDataPIDs.add(0x4e); //Time since trouble codes cleared
+        //liveDataPIDs.add(0x50);
+        //liveDataPIDs.add(0x52);
+        liveDataPIDs.add(0x53); //Absolute Evap system Vapor Pressure
+        //liveDataPIDs.add(0x54);
         //liveDataPIDs.add(0x55);
         //liveDataPIDs.add(0x56);
         //liveDataPIDs.add(0x57);
         //liveDataPIDs.add(0x58);
-        liveDataPIDs.add(0x59);
-        liveDataPIDs.add(0x5a);
-        liveDataPIDs.add(0x5b);
-        liveDataPIDs.add(0x5c);
-        liveDataPIDs.add(0x5d);
-        liveDataPIDs.add(0x5e);
+        //liveDataPIDs.add(0x59);
+        //liveDataPIDs.add(0x5a);
+        //liveDataPIDs.add(0x5b);
+        //liveDataPIDs.add(0x5c);
+        //liveDataPIDs.add(0x5d);
+        //liveDataPIDs.add(0x5e);
+
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                Log.d("Backend", "Fetch avail sen and dat sock tran run");
+                Bundle result = new Bundle();
+                try {
+                    ArrayList<String> pidList = new ArrayList<String>();
+                    ArrayList<String> prettyList = new ArrayList<String>();
+                    ArrayList<String> dataList = new ArrayList<String>();
+
+
+                    Log.d("Backend", "Starting to run PID commands");
+                    //Get the live data for supported PIDs
+                    Iterator<Integer> pidIter = liveDataPIDs.iterator();
+                    while (pidIter.hasNext()) {
+                        Integer pid = pidIter.next();
+                        pidList.add("x" + Integer.toHexString(pid));
+                        prettyList.add(PrettyPID.getDescription(pid));
+                        bt_writeln("pid " + pid);
+                        dataList.add(bt_readln());
+                    }
+                    Log.d("Backend", "Finished running PID commands");
+                    result.putStringArrayList("Sensors", prettyList);
+                    result.putStringArrayList("PIDs", pidList);
+                    result.putStringArrayList("Data", dataList);
+
+                } catch (IOException e)
+                {
+                    Log.d("Backend", "Fetch sensors and data exception " + e.getLocalizedMessage());
+                    result.putString("error", e.getLocalizedMessage());
+                }
+                return result;
+            }
+        };
+        task.execute((ResultHandler)null);
 
     }
 
@@ -206,7 +255,6 @@ public class Backend extends BluetoothService{
                     now.setToNow();
                     long milliSeconds = now.toMillis(false) / 1000;
                     bt_writeln("set " + Long.toString(milliSeconds));
-                    bt_readln(); //Read but, we don't care
                 } catch (IOException e)
                 {
                     result.putString("error", e.getLocalizedMessage());
@@ -297,7 +345,7 @@ public class Backend extends BluetoothService{
                 } catch (Exception e) {}
                 try {
                     carInfo.add("Fuel Type");
-                    bt_writeln("pid 51");
+                    bt_writeln("pid 81");
                     int fuelTypeInt=Integer.valueOf(bt_readln());
                     String fuelType;
                     switch (fuelTypeInt)

@@ -14,7 +14,7 @@ import edu.sjsu.canlog.app.backend.Backend;
  * Created by shane on 3/11/14.
  */
 public class AboutCarPage extends SensorDataListViewFragment implements HandleVisibilityChange{
-
+    public static boolean firstCreate = true;
     public void onBecomesVisible()
     {
         android.util.Log.d("AboutCarPage", "onBecomesVisible");
@@ -51,6 +51,11 @@ public class AboutCarPage extends SensorDataListViewFragment implements HandleVi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
+
+        //Special case, we're the first page on the GUI so we become visible on create
+        if (firstCreate)
+            onBecomesVisible();
+        firstCreate = false;
 
         return rootView;
     }
