@@ -60,6 +60,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
                 if (backend.wasError(result))
                     return;
                 graphValues = result.getParcelableArrayList("values");
+                Log.d("LoggedDataPage", "Got query results");
 
                 //Set up plot series
                 LineAndPointFormatter seriesFormat = new LineAndPointFormatter();
@@ -120,8 +121,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             //hide the list, show the graph
             listView.setVisibility(View.GONE);
             xyPlot.setVisibility(View.VISIBLE);
-
-
+            redraw_graph();
         }
         else if (nextPage == page_t.VIN_PICKER)
         {

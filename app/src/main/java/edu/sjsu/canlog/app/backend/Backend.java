@@ -614,6 +614,7 @@ public class Backend extends BluetoothService{
             @Override
             protected Bundle doSocketTransfer()
             {
+                Log.d("Backend", "Querying history for pid " + PID);
                 Bundle result = new Bundle();
                 //Use DatabaseHandler
                 DatabaseHandler h = new DatabaseHandler(mContext, VIN);
@@ -627,15 +628,15 @@ public class Backend extends BluetoothService{
                     retValues.add(new GraphValue(row.time));
                     retValues.add(new GraphValue(row.data));
                 }*/
-                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(1398155529));
                 retValues.add(new GraphValue(1));
-                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(1398355529));
                 retValues.add(new GraphValue(2));
-                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(1398555529));
                 retValues.add(new GraphValue(3));
-                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(1398655529));
                 retValues.add(new GraphValue(2));
-                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(1398755529));
                 retValues.add(new GraphValue(1));
                 retValues.add(new GraphValue(1399155529));
                 retValues.add(new GraphValue(0));
