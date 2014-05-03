@@ -63,65 +63,64 @@ public class Backend extends BluetoothService{
         //pids supported 41-60
         //250,28,32,0
         //11111010 00011100 00100000 00000000
-        /*
+
         liveDataPIDs.add(0x4); //Calculated engine load value
         liveDataPIDs.add(0x5); //Engine coolant temperature
-        //liveDataPIDs.add(0x6);
-        //liveDataPIDs.add(0x7); //Long term fuel % trim—Bank 1
-        //liveDataPIDs.add(0x8);
-        //liveDataPIDs.add(0x9);
-        //liveDataPIDs.add(0xa);
-        //liveDataPIDs.add(0xb);
+        liveDataPIDs.add(0x6);
+        liveDataPIDs.add(0x7); //Long term fuel % trim—Bank 1
+        liveDataPIDs.add(0x8);
+        liveDataPIDs.add(0x9);
+        liveDataPIDs.add(0xa);
+        liveDataPIDs.add(0xb);
         liveDataPIDs.add(0xc); //Engine RPM
         liveDataPIDs.add(0xd); //Vehicle speed
         liveDataPIDs.add(0xe); //Timing advance
-        //liveDataPIDs.add(0xf);
-        //liveDataPIDs.add(0x10);
-        //liveDataPIDs.add(0x11);
-        //liveDataPIDs.add(0x1f);
+        liveDataPIDs.add(0xf);
+        liveDataPIDs.add(0x10);
+        liveDataPIDs.add(0x11);
+        liveDataPIDs.add(0x1f);
         liveDataPIDs.add(0x21); //Distance traveled with malfunction indicator lamp (MIL) on
-        //liveDataPIDs.add(0x22);
-        //liveDataPIDs.add(0x23);
-        //liveDataPIDs.add(0x2c); //Commanded EGR
-        //liveDataPIDs.add(0x2d);
-        //liveDataPIDs.add(0x2e); //Commanded evaporative purge
-        //liveDataPIDs.add(0x2f);
+        liveDataPIDs.add(0x22);
+        liveDataPIDs.add(0x23);
+        liveDataPIDs.add(0x2c); //Commanded EGR
+        liveDataPIDs.add(0x2d);
+        liveDataPIDs.add(0x2e); //Commanded evaporative purge
+        liveDataPIDs.add(0x2f);
         liveDataPIDs.add(0x30); //# of warm-ups since codes cleared
         liveDataPIDs.add(0x31); //Distance traveled since codes cleared
-        //liveDataPIDs.add(0x32);
-        //liveDataPIDs.add(0x33); //Barometric pressure
-        //liveDataPIDs.add(0x3c); //Catalyst Temperature
-        //liveDataPIDs.add(0x3d);
-        //liveDataPIDs.add(0x3e); //Catalyst Temperature
-        //liveDataPIDs.add(0x3f);
-        //liveDataPIDs.add(0x42); //Control module voltage
+        liveDataPIDs.add(0x32);
+        liveDataPIDs.add(0x33); //Barometric pressure
+        liveDataPIDs.add(0x3c); //Catalyst Temperature
+        liveDataPIDs.add(0x3d);
+        liveDataPIDs.add(0x3e); //Catalyst Temperature
+        liveDataPIDs.add(0x3f);
+        liveDataPIDs.add(0x42); //Control module voltage
         liveDataPIDs.add(0x43); //Absolute load value
-        //liveDataPIDs.add(0x44); //Command equivalence ratio
+        liveDataPIDs.add(0x44); //Command equivalence ratio
         liveDataPIDs.add(0x45); //Relative throttle position
-        //liveDataPIDs.add(0x46);
+        liveDataPIDs.add(0x46);
         liveDataPIDs.add(0x47); //Absolute throttle position B
-        //liveDataPIDs.add(0x48);
-        //liveDataPIDs.add(0x49);
-        //liveDataPIDs.add(0x4a);
-        //liveDataPIDs.add(0x4b);
+        liveDataPIDs.add(0x48);
+        liveDataPIDs.add(0x49);
+        liveDataPIDs.add(0x4a);
+        liveDataPIDs.add(0x4b);
         liveDataPIDs.add(0x4c); //Commanded throttle actuator
         liveDataPIDs.add(0x4d); //Time run with MIL on
         liveDataPIDs.add(0x4e); //Time since trouble codes cleared
-        //liveDataPIDs.add(0x50);
-        //liveDataPIDs.add(0x52);
+        liveDataPIDs.add(0x50);
+        liveDataPIDs.add(0x52);
         liveDataPIDs.add(0x53); //Absolute Evap system Vapor Pressure
-        //liveDataPIDs.add(0x54);
-        //liveDataPIDs.add(0x55);
-        //liveDataPIDs.add(0x56);
-        //liveDataPIDs.add(0x57);
-        //liveDataPIDs.add(0x58);
-        //liveDataPIDs.add(0x59);
-        //liveDataPIDs.add(0x5a);
-        //liveDataPIDs.add(0x5b);
-        //liveDataPIDs.add(0x5c);
-        //liveDataPIDs.add(0x5d);
-        //liveDataPIDs.add(0x5e);
-        */
+        liveDataPIDs.add(0x54);
+        liveDataPIDs.add(0x55);
+        liveDataPIDs.add(0x56);
+        liveDataPIDs.add(0x57);
+        liveDataPIDs.add(0x58);
+        liveDataPIDs.add(0x59);
+        liveDataPIDs.add(0x5a);
+        liveDataPIDs.add(0x5b);
+        liveDataPIDs.add(0x5c);
+        liveDataPIDs.add(0x5d);
+        liveDataPIDs.add(0x5e);
         BluetoothTask task = new BluetoothTask() {
             @Override
             protected Bundle doSocketTransfer()
@@ -242,6 +241,20 @@ public class Backend extends BluetoothService{
                     Iterator<Integer> pidIter = liveDataPIDs.iterator();
                     while (pidIter.hasNext()) {
                         Integer pid = pidIter.next();
+                        boolean isSupported = false;
+                        Iterator<Integer> supportedIterator = supportedPIDs.iterator();
+                        while(supportedIterator.hasNext())
+                        {
+                            if(pid == supportedIterator.next())
+                            {
+                                isSupported=true;
+                                break;
+                            }
+                        }
+                        if(isSupported == false)
+                        {
+                            continue;
+                        }
                         pidList.add("x" + Integer.toHexString(pid));
                         prettyList.add(PrettyPID.getDescription(pid));
                         bt_writeln("pid " + pid);
