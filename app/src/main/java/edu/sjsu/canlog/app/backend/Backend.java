@@ -36,6 +36,7 @@ public class Backend extends BluetoothService{
 
         loggedDataPIDs = new ArrayList<Integer>();
         liveDataPIDs = new ArrayList<Integer>();
+        supportedPIDs = new ArrayList<Integer>();
 
         loggedDataPIDs.add(0x3);
         loggedDataPIDs.add(0x4);
