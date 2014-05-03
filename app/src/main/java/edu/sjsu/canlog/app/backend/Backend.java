@@ -139,7 +139,7 @@ public class Backend extends BluetoothService{
                     {
                         if((PIDs & PIDsComparator) != 0)
                         {
-                            liveDataPIDs.add(PIDadder);
+                            supportedPIDs.add(PIDadder);
                         }
                         --PIDadder;
                         PIDsComparator=PIDsComparator << 1;
@@ -152,7 +152,7 @@ public class Backend extends BluetoothService{
                     {
                         if((PIDs & PIDsComparator) != 0)
                         {
-                            liveDataPIDs.add(PIDadder);
+                            supportedPIDs.add(PIDadder);
                         }
                         --PIDadder;
                         PIDsComparator=PIDsComparator << 1;
@@ -165,7 +165,7 @@ public class Backend extends BluetoothService{
                     {
                         if((PIDs & PIDsComparator) != 0)
                         {
-                            liveDataPIDs.add(PIDadder);
+                            supportedPIDs.add(PIDadder);
                         }
                         --PIDadder;
                         PIDsComparator=PIDsComparator << 1;
