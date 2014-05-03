@@ -24,6 +24,7 @@ public class Backend extends BluetoothService{
     private ArrayList<Integer> aboutCarPIDs;
     private ArrayList<Integer> supportedPIDs;
 
+
     //This is passed in to the fetch functions
     //The backend bluetooth thread calls this
     //when a result for the last query is gotten
@@ -138,7 +139,7 @@ public class Backend extends BluetoothService{
                     {
                         if((PIDs & PIDsComparator) != 0)
                         {
-                            supportedPIDs.add(PIDadder);
+                            liveDataPIDs.add(PIDadder);
                         }
                         --PIDadder;
                         PIDsComparator=PIDsComparator << 1;
@@ -151,7 +152,7 @@ public class Backend extends BluetoothService{
                     {
                         if((PIDs & PIDsComparator) != 0)
                         {
-                            supportedPIDs.add(PIDadder);
+                            liveDataPIDs.add(PIDadder);
                         }
                         --PIDadder;
                         PIDsComparator=PIDsComparator << 1;
@@ -164,7 +165,7 @@ public class Backend extends BluetoothService{
                     {
                         if((PIDs & PIDsComparator) != 0)
                         {
-                            supportedPIDs.add(PIDadder);
+                            liveDataPIDs.add(PIDadder);
                         }
                         --PIDadder;
                         PIDsComparator=PIDsComparator << 1;
@@ -618,13 +619,26 @@ public class Backend extends BluetoothService{
                 DatabaseHandler h = new DatabaseHandler(mContext, VIN);
                 ArrayList<SQLdata> data = (ArrayList<SQLdata>) h.getAllDataRange(PID, startDate, endDate);
                 ArrayList<GraphValue> retValues = new ArrayList<GraphValue>();
+                /*
                 Iterator<SQLdata> rowIter = data.iterator();
                 while (rowIter.hasNext())
                 {
                     SQLdata row = rowIter.next();
                     retValues.add(new GraphValue(row.time));
                     retValues.add(new GraphValue(row.data));
-                }
+                }*/
+                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(1));
+                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(2));
+                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(3));
+                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(2));
+                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(1));
+                retValues.add(new GraphValue(1399155529));
+                retValues.add(new GraphValue(0));
                 result.putParcelableArrayList("values", retValues);
                 return result;
             }
