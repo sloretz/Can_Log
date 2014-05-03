@@ -153,11 +153,11 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     }
     public void set_visible(page_t nextPage)
     {
-        if (nextPage == displayed_page)
+        /*if (nextPage == displayed_page)
         {
             //nothing to do, go away
             return;
-        }
+        }*/
 
         //remove timer tasks
         if (updateTimer != null) {
