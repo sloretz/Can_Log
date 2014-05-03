@@ -37,6 +37,8 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
     private static String PID_NUMBER = "pidNumber";
     private XYPlot xyPlot;
     private ListView listView;
+    //XY values interleaved
+    //(x:unix time, y:value)
     private ArrayList<GraphValue> graphValues;
     private Timer updateTimer;
     private page_t displayed_page = null;
@@ -46,39 +48,32 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
     private long endDate = Long.MAX_VALUE;
 
     private enum page_t {NO_PAGE, DOWNLOAD_PAGE, VIN_PICKER, PID_PICKER, PID_GRAPH};
-    private class DynamicRollingSeries implements XYSeries {
-        ArrayList<GraphValue> valuesReference;
 
-        public DynamicRollingSeries(ArrayList<GraphValue> values)
-        {
-            valuesReference = values;
-        }
-
-        @Override
-        public int size() {
-            return valuesReference.size()/2;
-        }
-
-        @Override
-        public Number getX(int index) {
-            //return valuesReference.get(index*2).getValue();
-            return index;
-        }
-
-        @Override
-        public Number getY(int index) {
-            return valuesReference.get(index*2 + 1).getValue();
-        }
-
-        @Override
-        public String getTitle() {
-            return "Err:Should not display";
-        }
-    }
 
     protected void redraw_graph()
     {
-        //TODO
+        //Set up plot series
+        LineAndPointFormatter seriesFormat = new LineAndPointFormatter();
+        seriesFormat.setPointLabeler(null);
+        seriesFormat.setPointLabelFormatter(new PointLabelFormatter());
+        seriesFormat.configure(getActivity().getApplicationContext(),
+                R.xml.line_point_formatter_with_plf1);
+
+        XYSeries series = new SimpleXYSeries(
+                _graphValuesToNumber(graphValues),
+                SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED,
+                "Err: should not display");
+
+        xyPlot.addSeries(series, seriesFormat);
+
+        // reduce the number of range labels
+        xyPlot.setTicksPerRangeLabel(3);
+        xyPlot.setDomainLabel(null);
+        xyPlot.setRangeLabel(null);
+        xyPlot.getGraphWidget().setGridPadding(10f,25f,10f,25f);
+        xyPlot.getGraphWidget().setDomainLabelPaint(null);
+        xyPlot.getGraphWidget().setDomainOriginLabelPaint(null);
+
         Log.d("LoggedDataPage", "Start time " + startDate + " end time " + endDate);
     }
 

@@ -227,6 +227,18 @@ public class PrettyPID {
         }
     }
 
+    public static String formatDataForPID(String PID, String data)
+    {
+        return formatDataForPID(toInteger(PID), data);
+    }
+
+    public static String formatDataForPID(int PID, String data)
+    {
+        //data is the string we got back from the
+        //for each PID, for
+        return data;
+    }
+
 
     public static String getType(String PID)
     {

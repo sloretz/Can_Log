@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.ViewDebug;
 import android.widget.Toast;
 
+import edu.sjsu.canlog.app.frontend.GraphValue;
+
 /**
  * Created by shane on 3/11/14.
  * GUI calls this when it wants data
@@ -585,6 +587,35 @@ public class Backend extends BluetoothService{
                 tempResult.putBoolean("done", true);
                 Log.d("Backend", "begin history download returning");
                 return tempResult;
+            }
+        };
+        task.execute(handler);
+    }
+
+    public void queryHistoryForPID(final String VIN, final String PID, final long startDate, final long endDate, ResultHandler handler)
+    {
+        //Yes this uses a bluetooth task, but no
+        //it does not use bluetooth. The reason for
+        //this is BluetoothTask handles posting the
+        //result onto the UI thread as well.
+        BluetoothTask task = new BluetoothTask() {
+            @Override
+            protected Bundle doSocketTransfer()
+            {
+                Bundle result = new Bundle();
+                //Use DatabaseHandler
+                DatabaseHandler h = new DatabaseHandler(mContext, VIN);
+                ArrayList<SQLdata> data = (ArrayList<SQLdata>) h.getAllDataRange(PID, startDate, endDate);
+                ArrayList<GraphValue> retValues = new ArrayList<GraphValue>();
+                Iterator<SQLdata> rowIter = data.iterator();
+                while (rowIter.hasNext())
+                {
+                    SQLdata row = rowIter.next();
+                    retValues.add(new GraphValue(row.time));
+                    retValues.add(new GraphValue(row.data));
+                }
+                result.putParcelableArrayList("values", retValues);
+                return result;
             }
         };
         task.execute(handler);
