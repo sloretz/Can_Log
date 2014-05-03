@@ -23,7 +23,7 @@ public class Backend extends BluetoothService{
     private ArrayList<Integer> loggedDataPIDs;
     private ArrayList<Integer> liveDataPIDs;
     private ArrayList<Integer> aboutCarPIDs;
-
+    private ArrayList<Integer> supportedPIDs;
 
     //This is passed in to the fetch functions
     //The backend bluetooth thread calls this
@@ -139,7 +139,7 @@ public class Backend extends BluetoothService{
                     {
                         if((PIDs & PIDsComparator) != 0)
                         {
-                            liveDataPIDs.add(PIDadder);
+                            supportedPIDs.add(PIDadder);
                         }
                         --PIDadder;
                         PIDsComparator=PIDsComparator << 1;
@@ -152,7 +152,7 @@ public class Backend extends BluetoothService{
                     {
                         if((PIDs & PIDsComparator) != 0)
                         {
-                            liveDataPIDs.add(PIDadder);
+                            supportedPIDs.add(PIDadder);
                         }
                         --PIDadder;
                         PIDsComparator=PIDsComparator << 1;
@@ -165,7 +165,7 @@ public class Backend extends BluetoothService{
                     {
                         if((PIDs & PIDsComparator) != 0)
                         {
-                            liveDataPIDs.add(PIDadder);
+                            supportedPIDs.add(PIDadder);
                         }
                         --PIDadder;
                         PIDsComparator=PIDsComparator << 1;
