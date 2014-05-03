@@ -240,19 +240,19 @@ public class Backend extends BluetoothService{
 
                     Log.d("Backend", "Starting to run PID commands");
                     //Get the live data for supported PIDs
-                    Iterator<Integer> pidIter = liveDataPIDs.iterator();
-                    while (pidIter.hasNext()) {
-                        Integer pid = pidIter.next();
+                    //Iterator<Integer> pidIter = liveDataPIDs.iterator();
+                    for(Integer pid : liveDataPIDs) {
+                        //Integer pid = pidIter.next();
                         boolean isSupported = false;
-                        for(Iterator<Integer> supportedIterator = supportedPIDs.iterator(); supportedIterator.hasNext();)
+                        for(Integer var : supportedPIDs)
                         {
-                            if(pid == supportedIterator.next())
+                            if(pid.equals(var))
                             {
                                 isSupported=true;
                                 break;
                             }
                         }
-                        if(isSupported == false)
+                        if(!isSupported)
                         {
                             continue;
                         }
@@ -332,7 +332,7 @@ public class Backend extends BluetoothService{
                 ArrayList<String> descList = new ArrayList<String>();
                 try {
                     bt_writeln("dtc");
-                    String nextLine = "";
+                    String nextLine;
                     while (true)
                     {
                         Log.d("Backend", "fetch DTC about readline");
@@ -483,7 +483,7 @@ public class Backend extends BluetoothService{
             {
                 Log.d("Backend", "Fetch sensor data running");
                 Bundle result = new Bundle();
-                String data = "";
+                String data;
                 String type = "";
                 try {
                     bt_writeln("pid " + PrettyPID.toInteger(sensorHandle));
@@ -540,7 +540,7 @@ public class Backend extends BluetoothService{
             protected Bundle doSocketTransfer()
             {
                 Log.d("Backend", "fetch logged VINs running");
-                Random r = new Random();
+                //Random r = new Random();
                 //debug logic
                 Bundle tempResult = new Bundle();
                 ArrayList<String> vinList = new ArrayList<String>();
