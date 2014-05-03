@@ -10,6 +10,7 @@ import java.util.Random;
 import android.content.Context;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.ViewDebug;
 import android.widget.Toast;
 
 /**
@@ -63,7 +64,7 @@ public class Backend extends BluetoothService{
         //pids supported 41-60
         //250,28,32,0
         //11111010 00011100 00100000 00000000
-
+        /*
         liveDataPIDs.add(0x4); //Calculated engine load value
         liveDataPIDs.add(0x5); //Engine coolant temperature
         //liveDataPIDs.add(0x6);
@@ -121,7 +122,7 @@ public class Backend extends BluetoothService{
         //liveDataPIDs.add(0x5c);
         //liveDataPIDs.add(0x5d);
         //liveDataPIDs.add(0x5e);
-
+        */
         BluetoothTask task = new BluetoothTask() {
             @Override
             protected Bundle doSocketTransfer()
@@ -129,32 +130,53 @@ public class Backend extends BluetoothService{
                 Log.d("Backend", "Fetch avail sen and dat sock tran run");
                 Bundle result = new Bundle();
                 try {
-                    ArrayList<String> pidList = new ArrayList<String>();
-                    ArrayList<String> prettyList = new ArrayList<String>();
-                    ArrayList<String> dataList = new ArrayList<String>();
-
-
-                    Log.d("Backend", "Starting to run PID commands");
-                    //Get the live data for supported PIDs
-                    Iterator<Integer> pidIter = liveDataPIDs.iterator();
-                    while (pidIter.hasNext()) {
-                        Integer pid = pidIter.next();
-                        pidList.add("x" + Integer.toHexString(pid));
-                        prettyList.add(PrettyPID.getDescription(pid));
-                        bt_writeln("pid " + pid);
-                        dataList.add(bt_readln());
+                    bt_writeln("PID 00");
+                    int PIDs= Integer.valueOf(bt_readln());
+                    //start finding them from 19 to 1, because its easier to declare to 2 and bit shift that way
+                    int PIDsComparator =2;
+                    int PIDadder=0x1F;
+                    while(PIDsComparator != 0)
+                    {
+                        if((PIDs | PIDsComparator) != 0)
+                        {
+                            liveDataPIDs.add(PIDadder);
+                        }
+                        --PIDadder;
+                        PIDsComparator=PIDsComparator << 1;
                     }
-                    Log.d("Backend", "Finished running PID commands");
-                    result.putStringArrayList("Sensors", prettyList);
-                    result.putStringArrayList("PIDs", pidList);
-                    result.putStringArrayList("Data", dataList);
+                    bt_writeln("PID 32");
+                    PIDs= Integer.valueOf(bt_readln());
+                    PIDsComparator =2;
+                    PIDadder=0x3F;
+                    while(PIDsComparator != 0)
+                    {
+                        if((PIDs | PIDsComparator) != 0)
+                        {
+                            liveDataPIDs.add(PIDadder);
+                        }
+                        --PIDadder;
+                        PIDsComparator=PIDsComparator << 1;
+                    }
+                    bt_writeln("PID 64");
+                    PIDs= Integer.valueOf(bt_readln());
+                    PIDsComparator =2;
+                    PIDadder=0x5F;
+                    while(PIDsComparator != 0)
+                    {
+                        if((PIDs | PIDsComparator) != 0)
+                        {
+                            liveDataPIDs.add(PIDadder);
+                        }
+                        --PIDadder;
+                        PIDsComparator=PIDsComparator << 1;
+                    }
 
                 } catch (IOException e)
                 {
                     Log.d("Backend", "Fetch sensors and data exception " + e.getLocalizedMessage());
                     result.putString("error", e.getLocalizedMessage());
                 }
-                return result;
+                return null;
             }
         };
         task.execute((ResultHandler)null);
