@@ -34,7 +34,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addRow(int time, int x03, int x04, int x05, int x0c, int x0d, int x11, int x1f, int x21, int x2f, int x30, int x31, int x4d, int x5c, int x5e)
+    public void addRow(int time, int x03, int x04, int x05, int x0c, int x0d, int x11, int x2f, int x5c, int x5e)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values= new ContentValues();
