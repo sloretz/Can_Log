@@ -199,13 +199,13 @@ public class BluetoothService {
 
 
         private final BluetoothSocket mmSocket;
-        private final BluetoothDevice mmDevice;
+        //private final BluetoothDevice mmDevice;
 
 
         public ConnectThread(BluetoothDevice device) {
             BluetoothSocket tmp = null;
             //TelephonyManager tManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-            mmDevice = device;
+            //mmDevice = device;
             try {
                 Log.e("Device being connected to", device.toString());
                 tmp = device.createRfcommSocketToServiceRecord((UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")));

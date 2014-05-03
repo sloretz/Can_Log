@@ -4,7 +4,6 @@ import android.os.Bundle;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 import android.content.Context;
 import android.text.format.Time;
 import android.util.Log;
@@ -554,7 +553,7 @@ public class Backend extends BluetoothService{
         task.execute(handler);
     }
 
-    public void fetchLoggedPIDs(String vin, ResultHandler handler)
+    public void fetchLoggedPIDs(ResultHandler handler)
     {
         //Don't need to ask the microcontroller about this one
         //it's hard coded here
@@ -565,9 +564,9 @@ public class Backend extends BluetoothService{
         ArrayList<String> pidList = new ArrayList<String>();
         ArrayList<String> prettyList = new ArrayList<String>();
 
-        Iterator<Integer> pidIter = loggedDataPIDs.iterator();
-        while (pidIter.hasNext()) {
-            Integer pid = pidIter.next();
+        //Iterator<Integer> pidIter = loggedDataPIDs.iterator();
+        for (Integer pid : loggedDataPIDs) {
+            //Integer pid = pidIter.next();
             pidList.add(PrettyPID.toString(pid));
             prettyList.add(PrettyPID.getDescription(pid));
         }
