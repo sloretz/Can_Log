@@ -257,7 +257,7 @@ public class Backend extends BluetoothService{
                         {
                             continue;
                         }
-                        pidList.add("x" + Integer.toHexString(pid));
+                        pidList.add(PrettyPID.toString(pid));
                         prettyList.add(PrettyPID.getDescription(pid));
                         bt_writeln("pid " + pid);
                         dataList.add(bt_readln());
@@ -569,7 +569,7 @@ public class Backend extends BluetoothService{
         Iterator<Integer> pidIter = loggedDataPIDs.iterator();
         while (pidIter.hasNext()) {
             Integer pid = pidIter.next();
-            pidList.add("x" + Integer.toHexString(pid));
+            pidList.add(PrettyPID.toString(pid));
             prettyList.add(PrettyPID.getDescription(pid));
         }
         tempResult.putStringArrayList("PID", pidList);
@@ -585,20 +585,22 @@ public class Backend extends BluetoothService{
             protected Bundle doSocketTransfer()
             {
                 Log.d("Backend", "begin history download running");
-                Random r = new Random();
-                try {
-                    Thread.sleep(4000);
-                } catch (InterruptedException e) {
-                    //uh yeah, this is debug code
-                }
+
                 //TODO there is a way to do
                 //progress with AsyncTask, It's what
                 //they're designed for. Figure it out.
                 //debug logic
-                Bundle tempResult = new Bundle();
-                tempResult.putBoolean("done", true);
+                Bundle result = new Bundle();
+
+                try {
+                    //first read the number of lines for progress
+                    //then read one row until we hit the ~\n
+                } catch (IOException e) {
+                    result.putString("error", e.getLocalizedMessage());
+                }
+
                 Log.d("Backend", "begin history download returning");
-                return tempResult;
+                return result;
             }
         };
         task.execute(handler);

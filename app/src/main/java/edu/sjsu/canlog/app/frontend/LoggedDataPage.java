@@ -55,6 +55,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
         //Get the data again, this is fast
         final Backend backend = Backend.getInstance();
         //get the graph data from the backend
+        Log.d("LoggedDataPage", "currentVIN " + currentVIN + " currentPID " + currentPID);
         backend.queryHistoryForPID(currentVIN, currentPID, startDate, endDate, new Backend.ResultHandler() {
             public void gotResult(Bundle result) {
                 if (backend.wasError(result))
@@ -172,7 +173,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
                     Iterator<String> pidIter = PIDs.iterator();
                     Iterator<String> descIter = descriptions.iterator();
                     while (pidIter.hasNext() && descIter.hasNext()) {
-                        sensorDataListAdapter.addSensor(descIter.next(), "", "");
+                        sensorDataListAdapter.addSensor(descIter.next(), "", pidIter.next());
                     }
                 }
             });
@@ -180,7 +181,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             //Set a click listener that brings us to the PID page
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> adapter, View v, int position, long id){
-                    currentPID = sensorDataListAdapter.getSensorValue(position);
+                    currentPID = sensorDataListAdapter.getUserData(position);
                     Log.d("LoggedDataPage", "PID clicked " + currentPID);
                     set_visible(page_t.PID_GRAPH);
                 }
