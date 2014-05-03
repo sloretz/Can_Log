@@ -137,7 +137,7 @@ public class BluetoothService {
     }
 
 
-    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device)
+    public synchronized void connected(BluetoothSocket socket)
     {
         Log.d("Connected", "We are connected");
         if (mConnectThread != null)
@@ -221,7 +221,7 @@ public class BluetoothService {
                 mmSocket.connect();
             } catch (IOException connectException) {
                 try {
-                    Log.e("Device is:", mmSocket.getRemoteDevice().toString());
+                    //Log.e("Device is:", mmSocket.getRemoteDevice().toString());
                     Log.e("Connection Exception",connectException.toString());
                     Log.e("Pointer is",Integer.toString(this.hashCode()));
                     mmSocket.close();
@@ -233,7 +233,7 @@ public class BluetoothService {
                 mConnectThread=null;
             }
 
-            connected(mmSocket, mmDevice);
+            connected(mmSocket);
         }
 
 
