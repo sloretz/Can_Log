@@ -52,29 +52,31 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
 
     protected void redraw_graph()
     {
-        //Set up plot series
-        LineAndPointFormatter seriesFormat = new LineAndPointFormatter();
-        seriesFormat.setPointLabeler(null);
-        seriesFormat.setPointLabelFormatter(new PointLabelFormatter());
-        seriesFormat.configure(getActivity().getApplicationContext(),
-                R.xml.line_point_formatter_with_plf1);
+        //Get the data again, this is fast
+        final Backend backend = Backend.getInstance();
+        //get the graph data from the backend
+        backend.queryHistoryForPID(currentVIN, currentPID, startDate, endDate, new Backend.ResultHandler() {
+            public void gotResult(Bundle result) {
+                if (backend.wasError(result))
+                    return;
+                graphValues = result.getParcelableArrayList("values");
 
-        XYSeries series = new SimpleXYSeries(
-                _graphValuesToNumber(graphValues),
-                SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED,
-                "Err: should not display");
+                //Set up plot series
+                LineAndPointFormatter seriesFormat = new LineAndPointFormatter();
+                seriesFormat.setPointLabeler(null);
+                seriesFormat.setPointLabelFormatter(new PointLabelFormatter());
+                seriesFormat.configure(getActivity().getApplicationContext(),
+                        R.xml.line_point_formatter_with_plf1);
 
-        xyPlot.addSeries(series, seriesFormat);
+                XYSeries series = new SimpleXYSeries(
+                        _graphValuesToNumber(graphValues),
+                        SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED,
+                        "Err: should not display");
 
-        // reduce the number of range labels
-        xyPlot.setTicksPerRangeLabel(3);
-        xyPlot.setDomainLabel(null);
-        xyPlot.setRangeLabel(null);
-        xyPlot.getGraphWidget().setGridPadding(10f,25f,10f,25f);
-        xyPlot.getGraphWidget().setDomainLabelPaint(null);
-        xyPlot.getGraphWidget().setDomainOriginLabelPaint(null);
-
-        Log.d("LoggedDataPage", "Start time " + startDate + " end time " + endDate);
+                xyPlot.addSeries(series, seriesFormat);
+                xyPlot.redraw();
+            }
+        });
     }
 
     public void promptForStartDate()
@@ -119,7 +121,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             listView.setVisibility(View.GONE);
             xyPlot.setVisibility(View.VISIBLE);
 
-            //get the graph data from the backend
+
         }
         else if (nextPage == page_t.VIN_PICKER)
         {
@@ -272,6 +274,14 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
         View rootView = inflater.inflate(R.layout.live_data_page, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
         xyPlot = (XYPlot) rootView.findViewById(R.id.XYPlot);
+
+        //reduce the number of range labels
+        xyPlot.setTicksPerRangeLabel(3);
+        xyPlot.setDomainLabel(null);
+        xyPlot.setRangeLabel(null);
+        xyPlot.getGraphWidget().setGridPadding(10f,25f,10f,25f);
+        xyPlot.getGraphWidget().setDomainLabelPaint(null);
+        xyPlot.getGraphWidget().setDomainOriginLabelPaint(null);
 
         if (savedInstanceState != null)
         {

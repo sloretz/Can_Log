@@ -1,6 +1,7 @@
 package edu.sjsu.canlog.app.frontend;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class AboutCarPage extends SensorDataListViewFragment implements HandleVi
                     return;
                 ArrayList<String> names = result.getStringArrayList("carInfoNames");
                 ArrayList<String> values = result.getStringArrayList("values");
+                Log.d("AboutCarPage", "Num values " + values.size());
                 if (sensorDataListAdapter.getCount() == 0) {
                     Iterator<String> nameIter = names.iterator();
                     Iterator<String> valIter = values.iterator();
