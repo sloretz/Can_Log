@@ -594,6 +594,8 @@ public class Backend extends BluetoothService{
                 try {
                     //first read the number of lines for progress
                     //then read one row until we hit the ~\n
+                    Integer numLines = Integer.valueOf(bt_readln());
+                    
                 } catch (IOException e) {
                     result.putString("error", e.getLocalizedMessage());
                 }
