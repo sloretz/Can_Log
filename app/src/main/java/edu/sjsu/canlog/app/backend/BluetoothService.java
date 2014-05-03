@@ -19,8 +19,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Condition;
 
-import edu.sjsu.canlog.app.MainActivity;
-
 
 /**
  * Created by Brian on 3/29/2014.

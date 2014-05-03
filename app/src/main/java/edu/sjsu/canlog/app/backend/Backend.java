@@ -1,8 +1,6 @@
 package edu.sjsu.canlog.app.backend;
 
-import android.app.ExpandableListActivity;
 import android.os.Bundle;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,7 +8,6 @@ import java.util.Random;
 import android.content.Context;
 import android.text.format.Time;
 import android.util.Log;
-import android.view.ViewDebug;
 import android.widget.Toast;
 
 import edu.sjsu.canlog.app.frontend.GraphValue;
