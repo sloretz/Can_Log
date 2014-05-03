@@ -133,7 +133,7 @@ public class Backend extends BluetoothService{
                     bt_writeln("pid 00");
                     long PIDs= Long.valueOf(bt_readln(),16);
                     //start finding them from 19 to 1, because its easier to declare to 2 and bit shift that way
-                    long PIDsComparator =2;
+                    int PIDsComparator =2;
                     int PIDadder=0x1F;
                     while(PIDsComparator != 0)
                     {

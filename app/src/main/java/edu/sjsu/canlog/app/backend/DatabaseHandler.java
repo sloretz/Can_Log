@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
-import java.util.List;
 import java.util.ArrayList;
 /**
 * Created by Brian on 4/27/2014.
@@ -52,9 +51,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(tableVIN, null, values);
     }
 
-    public List<SQLdata> getAllData(String column){
+    public ArrayList<SQLdata> getAllData(String column){
 
-        List<SQLdata> data = new ArrayList<SQLdata>();
+        ArrayList<SQLdata> data = new ArrayList<SQLdata>();
         String selectQuery= "SELECT time, " + column + " FROM " + tableVIN +";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -66,9 +65,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return data;
     }
-    public List<SQLdata> getAllDataRange(String column, long begin, long end)
+    public ArrayList<SQLdata> getAllDataRange(String column, long begin, long end)
     {
-        List<SQLdata> data = new ArrayList<SQLdata>();
+        ArrayList<SQLdata> data = new ArrayList<SQLdata>();
         String selectQuery= "SELECT time, " + column + " FROM " + tableVIN + " WHERE time > " + begin +" AND time < " + end + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
