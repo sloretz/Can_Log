@@ -365,6 +365,11 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
                             set_visible(page_t.VIN_PICKER);
                             dismiss();
                         }
+                        public void gotProgress(Float percentage)
+                        {
+                            pb.setProgress(Math.round(percentage)*100);
+                        }
+
                     });
                 }
             });
