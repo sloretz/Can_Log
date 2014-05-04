@@ -628,7 +628,7 @@ public class Backend extends BluetoothService{
                                 Integer.valueOf(splitRow[8]),
                                 Integer.valueOf(splitRow[9]),
                                 Integer.valueOf(splitRow[10]));
-                        ;                    }
+                    }
 
                 } catch (IOException e) {
                     result.putString("error", e.getLocalizedMessage());
