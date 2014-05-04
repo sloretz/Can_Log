@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Timer;
 import com.androidplot.xy.*;
 
 
@@ -32,9 +31,9 @@ import com.androidplot.xy.*;
 public class LoggedDataPage extends SensorDataListViewFragment implements HandleBack, HandleVisibilityChange {
     private static String GRAPH_VALUE_LIST = "graphValuesList";
     private static String CURRENT_PAGE = "currentlyDisplayedPage";
-    private static String DEFAULT_SERIES_NAME = " ERR getting name";
+    //private static String DEFAULT_SERIES_NAME = " ERR getting name";
     private static String VIN_NUMBER = "vinNumber";
-    private static String PID_NUMBER = "pidNumber";
+    //private static String PID_NUMBER = "pidNumber";
     private XYPlot xyPlot;
     private ListView listView;
     //XY values interleaved
@@ -46,7 +45,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
     private long startDate = Long.MIN_VALUE;
     private long endDate = Long.MAX_VALUE;
 
-    private enum page_t {NO_PAGE, DOWNLOAD_PAGE, VIN_PICKER, PID_PICKER, PID_GRAPH};
+    private enum page_t {NO_PAGE, DOWNLOAD_PAGE, VIN_PICKER, PID_PICKER, PID_GRAPH}
 
 
     protected void redraw_graph()
@@ -260,7 +259,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
      * values that we want to use to populate the new
      * instance that is created when the activity is
      * rebuilt
-     * @param state
+     * @param state is the state
      */
     @Override
     public void onSaveInstanceState(Bundle state)
@@ -286,10 +285,10 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
      * Activity is being created
      * Create our instance, possibly using the values that
      * we saved when the last instance was destroyed
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * @param inflater inflates
+     * @param container contains
+     * @param savedInstanceState saves
+     * @return root view
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -324,10 +323,10 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
     protected ArrayList<Number> _graphValuesToNumber(ArrayList<GraphValue> graphValues)
     {
         ArrayList<Number> values = new ArrayList<Number>();
-        Iterator<GraphValue> valueIterator = graphValues.iterator();
-        while (valueIterator.hasNext())
+        //Iterator<GraphValue> valueIterator = graphValues.iterator();
+        for (GraphValue iterator : graphValues)
         {
-            values.add(valueIterator.next().getValue());
+            values.add(iterator.getValue());
         }
         return values;
     }
@@ -373,9 +372,10 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             return v;
         }
     }
-
+    /*
     protected String _findSeriesName()
     {
-        return DEFAULT_SERIES_NAME;
+        return " ERR getting name";
     }
+    */
 }

@@ -26,7 +26,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     private static String SENSOR_NAME_LIST = "sensorNameList";
     private static String SENSOR_VALUE_LIST = "sensorValueList";
     private static String SENSOR_USERDATA_LIST = "sensorUserDataList";
-    private static String DEFAULT_SERIES_NAME = " ERR getting name";
+    //private static String DEFAULT_SERIES_NAME = " ERR getting name";
     private static int HISTORY_SIZE = 30;
     private XYPlot xyPlot;
     private ListView listView;
@@ -36,7 +36,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     private boolean BTrequestOutstanding = false;
     private page_t displayed_page = page_t.NO_PAGE;
 
-    private enum page_t {NO_PAGE, PID_PICKER, PID_GRAPH};
+    private enum page_t {NO_PAGE, PID_PICKER, PID_GRAPH}
 
     private class DynamicRollingSeries implements XYSeries {
         ArrayList<GraphValue> valuesReference;
@@ -106,11 +106,11 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     }
 
     private class GraphUpdateTask extends TimerTask {
-        private int index = -1;
+        //private int index = -1;
         private String sensorHandle;
         public GraphUpdateTask(int index)
         {
-            this.index = index;
+            //this.index = index;
             sensorHandle = sensorDataListAdapter.getUserData(index);
         }
         @Override
@@ -359,6 +359,6 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         {
             return sensorDataListAdapter.getSensorName(currentPID);
         }
-        return DEFAULT_SERIES_NAME;
+        return " ERR getting name";
     }
 }
