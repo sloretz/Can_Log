@@ -30,7 +30,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     private static int HISTORY_SIZE = 30;
     private XYPlot xyPlot;
     private ListView listView;
-    private Integer currentPID = null;
+    private int currentPID = -1;
     private ArrayList<GraphValue> graphValues;
     private Timer updateTimer;
     private boolean BTrequestOutstanding = false;
@@ -185,7 +185,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
             listView.setVisibility(View.VISIBLE);
             xyPlot.setVisibility(View.GONE);
 
-            currentPID = null;
+            currentPID = -1;
 
             listView.setVisibility(View.VISIBLE);
             xyPlot.setVisibility(View.GONE);
@@ -198,7 +198,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     public void onBecomesVisible()
     {
         android.util.Log.d("LiveDataPage", "onBecomesVisible");
-        if (currentPID != null)
+        if (currentPID >= 0)
             set_visible(page_t.PID_GRAPH);
         else
             set_visible(page_t.PID_PICKER);
@@ -247,8 +247,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
             updateTimer = null;
         }
         super.onSaveInstanceState(state);
-        if (currentPID != null)
-            state.putInt(SENSOR_GRAPH_IDX, currentPID);
+        state.putInt(SENSOR_GRAPH_IDX, currentPID);
         state.putParcelableArrayList(GRAPH_VALUE_LIST, graphValues);
 
         //Save the list
@@ -262,7 +261,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         }
         state.putStringArrayList(SENSOR_NAME_LIST, sensorNames);
         state.putStringArrayList(SENSOR_VALUE_LIST, sensorValues);
-        state.putStringArrayList(SENSOR_VALUE_LIST, userData);
+        state.putStringArrayList(SENSOR_USERDATA_LIST, userData);
 
     }
 
@@ -335,14 +334,9 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         xyPlot.setDomainLowerBoundary(0,BoundaryMode.FIXED);
         xyPlot.setDomainUpperBoundary(30,BoundaryMode.FIXED);
 
-        //Don't begin BT transfers until
-        if (currentPID != null)
-            set_visible(page_t.PID_GRAPH);
-        else
-        {
-            listView.setVisibility(View.GONE);
-            xyPlot.setVisibility(View.GONE);
-        }
+
+        listView.setVisibility(View.GONE);
+        xyPlot.setVisibility(View.GONE);
 
         return rootView;
     }

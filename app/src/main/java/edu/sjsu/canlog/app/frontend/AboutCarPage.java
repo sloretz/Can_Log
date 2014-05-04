@@ -55,10 +55,10 @@ public class AboutCarPage extends SensorDataListViewFragment implements HandleVi
                              Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
-        //Special case, we're the first page on the GUI so we become visible on create
+        /*//Special case, we're the first page on the GUI so we become visible on create
         if (firstCreate)
             onBecomesVisible();
-        firstCreate = false;
+        firstCreate = false;*/
 
         return rootView;
     }

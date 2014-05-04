@@ -23,7 +23,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     public static int REQUEST_ENABLE_BT = 3;
     public static String HAVE_REQUESTED_BT = "HaveRequestedBluetooth";
+    public static String DO_HAVE_BT_CONN = "doHaveBTConnection";
+    public static String CURRENT_PAGE_DISPLAYED = "currentPageDisplayed";
+    protected int currentPage = 0;
     private boolean haveRequestedBluetooth = false;
+    private boolean haveBTConn = false;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -44,6 +48,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     {
         super.onSaveInstanceState(state);
         state.putBoolean(HAVE_REQUESTED_BT, haveRequestedBluetooth);
+        state.putBoolean(DO_HAVE_BT_CONN, haveBTConn);
     }
 
     @Override
@@ -54,17 +59,35 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onResume();
+        Fragment visibleFragment = getVisiblePage();
+        if (visibleFragment instanceof HandleVisibilityChange)
+        {
+            if(hasFocus){
+                ((HandleVisibilityChange) visibleFragment).onBecomesVisible();
+            }
+            else {
+                ((HandleVisibilityChange) visibleFragment).onBecomesInvisible();
+            }
+        }
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Initialize backend first
-        Backend backend = new Backend(getApplicationContext());
-        backend.start();
 
-        backend.setBoardTime(null);
 
         //restore state
         if (savedInstanceState != null) {
             haveRequestedBluetooth = savedInstanceState.getBoolean(HAVE_REQUESTED_BT);
+            haveBTConn = savedInstanceState.getBoolean(DO_HAVE_BT_CONN);
         }
 
         setContentView(R.layout.activity_main);
@@ -85,13 +108,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
         ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
-            private int currentPosition = -1;
             @Override
             public void onPageSelected(int position) {
                 Log.i("visible", "onPageSelected " + Integer.toString(position));
                 //Hide the old
-                if (currentPosition >= 0) {
-                    Fragment invisibleFragment = (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, currentPosition);
+                if (currentPage >= 0) {
+                    Fragment invisibleFragment = (Fragment) mSectionsPagerAdapter.instantiateItem(mViewPager, currentPage);
                     if (invisibleFragment instanceof HandleVisibilityChange) {
                         ((HandleVisibilityChange) invisibleFragment).onBecomesInvisible();
                     }
@@ -103,7 +125,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 {
                     ((HandleVisibilityChange) visibleFragment).onBecomesVisible();
                 }
-                currentPosition = position;
+                currentPage = position;
             }
         };
         mViewPager.setOnPageChangeListener( pageChangeListener );
@@ -135,9 +157,13 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 startActivityForResult(enableBTIntent, REQUEST_ENABLE_BT);
             }
             //Request bluetooth, but only do it once
-            if (!backend.isConnected())//!haveRequestedBluetooth)
+            if (!haveBTConn)//!haveRequestedBluetooth)
             {
-                haveRequestedBluetooth = true;
+                //Initialize backend first
+                Backend backend = new Backend(getApplicationContext());
+                backend.start();
+                backend.setBoardTime(null);
+
                 final ConnectingDialog blockingDialog = new ConnectingDialog();
                 blockingDialog.setCancelable(false);
                 blockingDialog.show(getSupportFragmentManager(), "ConnectDeviceDialog");
@@ -145,6 +171,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 backend.waitForConnection(new Backend.ResultHandler() {
                     public void gotResult(Bundle result) {
                         Log.d("PairDeviceDialog", "We must be connected, dismissing dialog");
+                        haveBTConn = true;
                         blockingDialog.dismiss();
                     }
                 });
@@ -153,14 +180,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 final PairDeviceDialog pairDeviceDialog = new PairDeviceDialog();
                 pairDeviceDialog.setCancelable(false);
                 pairDeviceDialog.show(getSupportFragmentManager(), "PairDeviceDialog");
-
-                //Create dialog that will block until a device is paired
-                //final DatePickerFragment dateDialog = new DatePickerFragment();
-                //dateDialog.setCancelable(false);
-                //dateDialog.show(getSupportFragmentManager(), "DateDialog");
             }
-
-            //Assume the user has enabled bluetooth
 
         }
     }

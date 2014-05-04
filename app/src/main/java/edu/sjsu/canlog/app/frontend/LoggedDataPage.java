@@ -40,8 +40,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
     //XY values interleaved
     //(x:unix time, y:value)
     private ArrayList<GraphValue> graphValues;
-    private Timer updateTimer;
-    private page_t displayed_page = null;
+    private page_t displayed_page = page_t.NO_PAGE;
     private String currentVIN = null;
     private String currentPID = null;
     private long startDate = Long.MIN_VALUE;
@@ -109,13 +108,34 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
         dateDialog.show(getActivity().getSupportFragmentManager(), "DateDialog");
     }
 
+    private void logCurrentPage()
+    {
+        if (displayed_page == page_t.NO_PAGE)
+            Log.d("LoggedDataPage", "no_page");
+        else if (displayed_page == page_t.DOWNLOAD_PAGE)
+            Log.d("LoggedDataPage", "DOWNLOAD_PAGE");
+        else if (displayed_page == page_t.PID_PICKER)
+            Log.d("LoggedDataPage", "PID_PICKER");
+        else if (displayed_page == page_t.PID_GRAPH)
+            Log.d("LoggedDataPage", "PID_GRAPH");
+        else if (displayed_page == page_t.VIN_PICKER)
+            Log.d("LoggedDataPage", "VIN_PICKER");
+        else
+            Log.d("LoggedDataPage", "No page?");
+    }
+
+
     public void set_visible(page_t nextPage)
     {
+        Log.d("LoggedDataPage", "set_visible called");
+        logCurrentPage();
+
         if (nextPage == displayed_page)
         {
             //nothing to do, go away
             return;
         }
+        displayed_page = nextPage;
 
         if (nextPage == page_t.PID_GRAPH)
         {
@@ -126,6 +146,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
         }
         else if (nextPage == page_t.VIN_PICKER)
         {
+            Log.d("LoggedDataPage", "showing the vin picker");
             //show the list, hide the graph
             listView.setVisibility(View.VISIBLE);
             xyPlot.setVisibility(View.GONE);
@@ -134,6 +155,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             sensorDataListAdapter = new SensorDataListAdapter(getActivity());
             listView.setAdapter(sensorDataListAdapter);
             Backend backend = Backend.getInstance();
+            Log.d("LoggedDataPage", "Calling backend function");
             backend.fetchLoggedVINs(new Backend.ResultHandler() {
                 public void gotResult(Bundle result) {
                     ArrayList<String> VINs = result.getStringArrayList("VIN");
@@ -201,25 +223,21 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             listView.setVisibility(View.GONE);
             xyPlot.setVisibility(View.GONE);
         }
-
-        displayed_page = nextPage;
     }
 
     public void onBecomesVisible()
     {
         android.util.Log.d("LoggedDataPage", "onBecomesVisible");
-        set_visible(page_t.DOWNLOAD_PAGE);
+        logCurrentPage();
+        if (displayed_page == page_t.NO_PAGE)
+            set_visible(page_t.DOWNLOAD_PAGE);
     }
 
     public void onBecomesInvisible()
     {
-        android.util.Log.d("LiveDataPage", "onBecomesInvisible");
-        if (updateTimer != null) {
-            //remove timer tasks
-            updateTimer.cancel();
-            updateTimer.purge();
-            updateTimer = null;
-        }
+        android.util.Log.d("LoggedDataPage", "onBecomesInvisible");
+        logCurrentPage();
+
     }
 
 
@@ -248,6 +266,8 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
     public void onSaveInstanceState(Bundle state)
     {
         super.onSaveInstanceState(state);
+        Log.d("LoggedDataPage", "Saving instance state");
+        logCurrentPage();
         state.putParcelableArrayList(GRAPH_VALUE_LIST, graphValues);
         state.putSerializable(CURRENT_PAGE, displayed_page);
         state.putString(VIN_NUMBER,currentVIN);
@@ -255,6 +275,8 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
 
     private void restore_state(Bundle savedState)
     {
+        Log.d("LoggedDataPage", "Restoring instance state");
+        logCurrentPage();
         graphValues = savedState.getParcelableArrayList(GRAPH_VALUE_LIST);
         currentVIN = savedState.getString(VIN_NUMBER);
         set_visible((page_t)savedState.getSerializable(CURRENT_PAGE));
@@ -276,6 +298,8 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
         listView = (ListView) rootView.findViewById(R.id.listView);
         xyPlot = (XYPlot) rootView.findViewById(R.id.XYPlot);
 
+        Log.d("LoggedDataPage", "onCreateView");
+
         //reduce the number of range labels
         xyPlot.setTicksPerRangeLabel(3);
         xyPlot.setDomainLabel(null);
@@ -290,6 +314,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
         }
         else {
             //do nothing. onBecomesVisible will set the current page as download page
+            Log.d("LoggedDataPage", "no saved state to restore from");
             set_visible(page_t.NO_PAGE);
         }
 

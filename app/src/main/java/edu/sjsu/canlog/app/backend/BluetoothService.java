@@ -171,12 +171,6 @@ public class BluetoothService {
     public synchronized void start()
     {
         Log.d("STARTING SERVICE", "START");
-        if (mConnectedSocket != null)
-        {
-            //we're already connected. Don't lose connection
-            //This could happen on app rotate
-            return;
-        }
 
         if(mConnectThread != null)
         {

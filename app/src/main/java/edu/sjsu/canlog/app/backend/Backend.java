@@ -34,6 +34,7 @@ public class Backend extends BluetoothService{
     public Backend(Context context)
     {
         super(context);
+        Log.d("Backend", "Creating backend instance");
         _this = this;
 
         loggedDataPIDs = new ArrayList<Integer>();
