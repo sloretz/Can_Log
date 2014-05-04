@@ -2,6 +2,7 @@ package edu.sjsu.canlog.app.backend;
 
 /**
  * Created by Brian on 4/28/2014.
+ * just a class for db returns really pointless as own file
  */
 public class SQLdata {
 
