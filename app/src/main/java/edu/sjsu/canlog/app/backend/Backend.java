@@ -248,13 +248,8 @@ public class Backend extends BluetoothService{
                     ArrayList<String> pidList = new ArrayList<String>();
                     ArrayList<String> prettyList = new ArrayList<String>();
                     ArrayList<String> dataList = new ArrayList<String>();
-
-
                     Log.d("Backend", "Starting to run PID commands");
-                    //Get the live data for supported PIDs
-                    //Iterator<Integer> pidIter = liveDataPIDs.iterator();
                     for(Integer pid : liveDataPIDs) {
-                        //Integer pid = pidIter.next();
                         boolean isSupported = false;
                         for(Integer var : supportedPIDs)
                         {
