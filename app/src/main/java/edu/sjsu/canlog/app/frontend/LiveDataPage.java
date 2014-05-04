@@ -234,7 +234,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
      * values that we want to use to populate the new
      * instance that is created when the activity is
      * rebuilt
-     * @param state
+     *
      */
     @Override
     public void onSaveInstanceState(Bundle state)
@@ -270,10 +270,10 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
      * Activity is being created
      * Create our instance, possibly using the values that
      * we saved when the last instance was destroyed
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * @param inflater inflates
+     * @param container contains
+     * @param savedInstanceState saves
+     * @return rootview
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -350,10 +350,11 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     protected ArrayList<Number> _graphValuesToNumber(ArrayList<GraphValue> graphValues)
     {
         ArrayList<Number> values = new ArrayList<Number>();
-        Iterator<GraphValue> valueIterator = graphValues.iterator();
-        while (valueIterator.hasNext())
+        //Iterator<GraphValue> valueIterator = graphValues.iterator();
+        //while (valueIterator.hasNext())
+        for(GraphValue iterate : graphValues)
         {
-            values.add(valueIterator.next().getValue());
+            values.add(iterate.getValue());
         }
         return values;
     }
