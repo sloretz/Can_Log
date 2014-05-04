@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
 import android.util.Log;
-
 import java.util.ArrayList;
 /**
 * Created by Brian on 4/27/2014.
