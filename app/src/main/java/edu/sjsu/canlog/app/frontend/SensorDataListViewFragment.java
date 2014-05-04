@@ -12,6 +12,7 @@ import edu.sjsu.canlog.app.R;
 
 /**
  * Created by shane on 2/17/14.
+ * Sensor Data view
  */
 public class SensorDataListViewFragment extends Fragment{
         private static final String ARG_LIST_VALUES = "listValues";
@@ -21,6 +22,7 @@ public class SensorDataListViewFragment extends Fragment{
          * Returns a new instance of this fragment for the given section
          * number.
          */
+        /*
         public static SensorDataListViewFragment newInstance(ArrayList<String> Values) {
             SensorDataListViewFragment fragment = new SensorDataListViewFragment();
             Bundle args = new Bundle();
@@ -28,7 +30,7 @@ public class SensorDataListViewFragment extends Fragment{
             fragment.setArguments(args);
             return fragment;
         }
-
+        */
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -46,10 +48,11 @@ public class SensorDataListViewFragment extends Fragment{
 
             if (values != null)
             {
-                Iterator<String> strIter = values.iterator();
-                while (strIter.hasNext())
+                //Iterator<String> strIter = values.iterator();
+                //while (strIter.hasNext())
+                for(String strIterate : values)
                 {
-                    sensorDataListAdapter.addSensor(strIter.next(), "0.0", "");
+                    sensorDataListAdapter.addSensor(strIterate, "0.0", "");
                 }
             }
             listView.setAdapter(sensorDataListAdapter);
