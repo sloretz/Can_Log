@@ -254,14 +254,16 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         ArrayList<String> sensorNames = new ArrayList<String>();
         ArrayList<String> sensorValues = new ArrayList<String>();
         ArrayList<String> userData = new ArrayList<String>();
-        for (int i = 0; i < sensorDataListAdapter.getCount(); i++) {
-            sensorNames.add(sensorDataListAdapter.getSensorName(i));
-            sensorValues.add(sensorDataListAdapter.getSensorValue(i));
-            userData.add(sensorDataListAdapter.getUserData(i));
+        if (sensorDataListAdapter != null) {
+            for (int i = 0; i < sensorDataListAdapter.getCount(); i++) {
+                sensorNames.add(sensorDataListAdapter.getSensorName(i));
+                sensorValues.add(sensorDataListAdapter.getSensorValue(i));
+                userData.add(sensorDataListAdapter.getUserData(i));
+            }
+            state.putStringArrayList(SENSOR_NAME_LIST, sensorNames);
+            state.putStringArrayList(SENSOR_VALUE_LIST, sensorValues);
+            state.putStringArrayList(SENSOR_USERDATA_LIST, userData);
         }
-        state.putStringArrayList(SENSOR_NAME_LIST, sensorNames);
-        state.putStringArrayList(SENSOR_VALUE_LIST, sensorValues);
-        state.putStringArrayList(SENSOR_USERDATA_LIST, userData);
 
     }
 
@@ -292,11 +294,14 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
             ArrayList<String> sensors = savedInstanceState.getStringArrayList(SENSOR_NAME_LIST);
             ArrayList<String> data = savedInstanceState.getStringArrayList(SENSOR_VALUE_LIST);
             ArrayList<String> userData = savedInstanceState.getStringArrayList(SENSOR_USERDATA_LIST);
-            Iterator<String> senIter = sensors.iterator();
-            Iterator<String> datIter = data.iterator();
-            Iterator<String> udIter = userData.iterator();
-            while (senIter.hasNext() && datIter.hasNext()) {
-                sensorDataListAdapter.addSensor(senIter.next(), datIter.next(), udIter.next());
+
+            if (sensors != null) {
+                Iterator<String> senIter = sensors.iterator();
+                Iterator<String> datIter = data.iterator();
+                Iterator<String> udIter = userData.iterator();
+                while (senIter.hasNext() && datIter.hasNext()) {
+                    sensorDataListAdapter.addSensor(senIter.next(), datIter.next(), udIter.next());
+                }
             }
         }
         else
