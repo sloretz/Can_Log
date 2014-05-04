@@ -1,6 +1,7 @@
 package edu.sjsu.canlog.app;
 
 import android.app.Application;
+import android.util.Log;
 
 import edu.sjsu.canlog.app.backend.Backend;
 
@@ -12,9 +13,10 @@ public class MainApplication extends Application {
     @Override
     public void onTerminate()
     {
+        Log.d("Application", "Main application terminating");
+
         super.onTerminate();
-        Backend backend = Backend.getInstance();
-        backend.stop();
+
     }
 
 }

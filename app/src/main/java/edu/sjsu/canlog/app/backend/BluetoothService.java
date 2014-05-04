@@ -188,6 +188,8 @@ public class BluetoothService {
         }
         if (mConnectedSocket != null) {
             try {
+                btReader.close();
+                btWriter.close();
                 mConnectedSocket.close();
             } catch (IOException e){
                 //...

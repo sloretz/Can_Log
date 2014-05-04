@@ -3,6 +3,7 @@ package edu.sjsu.canlog.app;
 import java.util.Locale;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -52,9 +53,22 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     @Override
-    public void onStop(){
-        super.onStop();
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
 
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.e("MainActivity", "ORIENTATION_LANDSCAPE");
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Log.e("MainActivity", "ORIENTATION_PORTRAIT");
+        }
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        Log.d("MainActivity", "On destroy called");
+        Backend backend = Backend.getInstance();
+        backend.stop();
     }
 
     @Override
