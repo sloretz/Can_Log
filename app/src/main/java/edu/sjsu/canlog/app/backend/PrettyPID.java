@@ -2,23 +2,23 @@ package edu.sjsu.canlog.app.backend;
 
 import android.util.SparseArray;
 
-import java.util.HashMap;
 
 /**
  * Created by shane on 4/27/14.
+ * does pretty formatting
  */
 public class PrettyPID {
-    private static HashMap<Integer,String> descriptions;
+    private static SparseArray<String> descriptions;
     private static SparseArray<String> types;
 
     protected static void _init()
     {
         if (descriptions == null)
         {
-            descriptions = new HashMap<Integer, String>();
+            descriptions = new SparseArray<String>();
             types = new SparseArray<String>();
             //taken from http://en.wikipedia.org/wiki/OBD-II_PIDs
-            descriptions.put(null, "ERR PrettyPID Unknown");
+            descriptions.put(0, "ERR PrettyPID Unknown");
             descriptions.put(0x1, "Monitor status since DTCs cleared");
             descriptions.put(0x2, "Freeze DTC");
             descriptions.put(0x3, "Fuel system status");
@@ -228,7 +228,7 @@ public class PrettyPID {
             types.put(0x5e, "double");
         }
     }
-
+    /*
     public static String formatDataForPID(String PID, String data)
     {
         return formatDataForPID(toInteger(PID), data);
@@ -240,7 +240,7 @@ public class PrettyPID {
         //for each PID, for
         return data;
     }
-
+    */
 
     public static String getType(String PID)
     {
@@ -253,12 +253,12 @@ public class PrettyPID {
         //ret values: "int", "double", "float"
         return types.get(PID);
     }
-
+    /*
     public static String getDescription(String PID)
     {
         return getDescription(toInteger(PID));
     }
-
+    */
     public static String getDescription(Integer PID)
     {
         _init();
