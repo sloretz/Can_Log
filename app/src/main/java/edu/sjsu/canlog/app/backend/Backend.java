@@ -3,7 +3,6 @@ package edu.sjsu.canlog.app.backend;
 import android.os.Bundle;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import android.content.Context;
 import android.text.format.Time;
 import android.util.Log;

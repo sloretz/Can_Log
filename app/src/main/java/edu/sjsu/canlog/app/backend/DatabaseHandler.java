@@ -50,7 +50,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.insert(tableVIN, null, values);
     }
-
+    /*
     public ArrayList<SQLdata> getAllData(String column){
 
         ArrayList<SQLdata> data = new ArrayList<SQLdata>();
@@ -65,6 +65,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return data;
     }
+    */
     public ArrayList<SQLdata> getAllDataRange(String column, long begin, long end)
     {
         ArrayList<SQLdata> data = new ArrayList<SQLdata>();
