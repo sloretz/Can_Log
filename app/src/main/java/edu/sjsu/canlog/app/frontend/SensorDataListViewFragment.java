@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import java.util.Iterator;
 import java.util.ArrayList;
 import edu.sjsu.canlog.app.R;
 

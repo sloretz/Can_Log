@@ -131,12 +131,12 @@ public class BluetoothService {
         mConnectThread.start();
         setState(STATE_CONNECTING);
     }
-
+    /*
     public boolean isConnected()
     {
         return mConnectedSocket != null;
     }
-
+    */
 
     public synchronized void connected(BluetoothSocket socket)
     {
