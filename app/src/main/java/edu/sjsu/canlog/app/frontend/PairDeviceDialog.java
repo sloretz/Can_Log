@@ -15,6 +15,7 @@ import edu.sjsu.canlog.app.R;
 
 /**
  * Created by shane on 4/19/14.
+ * paired devices files
  */
 public class PairDeviceDialog extends DialogFragment {
     @Override

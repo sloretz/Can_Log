@@ -14,11 +14,12 @@ import edu.sjsu.canlog.app.R;
 
 /**
  * Created by shane on 2/17/14.
+ * Adapter for sensors
  */
 public class SensorDataListAdapter implements ListAdapter {
 
     public class SensorStruct {
-        public SensorStruct(String n, String d, String ud) {sensorName = n; sensorData = d; userData = ud;};
+        public SensorStruct(String n, String d, String ud) {sensorName = n; sensorData = d; userData = ud;}
         public String sensorName;
         public String sensorData;
         public String userData;
@@ -73,10 +74,10 @@ public class SensorDataListAdapter implements ListAdapter {
 
     public void notifyObservers()
     {
-        Iterator<DataSetObserver> obsIter = observers.iterator();
-        while (obsIter.hasNext())
+        //Iterator<DataSetObserver> obsIter = observers.iterator();
+        for (DataSetObserver obsIter : observers)
         {
-            obsIter.next().onChanged();
+            obsIter.onChanged();
         }
     }
 
