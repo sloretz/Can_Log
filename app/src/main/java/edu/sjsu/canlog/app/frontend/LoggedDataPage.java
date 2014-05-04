@@ -158,9 +158,9 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             backend.fetchLoggedVINs(new Backend.ResultHandler() {
                 public void gotResult(Bundle result) {
                     ArrayList<String> VINs = result.getStringArrayList("VIN");
-                    Iterator<String> vinIter = VINs.iterator();
-                    while (vinIter.hasNext()) {
-                        sensorDataListAdapter.addSensor("Vehicle", vinIter.next(), "");
+                    //Iterator<String> vinIter = VINs.iterator();
+                    for (String vinIterator : VINs) {
+                        sensorDataListAdapter.addSensor("Vehicle", vinIterator, "");
                     }
                 }
             });
