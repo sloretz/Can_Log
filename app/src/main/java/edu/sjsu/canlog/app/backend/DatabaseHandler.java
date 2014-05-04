@@ -63,30 +63,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return db.rawQuery(sql,null);
     }
     /*
-    public ArrayList<SQLdata> getAllData(String column){
+    public ArrayList<SQLData> getAllData(String column){
 
-        ArrayList<SQLdata> data = new ArrayList<SQLdata>();
+        ArrayList<SQLData> data = new ArrayList<SQLData>();
         String selectQuery= "SELECT time, " + column + " FROM " + tableVIN +";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if(cursor.moveToFirst()) {
             do {
-                SQLdata sqldata = new SQLdata(cursor.getInt(0), cursor.getInt(1));
+                SQLData sqldata = new SQLData(cursor.getInt(0), cursor.getInt(1));
                 data.add(sqldata);
             } while(cursor.moveToNext());
         }
         return data;
     }
     */
-    public ArrayList<SQLdata> getAllDataRange(String column, long begin, long end)
+    public ArrayList<SQLData> getAllDataRange(String column, long begin, long end)
     {
-        ArrayList<SQLdata> data = new ArrayList<SQLdata>();
+        ArrayList<SQLData> data = new ArrayList<SQLData>();
         String selectQuery= "SELECT time, " + column + " FROM " + tableVIN + " WHERE time > " + begin +" AND time < " + end + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if(cursor.moveToFirst()) {
             do {
-                SQLdata sqldata = new SQLdata(cursor.getInt(0), cursor.getInt(1));
+                SQLData sqldata = new SQLData(cursor.getInt(0), cursor.getInt(1));
                 data.add(sqldata);
             } while(cursor.moveToNext());
         }

@@ -612,8 +612,6 @@ public class Backend extends BluetoothService{
                 } catch (InterruptedException e) {
                     //uh yeah, this is debug code
                 }
-
-                //TODO there is a way to do
                 //progress with AsyncTask, It's what
                 //they're designed for. Figure it out.
                 //debug logic
@@ -671,10 +669,10 @@ public class Backend extends BluetoothService{
                 Bundle result = new Bundle();
                 //Use DatabaseHandler
                 DatabaseHandler h = new DatabaseHandler(mContext, VIN);
-                ArrayList<SQLdata> data = (ArrayList<SQLdata>) h.getAllDataRange(PID, startDate, endDate);
+                ArrayList<SQLData> data = (ArrayList<SQLData>) h.getAllDataRange(PID, startDate, endDate);
                 ArrayList<GraphValue> retValues = new ArrayList<GraphValue>();
 
-                for (SQLdata row : data)
+                for (SQLData row : data)
                 {
                     retValues.add(new GraphValue(row.time));
                     retValues.add(new GraphValue(row.data));
