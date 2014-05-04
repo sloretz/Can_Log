@@ -22,6 +22,7 @@ public class Backend extends BluetoothService{
     private ArrayList<Integer> liveDataPIDs;
     private ArrayList<Integer> aboutCarPIDs;
     private ArrayList<Integer> supportedPIDs;
+    HashMap<String, DatabaseHandler> tables;
 
 
     //This is passed in to the fetch functions
@@ -37,6 +38,7 @@ public class Backend extends BluetoothService{
         loggedDataPIDs = new ArrayList<Integer>();
         liveDataPIDs = new ArrayList<Integer>();
         supportedPIDs = new ArrayList<Integer>();
+        tables = new HashMap<String, DatabaseHandler>();
 
         loggedDataPIDs.add(0x3);
         loggedDataPIDs.add(0x4);
@@ -180,6 +182,15 @@ public class Backend extends BluetoothService{
         };
         task.execute((ResultHandler)null);
 
+    }
+
+    protected DatabaseHandler getDB(String vin)
+    {
+        if (!tables.containsKey(vin)) {
+            DatabaseHandler h = new DatabaseHandler(mContext, vin);
+            tables.put(vin, h);
+        }
+        return tables.get(vin);
     }
 
     protected void bt_writeln(String cmd) throws IOException
@@ -598,7 +609,6 @@ public class Backend extends BluetoothService{
                 Bundle result = new Bundle();
                 //Need to do some CSV parsing
                 ArrayList<String> history = new ArrayList<String>();
-                HashMap<String, DatabaseHandler> tables = new HashMap<String, DatabaseHandler>();
                 try {
                     //first read the number of lines for progress
                     //then read one row until we hit the ~\n
@@ -613,11 +623,7 @@ public class Backend extends BluetoothService{
                         history.add(nextLine);
                         String[] splitRow = nextLine.split(",");
                         String vin = splitRow[0];
-                        if (!tables.containsKey(vin)) {
-                            DatabaseHandler h = new DatabaseHandler(mContext, vin);
-                            tables.put(vin, h);
-                        }
-                        tables.get(vin).addRow(
+                        getDB(vin).addRow(
                                 Integer.valueOf(splitRow[1]),
                                 Integer.valueOf(splitRow[2]),
                                 Integer.valueOf(splitRow[3]),
