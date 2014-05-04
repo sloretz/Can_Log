@@ -53,6 +53,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.insert(tableVIN, null, values);
     }
+    public Cursor showAllTables()
+    {
+        SQLiteDatabase db =this.getReadableDatabase();
+        String sql = "SELECT name FROM sqlite_master WHERE type='table'";
+        return db.rawQuery(sql,null);
+    }
     /*
     public ArrayList<SQLdata> getAllData(String column){
 
