@@ -22,6 +22,7 @@ import java.util.concurrent.locks.Condition;
 
 /**
  * Created by Brian on 3/29/2014.
+ * Bluetooth Service, does all the connecting work
  */
 public class BluetoothService {
 
@@ -37,7 +38,7 @@ public class BluetoothService {
     protected Context mContext;
     private int mState;
     private static final int STATE_NONE=0;
-    private static final int STATE_LISTEN=1;
+    //private static final int STATE_LISTEN=1;
     private static final int STATE_CONNECTING=2;
     private static final int STATE_CONNECTED=3;
 
@@ -226,6 +227,7 @@ public class BluetoothService {
                     Log.e("Pointer is",Integer.toString(this.hashCode()));
                     mmSocket.close();
                 } catch (IOException closeException) {
+                    Log.e("BTerror","Connect Error");
                 }
                 return;
             }
@@ -241,6 +243,7 @@ public class BluetoothService {
             try {
                 mmSocket.close();
             } catch (IOException e) {
+                Log.e("BTerror","Error closing socket");
             }
         }
     }

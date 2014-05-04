@@ -18,6 +18,7 @@ import com.androidplot.xy.*;
 
 /**
  * Created by shane on 3/11/14.
+ * Live Data page
  */
 public class LiveDataPage extends SensorDataListViewFragment implements HandleBack, HandleVisibilityChange {
     private static String SENSOR_GRAPH_IDX = "sensorGraphIndex";
