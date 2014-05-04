@@ -375,7 +375,6 @@ public class Backend extends BluetoothService{
             @Override
             protected Bundle doSocketTransfer()
             {
-                //TODO fetch car info PIDs
                 Log.d("Backend", "Fetch car info running");
                 //debug logic
                 Bundle tempResult = new Bundle();
@@ -387,7 +386,9 @@ public class Backend extends BluetoothService{
                     carInfo.add("VIN");
                     bt_writeln("vin");
                     dataList.add(bt_readln());
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                    Log.e("BTerror","Error fetching car info");
+                }
                 try {
                     carInfo.add("Fuel Type");
                     bt_writeln("pid 81");
@@ -469,10 +470,14 @@ public class Backend extends BluetoothService{
                             break;
                     }
                     dataList.add(fuelType);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                    Log.e("BTerror","Error getting fuel type");
+                }
                 try {
                     carInfo.add("");
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                    Log.e("Error adding carInfo","Error");
+                }
                 //dataList.add("Diesel");
                 tempResult.putStringArrayList("carInfoNames", carInfo);
                 tempResult.putStringArrayList("values", dataList);
