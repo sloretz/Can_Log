@@ -166,7 +166,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             sensorDataListAdapter = new SensorDataListAdapter(getActivity());
             listView.setAdapter(sensorDataListAdapter);
             Backend backend = Backend.getInstance();
-            backend.fetchLoggedPIDs(currentVIN, new Backend.ResultHandler() {
+            backend.fetchLoggedPIDs(new Backend.ResultHandler() {
                 public void gotResult(Bundle result) {
                     ArrayList<String> PIDs = result.getStringArrayList("PID");
                     ArrayList<String> descriptions = result.getStringArrayList("Desc");
