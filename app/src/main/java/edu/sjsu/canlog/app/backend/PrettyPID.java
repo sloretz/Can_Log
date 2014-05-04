@@ -267,7 +267,7 @@ public class PrettyPID {
 
     public static String toString(Integer PID)
     {
-        String pid = Integer.toString(PID);
+        String pid = Integer.toHexString(PID);
         if (pid.length() < 2)
             pid = "0"+pid;
         pid = "x" + pid;
