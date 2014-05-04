@@ -215,6 +215,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             xyPlot.setVisibility(View.GONE);
             DownloadHistoryDialog dl_dialog = new DownloadHistoryDialog();
             dl_dialog.setCancelable(false);
+            dl_dialog.setRetainInstance(true);
             dl_dialog.show(getFragmentManager(), "dialog");
         }
         else if (nextPage == page_t.NO_PAGE)
