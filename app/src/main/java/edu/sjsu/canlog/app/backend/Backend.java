@@ -1,5 +1,6 @@
 package edu.sjsu.canlog.app.backend;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import java.io.IOException;
 import java.util.HashMap;
@@ -530,16 +531,16 @@ public class Backend extends BluetoothService{
             {
                 Bundle result = new Bundle();
                 try {
-                    Log.d("Backend", "About to clear dtc");
                     bt_writeln("cdtc");
-                    Log.d("Backend", "Cleared dtcs");
-                    //No response from the car, just assume it worked
-                    result.putBoolean("did_clear", true);
+                    int didWork = Integer.valueOf(bt_readln());
+                    if (didWork == 1)
+                        result.putBoolean("did_clear", true);
+                    else
+                        result.putBoolean("did_clear", false);
                 } catch (IOException ioe) {
                     Log.e("Backend task", "connect but got exception " + ioe.getMessage());
                     result.putBoolean("did_clear", false);
                 }
-                Log.d("Backend", "send clear dtcs returning");
                 return result;
             }
         };
@@ -549,21 +550,31 @@ public class Backend extends BluetoothService{
 
     public void fetchLoggedVINs(ResultHandler handler)
     {
-        //
         BluetoothTask task = new BluetoothTask() {
             @Override
             protected Bundle doSocketTransfer()
             {
                 Log.d("Backend", "fetch logged VINs running");
-                //Random r = new Random();
-                //debug logic
-                Bundle tempResult = new Bundle();
+
+                Bundle result = new Bundle();
                 ArrayList<String> vinList = new ArrayList<String>();
-                vinList.add("LJCPCBLCX11000237");
-                vinList.add("JBMHSRLCX11999567");
-                tempResult.putStringArrayList("VIN", vinList);
+
+                DatabaseHandler h = new DatabaseHandler(mContext, "");
+                Cursor c = h.showAllTables();
+                if (c.moveToFirst())
+                {
+                    //This skips the first table "android_METADATA"
+                    while (c.moveToNext())
+                    {
+                        //Add VIN stripping off leading underscore
+                        vinList.add(c.getString(0).substring(1));
+                    }
+                }
+
+                result.putStringArrayList("VIN", vinList);
+
                 Log.d("Backend", "fetch logged VINs returning");
-                return tempResult;
+                return result;
             }
         };
         task.execute(handler);
@@ -613,7 +624,6 @@ public class Backend extends BluetoothService{
 
                 Bundle result = new Bundle();
                 //Need to do some CSV parsing
-                ArrayList<String> history = new ArrayList<String>();
                 try {
                     //first read the number of lines for progress
                     //then read one row until we hit the ~\n
@@ -625,7 +635,6 @@ public class Backend extends BluetoothService{
                         nextLine = bt_readln();
                         if (nextLine.equals("~"))
                             break;
-                        history.add(nextLine);
                         String[] splitRow = nextLine.split(",");
                         String vin = splitRow[0];
                         getDB(vin).addRow(
@@ -644,10 +653,6 @@ public class Backend extends BluetoothService{
                 } catch (IOException e) {
                     result.putString("error", e.getLocalizedMessage());
                 }
-
-                //Okay, we've got lots of cool history
-
-
 
                 Log.d("Backend", "begin history download returning");
                 return result;
@@ -672,14 +677,13 @@ public class Backend extends BluetoothService{
                 DatabaseHandler h = new DatabaseHandler(mContext, VIN);
                 ArrayList<SQLdata> data = (ArrayList<SQLdata>) h.getAllDataRange(PID, startDate, endDate);
                 ArrayList<GraphValue> retValues = new ArrayList<GraphValue>();
-                /*
-                Iterator<SQLdata> rowIter = data.iterator();
-                while (rowIter.hasNext())
+
+                for (SQLdata row : data)
                 {
-                    SQLdata row = rowIter.next();
                     retValues.add(new GraphValue(row.time));
                     retValues.add(new GraphValue(row.data));
-                }*/
+                }
+                /*
                 retValues.add(new GraphValue(1398155529));
                 retValues.add(new GraphValue(1));
                 retValues.add(new GraphValue(1398355529));
@@ -692,6 +696,7 @@ public class Backend extends BluetoothService{
                 retValues.add(new GraphValue(1));
                 retValues.add(new GraphValue(1399155529));
                 retValues.add(new GraphValue(0));
+                */
                 result.putParcelableArrayList("values", retValues);
                 return result;
             }

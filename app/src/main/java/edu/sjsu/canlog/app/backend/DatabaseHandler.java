@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "CAN_LOG";
     private final String tableVIN;
 
@@ -24,6 +24,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db)
     {
+        if (tableVIN.equals("_")) {
+            Log.d("DatabaseLogger", "Choosing not to create table " + tableVIN);
+            return; //hackish, don't create when just using for showAllTables()
+        }
         String CREATE_TABLE= "CREATE TABLE IF NOT EXISTS " + tableVIN + " (time Integer PRIMARY KEY, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x2f Integer, x5c Integer, x5e Integer)";
         Log.d("DatabaseLogger","Creating database table " + tableVIN);
         db.execSQL(CREATE_TABLE);
