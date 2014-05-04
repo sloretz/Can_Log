@@ -1,5 +1,7 @@
 package edu.sjsu.canlog.app.backend;
 
+import android.util.SparseArray;
+
 import java.util.HashMap;
 
 /**
@@ -7,14 +9,14 @@ import java.util.HashMap;
  */
 public class PrettyPID {
     private static HashMap<Integer,String> descriptions;
-    private static HashMap<Integer,String> types;
+    private static SparseArray<String> types;
 
     protected static void _init()
     {
         if (descriptions == null)
         {
             descriptions = new HashMap<Integer, String>();
-            types = new HashMap<Integer, String>();
+            types = new SparseArray<String>();
             //taken from http://en.wikipedia.org/wiki/OBD-II_PIDs
             descriptions.put(null, "ERR PrettyPID Unknown");
             descriptions.put(0x1, "Monitor status since DTCs cleared");
