@@ -8,6 +8,7 @@ import edu.sjsu.canlog.app.R;
 
 /**
  * Created by shane on 4/19/14.
+ * Dialog for connecting
  */
 public class ConnectingDialog extends DialogFragment {
     @Override

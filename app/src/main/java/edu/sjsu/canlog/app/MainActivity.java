@@ -124,7 +124,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if ( bluetoothAdapter == null)
         {
-            Toast toast = Toast.makeText(getApplicationContext(), "Bluetooth not supported", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(MainActivity.this, "Bluetooth not supported", Toast.LENGTH_LONG);
             toast.show();
         }
         else
@@ -191,12 +191,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         {
             if (resultCode == RESULT_OK)
             {
-                Toast toast = Toast.makeText(getApplicationContext(), "Bluetooth Enabled", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(MainActivity.this, "Bluetooth Enabled", Toast.LENGTH_LONG);
                 toast.show();
             }
             else
             {
-                Toast toast = Toast.makeText(getApplicationContext(), "Bluetooth could not be enabled", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(MainActivity.this, "Bluetooth could not be enabled", Toast.LENGTH_LONG);
                 toast.show();
             }
         }
@@ -276,23 +276,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             //history
             if (position == 0) //DTC page
             {
-                AboutCarPage fragment = new AboutCarPage();
-                return fragment;
+                //AboutCarPage fragment = new AboutCarPage();
+                return new AboutCarPage();
             }
             else if (position == 1)
             {
-                LiveDataPage fragment = new LiveDataPage();
-                return fragment;
+                //LiveDataPage fragment = new LiveDataPage();
+                return new LiveDataPage();
             }
             else if (position == 2)
             {
-                DTCPage fragment = new DTCPage();
-                return fragment;
+                //DTCPage fragment = new DTCPage();
+                return new DTCPage();
             }
             else
             {
-                LoggedDataPage fragment = new LoggedDataPage();
-                return fragment;
+                //LoggedDataPage fragment = new LoggedDataPage();
+                return new LoggedDataPage();
             }
 
 

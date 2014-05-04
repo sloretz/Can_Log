@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
+import android.util.Log;
+
 import java.util.ArrayList;
 /**
 * Created by Brian on 4/27/2014.
@@ -24,6 +26,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db)
     {
         String CREATE_TABLE= "CREATE TABLE IF NOT EXISTS " + tableVIN + " (time Integer PRIMARY KEY, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x2f Integer, x5c Integer, x5e Integer);";
+        Log.d("Database","Creating database table " + tableVIN);
         db.execSQL(CREATE_TABLE);
     }
     @Override
@@ -50,7 +53,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.insert(tableVIN, null, values);
     }
-
+    /*
     public ArrayList<SQLdata> getAllData(String column){
 
         ArrayList<SQLdata> data = new ArrayList<SQLdata>();
@@ -65,6 +68,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return data;
     }
+    */
     public ArrayList<SQLdata> getAllDataRange(String column, long begin, long end)
     {
         ArrayList<SQLdata> data = new ArrayList<SQLdata>();

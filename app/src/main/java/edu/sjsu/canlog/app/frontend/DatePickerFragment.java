@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 
 /**
  * Created by shane on 4/26/14.
+ * fragment for picking the date
  */
 public abstract class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {

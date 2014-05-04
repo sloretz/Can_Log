@@ -3,8 +3,6 @@ package edu.sjsu.canlog.app.backend;
 import android.os.Bundle;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import android.content.Context;
 import android.text.format.Time;
 import android.util.Log;
@@ -595,48 +593,16 @@ public class Backend extends BluetoothService{
                 //progress with AsyncTask, It's what
                 //they're designed for. Figure it out.
                 //debug logic
-
                 Bundle result = new Bundle();
-                //Need to do some CSV parsing
-                ArrayList<String> history = new ArrayList<String>();
-                HashMap<String, DatabaseHandler> tables = new HashMap<String, DatabaseHandler>();
+
                 try {
                     //first read the number of lines for progress
                     //then read one row until we hit the ~\n
-                    bt_writeln("transf");
                     Integer numLines = Integer.valueOf(bt_readln());
-                    String nextLine;
-                    while (true)
-                    {
-                        nextLine = bt_readln();
-                        if (nextLine.equals("~"))
-                            break;
-                        history.add(nextLine);
-                        String[] splitRow = nextLine.split(",");
-                        String vin = splitRow[0];
-                        if (!tables.containsKey(vin)) {
-                            DatabaseHandler h = new DatabaseHandler(mContext, vin);
-                            tables.put(vin, h);
-                        }
-                        tables.get(vin).addRow(
-                                Integer.valueOf(splitRow[1]),
-                                Integer.valueOf(splitRow[2]),
-                                Integer.valueOf(splitRow[3]),
-                                Integer.valueOf(splitRow[4]),
-                                Integer.valueOf(splitRow[5]),
-                                Integer.valueOf(splitRow[6]),
-                                Integer.valueOf(splitRow[7]),
-                                Integer.valueOf(splitRow[8]),
-                                Integer.valueOf(splitRow[9]),
-                                Integer.valueOf(splitRow[10]));
-;                    }
-
+                    
                 } catch (IOException e) {
                     result.putString("error", e.getLocalizedMessage());
                 }
-
-                //Okay, we've got lots of cool history
-
 
                 Log.d("Backend", "begin history download returning");
                 return result;
