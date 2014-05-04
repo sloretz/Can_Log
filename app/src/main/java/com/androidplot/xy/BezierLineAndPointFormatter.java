@@ -16,7 +16,6 @@
 
 package com.androidplot.xy;
 
-import android.content.Context;
 import com.androidplot.ui.SeriesRenderer;
 
 /**

@@ -15,7 +15,9 @@
  */
 
 package com.androidplot.xy;
+
 import android.graphics.Paint;
+
 import com.androidplot.ui.SeriesRenderer;
 
 public class BarFormatter extends LineAndPointFormatter {

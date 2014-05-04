@@ -16,9 +16,6 @@
 
 package com.androidplot.xy;
 
-import android.graphics.Canvas;
-import android.graphics.RectF;
-import com.androidplot.exception.PlotRenderException;
 import com.androidplot.ui.SeriesAndFormatterList;
 import com.androidplot.ui.SeriesRenderer;
 import com.androidplot.util.ZIndexable;

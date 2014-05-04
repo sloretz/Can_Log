@@ -16,9 +16,6 @@
 
 package com.androidplot.ui;
 
-import com.androidplot.ui.PositionMetric;
-import com.androidplot.ui.YLayoutStyle;
-
 public class YPositionMetric extends PositionMetric<YLayoutStyle> {
     /*
     public enum YLayoutStyle {

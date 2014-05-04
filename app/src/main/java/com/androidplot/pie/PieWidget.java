@@ -16,14 +16,13 @@
 
 package com.androidplot.pie;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.RectF;
+
 import com.androidplot.exception.PlotRenderException;
 import com.androidplot.ui.LayoutManager;
 import com.androidplot.ui.SizeMetrics;
 import com.androidplot.ui.widget.Widget;
-
-import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * Visualizes data as a pie chart.

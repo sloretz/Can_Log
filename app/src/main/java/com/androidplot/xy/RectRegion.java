@@ -18,6 +18,7 @@ package com.androidplot.xy;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
+
 import com.androidplot.LineRegion;
 import com.androidplot.util.ValPixConverter;
 

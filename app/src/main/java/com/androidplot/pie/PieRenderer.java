@@ -16,7 +16,10 @@
 
 package com.androidplot.pie;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Path;
+import android.graphics.PointF;
+import android.graphics.RectF;
 
 import com.androidplot.exception.PlotRenderException;
 import com.androidplot.ui.SeriesRenderer;

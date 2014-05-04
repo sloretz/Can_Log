@@ -1,17 +1,19 @@
 package edu.sjsu.canlog.app.frontend;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
-import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
-import edu.sjsu.canlog.app.backend.Backend;
-import java.util.Set;
+
 import java.util.ArrayList;
+import java.util.Set;
+
 import edu.sjsu.canlog.app.R;
+import edu.sjsu.canlog.app.backend.Backend;
 
 /**
  * Created by shane on 4/19/14.

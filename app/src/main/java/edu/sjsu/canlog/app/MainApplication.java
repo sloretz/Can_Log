@@ -3,8 +3,6 @@ package edu.sjsu.canlog.app;
 import android.app.Application;
 import android.util.Log;
 
-import edu.sjsu.canlog.app.backend.Backend;
-
 /**
  * Created by shane on 5/4/14.
  * Main Application

@@ -18,6 +18,7 @@ package com.androidplot.xy;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+
 import com.androidplot.ui.PositionMetric;
 
 /**

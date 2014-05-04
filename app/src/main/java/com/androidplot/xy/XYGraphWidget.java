@@ -16,7 +16,12 @@
 
 package com.androidplot.xy;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.graphics.RectF;
 
 import com.androidplot.exception.PlotRenderException;
 import com.androidplot.ui.LayoutManager;

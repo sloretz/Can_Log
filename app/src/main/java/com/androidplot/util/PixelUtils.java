@@ -18,7 +18,6 @@ package com.androidplot.util;
 
 import android.content.Context;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;

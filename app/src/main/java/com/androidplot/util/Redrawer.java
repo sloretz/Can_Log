@@ -1,9 +1,9 @@
 package com.androidplot.util;
 
 import android.util.Log;
+
 import com.androidplot.Plot;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

@@ -16,11 +16,10 @@
 
 package com.androidplot.xy;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+
 import com.androidplot.ui.SeriesRenderer;
-import com.androidplot.util.Configurator;
 import com.androidplot.util.PixelUtils;
 
 /**

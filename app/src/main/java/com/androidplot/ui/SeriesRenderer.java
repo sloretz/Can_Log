@@ -19,9 +19,10 @@ package com.androidplot.ui;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.graphics.Region;
+
+import com.androidplot.Plot;
 import com.androidplot.Series;
 import com.androidplot.exception.PlotRenderException;
-import com.androidplot.Plot;
 
 public abstract class SeriesRenderer
         <PlotType extends Plot, SeriesType extends Series, SeriesFormatterType extends Formatter> {

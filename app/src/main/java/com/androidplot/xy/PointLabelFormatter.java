@@ -16,10 +16,9 @@
 
 package com.androidplot.xy;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
+
 import com.androidplot.util.PixelUtils;
 
 public class PointLabelFormatter {

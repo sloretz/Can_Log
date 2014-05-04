@@ -1,11 +1,12 @@
 package edu.sjsu.canlog.app.backend;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.content.Context;
 import android.util.Log;
+
 import java.util.ArrayList;
 /**
 * Created by Brian on 4/27/2014.

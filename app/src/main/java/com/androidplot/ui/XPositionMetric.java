@@ -17,9 +17,6 @@
 package com.androidplot.ui;
 
 
-import com.androidplot.ui.PositionMetric;
-import com.androidplot.ui.XLayoutStyle;
-
 public class XPositionMetric extends PositionMetric<XLayoutStyle> {
 
     //private XLayoutStyle layoutType;

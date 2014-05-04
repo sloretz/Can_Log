@@ -16,7 +16,11 @@
 
 package com.androidplot.xy;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+
 import com.androidplot.ui.LayoutManager;
 import com.androidplot.ui.SeriesAndFormatterList;
 import com.androidplot.ui.SizeMetrics;
@@ -24,7 +28,11 @@ import com.androidplot.ui.TableModel;
 import com.androidplot.ui.widget.Widget;
 import com.androidplot.util.FontUtils;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeSet;
 
 public class XYLegendWidget extends Widget {
 

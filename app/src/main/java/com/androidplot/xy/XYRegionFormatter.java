@@ -18,6 +18,7 @@ package com.androidplot.xy;
 
 import android.content.Context;
 import android.graphics.Paint;
+
 import com.androidplot.util.Configurator;
 
 /**

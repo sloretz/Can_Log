@@ -1,17 +1,19 @@
 package edu.sjsu.canlog.app.frontend;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import edu.sjsu.canlog.app.R;
 import edu.sjsu.canlog.app.backend.Backend;
-import android.support.v4.app.Fragment;
-import android.widget.Toast;
 
 /**
  * Created by shane on 3/11/14.

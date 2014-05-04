@@ -17,8 +17,8 @@
 package com.androidplot.xy;
 
 import android.graphics.Canvas;
-import android.util.Log;
 import android.util.Pair;
+
 import com.androidplot.Plot;
 import com.androidplot.PlotListener;
 

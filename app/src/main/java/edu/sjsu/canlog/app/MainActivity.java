@@ -1,23 +1,32 @@
 package edu.sjsu.canlog.app;
 
-import java.util.Locale;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import edu.sjsu.canlog.app.frontend.*;
+
+import java.util.Locale;
+
 import edu.sjsu.canlog.app.backend.Backend;
+import edu.sjsu.canlog.app.frontend.AboutCarPage;
+import edu.sjsu.canlog.app.frontend.ConnectingDialog;
+import edu.sjsu.canlog.app.frontend.DTCPage;
+import edu.sjsu.canlog.app.frontend.HandleBack;
+import edu.sjsu.canlog.app.frontend.HandleVisibilityChange;
+import edu.sjsu.canlog.app.frontend.LiveDataPage;
+import edu.sjsu.canlog.app.frontend.LoggedDataPage;
+import edu.sjsu.canlog.app.frontend.PairDeviceDialog;
 
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {

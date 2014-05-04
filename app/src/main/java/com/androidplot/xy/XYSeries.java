@@ -17,6 +17,7 @@
 package com.androidplot.xy;
 
 import android.util.Pair;
+
 import com.androidplot.Series;
 
 /**

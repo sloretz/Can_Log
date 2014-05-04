@@ -16,18 +16,18 @@
 
 package com.androidplot.xy;
 
+import android.graphics.Canvas;
+import android.graphics.RectF;
+
+import com.androidplot.exception.PlotRenderException;
+import com.androidplot.util.ValPixConverter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-
-import android.graphics.Canvas;
-import android.graphics.RectF;
-
-import com.androidplot.exception.PlotRenderException;
-import com.androidplot.util.ValPixConverter;
 
 /**
  * Renders a point as a Bar

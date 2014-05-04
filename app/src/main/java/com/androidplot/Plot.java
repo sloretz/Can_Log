@@ -17,26 +17,44 @@
 package com.androidplot;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+
 import com.androidplot.exception.PlotRenderException;
-import com.androidplot.ui.*;
+import com.androidplot.ui.AnchorPosition;
+import com.androidplot.ui.BoxModel;
 import com.androidplot.ui.Formatter;
-import com.androidplot.ui.TextOrientationType;
-import com.androidplot.ui.widget.TextLabelWidget;
-import com.androidplot.ui.widget.Widget;
+import com.androidplot.ui.LayoutManager;
+import com.androidplot.ui.Resizable;
+import com.androidplot.ui.SeriesAndFormatterList;
 import com.androidplot.ui.SeriesRenderer;
+import com.androidplot.ui.SizeLayoutType;
+import com.androidplot.ui.SizeMetrics;
+import com.androidplot.ui.TextOrientationType;
+import com.androidplot.ui.XLayoutStyle;
+import com.androidplot.ui.YLayoutStyle;
+import com.androidplot.ui.widget.TextLabelWidget;
 import com.androidplot.util.Configurator;
 import com.androidplot.util.DisplayDimensions;
 import com.androidplot.util.PixelUtils;
-import com.androidplot.ui.XLayoutStyle;
-import com.androidplot.ui.YLayoutStyle;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Base class for all other Plot implementations..

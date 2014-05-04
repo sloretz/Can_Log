@@ -1,14 +1,15 @@
 package edu.sjsu.canlog.app.backend;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.ArrayList;
-import android.content.Context;
 import android.text.format.Time;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import edu.sjsu.canlog.app.frontend.GraphValue;
 

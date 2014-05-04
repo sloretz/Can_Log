@@ -17,6 +17,7 @@
 package com.androidplot.xy;
 
 import android.graphics.Paint;
+
 import com.androidplot.ui.XLayoutStyle;
 import com.androidplot.ui.XPositionMetric;
 

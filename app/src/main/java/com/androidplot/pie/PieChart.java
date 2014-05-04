@@ -18,13 +18,14 @@ package com.androidplot.pie;
 
 import android.content.Context;
 import android.util.AttributeSet;
+
 import com.androidplot.Plot;
 import com.androidplot.ui.AnchorPosition;
 import com.androidplot.ui.SizeLayoutType;
 import com.androidplot.ui.SizeMetrics;
-import com.androidplot.util.PixelUtils;
 import com.androidplot.ui.XLayoutStyle;
 import com.androidplot.ui.YLayoutStyle;
+import com.androidplot.util.PixelUtils;
 
 public class PieChart extends Plot<Segment, SegmentFormatter, PieRenderer> {
 

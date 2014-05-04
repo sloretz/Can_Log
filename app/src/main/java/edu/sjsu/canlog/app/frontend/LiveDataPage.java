@@ -1,7 +1,5 @@
 package edu.sjsu.canlog.app.frontend;
 
-import edu.sjsu.canlog.app.R;
-import edu.sjsu.canlog.app.backend.Backend;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,12 +7,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.androidplot.xy.BoundaryMode;
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.PointLabelFormatter;
+import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYSeries;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.androidplot.xy.*;
+import edu.sjsu.canlog.app.R;
+import edu.sjsu.canlog.app.backend.Backend;
 
 /**
  * Created by shane on 3/11/14.

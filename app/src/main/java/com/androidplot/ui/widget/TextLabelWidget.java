@@ -16,9 +16,19 @@
 
 package com.androidplot.ui.widget;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
-import com.androidplot.ui.*;
+
+import com.androidplot.ui.AnchorPosition;
+import com.androidplot.ui.LayoutManager;
+import com.androidplot.ui.SizeLayoutType;
+import com.androidplot.ui.SizeMetrics;
+import com.androidplot.ui.TextOrientationType;
 import com.androidplot.util.FontUtils;
 
 public class TextLabelWidget extends Widget {

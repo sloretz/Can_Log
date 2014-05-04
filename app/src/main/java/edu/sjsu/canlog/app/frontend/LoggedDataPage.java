@@ -1,7 +1,5 @@
 package edu.sjsu.canlog.app.frontend;
 
-import edu.sjsu.canlog.app.R;
-import edu.sjsu.canlog.app.backend.Backend;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -12,9 +10,18 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.PointLabelFormatter;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYSeries;
+
 import java.util.ArrayList;
 import java.util.Iterator;
-import com.androidplot.xy.*;
+
+import edu.sjsu.canlog.app.R;
+import edu.sjsu.canlog.app.backend.Backend;
 
 
 /**

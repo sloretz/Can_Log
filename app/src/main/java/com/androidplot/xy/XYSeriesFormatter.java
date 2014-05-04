@@ -16,9 +16,8 @@
 
 package com.androidplot.xy;
 
-import android.content.Context;
-import com.androidplot.ui.SeriesRenderer;
 import com.androidplot.ui.Formatter;
+import com.androidplot.ui.SeriesRenderer;
 import com.androidplot.util.ZHash;
 import com.androidplot.util.ZIndexable;
 

@@ -18,8 +18,9 @@ package com.androidplot.pie;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import com.androidplot.ui.SeriesRenderer;
+
 import com.androidplot.ui.Formatter;
+import com.androidplot.ui.SeriesRenderer;
 
 public class SegmentFormatter extends Formatter<PieChart> {
 

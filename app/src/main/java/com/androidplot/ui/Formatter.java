@@ -17,6 +17,7 @@
 package com.androidplot.ui;
 
 import android.content.Context;
+
 import com.androidplot.Plot;
 import com.androidplot.util.Configurator;
 
