@@ -54,8 +54,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     public void onStop(){
         super.onStop();
-        Backend backend = Backend.getInstance();
-        backend.stop();
+
     }
 
     @Override
