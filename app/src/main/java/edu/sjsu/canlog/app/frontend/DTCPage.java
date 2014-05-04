@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 /**
  * Created by shane on 3/11/14.
+ * DTC page
  */
 public class DTCPage extends Fragment implements HandleVisibilityChange {
     public SensorDataListAdapter sensorDataListAdapter;
@@ -83,7 +84,7 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
                     {
                         strResult = "Failed to clear DTCs";
                     }
-                    Toast toast = Toast.makeText(getActivity().getApplicationContext(), strResult, Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getActivity(), strResult, Toast.LENGTH_SHORT);
                     toast.show();
                 }
                 });

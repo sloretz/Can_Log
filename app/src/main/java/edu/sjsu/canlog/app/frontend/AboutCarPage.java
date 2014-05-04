@@ -13,6 +13,7 @@ import edu.sjsu.canlog.app.backend.Backend;
 
 /**
  * Created by shane on 3/11/14.
+ * main frontend and gui for application
  */
 public class AboutCarPage extends SensorDataListViewFragment implements HandleVisibilityChange{
     public static boolean firstCreate = true;
