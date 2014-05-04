@@ -21,7 +21,7 @@ public class Backend extends BluetoothService{
     private static Backend _this = null;
 
     private ArrayList<Integer> loggedDataPIDs;
-    private ArrayList<Integer> liveDataPIDs;
+    public ArrayList<Integer> liveDataPIDs;
     private ArrayList<Integer> aboutCarPIDs;
     private ArrayList<Integer> supportedPIDs;
     HashMap<String, DatabaseHandler> tables;
@@ -625,6 +625,8 @@ public class Backend extends BluetoothService{
                     bt_writeln("transf");
                     Integer numLines = Integer.valueOf(bt_readln());
                     String nextLine;
+                    int linesSoFar = 0;
+                    publishProgress(0.0f);
                     while (true)
                     {
                         nextLine = bt_readln();
@@ -643,6 +645,8 @@ public class Backend extends BluetoothService{
                                 Integer.valueOf(splitRow[8]),
                                 Integer.valueOf(splitRow[9]),
                                 Integer.valueOf(splitRow[10]));
+                        linesSoFar++;
+                        publishProgress(Float.valueOf(linesSoFar)/Float.valueOf(numLines));
                     }
 
                 } catch (IOException e) {

@@ -46,9 +46,10 @@ public class BluetoothService {
 
     public static abstract class ResultHandler {
         public abstract void gotResult(Bundle result);
+        public void gotProgress(Float f) {}
     }
 
-    protected abstract class BluetoothTask extends AsyncTask<ResultHandler, Void, Bundle> {
+    protected abstract class BluetoothTask extends AsyncTask<ResultHandler, Float, Bundle> {
         ResultHandler handler;
         @Override
         protected Bundle doInBackground(ResultHandler ... handlers){
@@ -86,6 +87,11 @@ public class BluetoothService {
 
             }
             return result;
+        }
+
+        protected void onProgressUpdate(Float...progress)
+        {
+            this.handler.gotProgress(progress[0]);
         }
 
         //This runs on a background thread
