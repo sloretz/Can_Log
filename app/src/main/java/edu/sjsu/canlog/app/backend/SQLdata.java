@@ -9,7 +9,7 @@ public class SQLdata {
     public int time;
     public int data;
 
-    SQLdata (int t, int d){
+    SQLdata(int t, int d){
         time =t;
         data=d;
     }

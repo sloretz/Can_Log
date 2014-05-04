@@ -669,10 +669,10 @@ public class Backend extends BluetoothService{
                 Bundle result = new Bundle();
                 //Use DatabaseHandler
                 DatabaseHandler h = new DatabaseHandler(mContext, VIN);
-                ArrayList<SQLData> data = (ArrayList<SQLData>) h.getAllDataRange(PID, startDate, endDate);
+                ArrayList<SQLdata> data = (ArrayList<SQLdata>) h.getAllDataRange(PID, startDate, endDate);
                 ArrayList<GraphValue> retValues = new ArrayList<GraphValue>();
 
-                for (SQLData row : data)
+                for (SQLdata row : data)
                 {
                     retValues.add(new GraphValue(row.time));
                     retValues.add(new GraphValue(row.data));
