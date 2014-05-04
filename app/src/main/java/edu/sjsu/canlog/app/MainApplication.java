@@ -6,6 +6,7 @@ import edu.sjsu.canlog.app.backend.Backend;
 
 /**
  * Created by shane on 5/4/14.
+ * Main Application
  */
 public class MainApplication extends Application {
     @Override
