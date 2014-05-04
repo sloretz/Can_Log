@@ -34,7 +34,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public static int REQUEST_ENABLE_BT = 3;
     public static String HAVE_REQUESTED_BT = "HaveRequestedBluetooth";
     public static String DO_HAVE_BT_CONN = "doHaveBTConnection";
-    public static String CURRENT_PAGE_DISPLAYED = "currentPageDisplayed";
+    //public static String CURRENT_PAGE_DISPLAYED = "currentPageDisplayed";
     protected int currentPage = 0;
     private boolean haveRequestedBluetooth = false;
     private boolean haveBTConn = false;
