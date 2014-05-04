@@ -13,7 +13,9 @@ import edu.sjsu.canlog.app.R;
 
 /**
  * Created by shane on 2/22/14.
+ * StaticXYPlotFragment
  */
+/*
 public class StaticXYPlotFragment extends Fragment {
     private static String ARG_SERIES_NAME = "seriesName";
     private static String ARG_VALUES = "seriesValues";
@@ -73,3 +75,4 @@ public class StaticXYPlotFragment extends Fragment {
         return rootView;
     }
 }
+*/
