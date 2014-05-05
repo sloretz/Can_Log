@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.Locale;
 
 import edu.sjsu.canlog.app.backend.Backend;
+import edu.sjsu.canlog.app.backend.DatabaseHandler;
 import edu.sjsu.canlog.app.frontend.AboutCarPage;
 import edu.sjsu.canlog.app.frontend.ConnectingDialog;
 import edu.sjsu.canlog.app.frontend.DTCPage;
@@ -73,8 +74,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     @Override
-    public void onDestroy(){
-        super.onDestroy();
+    public void onPause(){
+        super.onPause();
         Log.d("MainActivity", "On destroy called");
         Backend backend = Backend.getInstance();
         backend.stop();
@@ -104,7 +105,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         //restore state
         if (savedInstanceState != null) {

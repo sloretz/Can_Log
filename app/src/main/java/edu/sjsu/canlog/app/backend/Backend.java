@@ -128,6 +128,9 @@ public class Backend extends BluetoothService{
                 Log.d("Backend", "Fetch avail sen and dat sock tran run");
                 Bundle result = new Bundle();
                 try {
+                    //Log.d("Backend", "Beginning sleep");
+                    //Thread.sleep(15000);
+                    //Log.d("Backend", "Ending start sleep");
                     bt_writeln("pid 00");
                     long PIDs= Long.valueOf(bt_readln(),16);
                     //start finding them from 19 to 1, because its easier to declare to 2 and bit shift that way
@@ -169,7 +172,7 @@ public class Backend extends BluetoothService{
                         PIDsComparator <<= 1;
                     }
 
-                } catch (IOException e)
+                } catch (Exception e)
                 {
                     Log.d("Backend", "Fetch sensors and data exception " + e.getLocalizedMessage());
                     result.putString("error", e.getLocalizedMessage());
@@ -192,14 +195,18 @@ public class Backend extends BluetoothService{
     {
         //readline, ignoring empty lines
         String nextLine = "";
-        while (nextLine.equals(""))
-            if (btReader.ready())
-            {
-                //Log.d("Backend", "r");
-                nextLine = btReader.readLine();
+        boolean hasNextLine = false;
+        while (!hasNextLine) {
+            if (btReader.ready()) {
+                char ch = Character.toChars(btReader.read())[0];
+                Log.d("Backend", "rc " + ch);
+                if (ch == '\u0003' || ch == '\u0004' || ch == '\r')
+                    continue;
+                if (ch == '\n')
+                    break;
+                nextLine += ch;
             }
-        nextLine=nextLine.replace("\u0003","");
-        nextLine=nextLine.replace("\u0004","");
+        }
         Log.d("Backend", "<<- " + nextLine);
         return nextLine;
     }
