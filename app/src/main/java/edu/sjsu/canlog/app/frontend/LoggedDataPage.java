@@ -367,7 +367,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
                         }
                         public void gotProgress(Float percentage)
                         {
-                            pb.setProgress(Math.round(percentage)*100);
+                            pb.setProgress(Math.round(percentage*100));
                         }
 
                     });
