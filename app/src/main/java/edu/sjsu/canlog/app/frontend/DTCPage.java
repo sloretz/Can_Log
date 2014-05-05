@@ -71,6 +71,7 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
         public void onClick(View v){
             backend.sendClearDTCs(new Backend.ResultHandler() {
                 public void gotResult(Bundle result) {
+                    onBecomesVisible();
                     //Lets toast to that
                     //TODO put these in strings.xml
                     String strResult = "DTCs successfully cleared";
