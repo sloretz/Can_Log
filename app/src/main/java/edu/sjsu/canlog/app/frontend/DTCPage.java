@@ -32,12 +32,11 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
                 if (backend.wasError(result))
                     return;
                 android.util.Log.d("DTCPage", "Got results from backend");
-
+                sensorDataListAdapter.clear();
                 ArrayList<String> DTCs = result.getStringArrayList("DTCs");
                 ArrayList<String> descriptions = result.getStringArrayList("short_descriptions");
                 android.util.Log.d("DTCPage", "current count " + sensorDataListAdapter.getCount() + " numDTCs "
                         + DTCs.size() + " numDesc " + descriptions.size());
-                if (sensorDataListAdapter.getCount() == 0) {
                     Iterator<String> dtcIter = DTCs.iterator();
                     Iterator<String> descIter = descriptions.iterator();
                     while (dtcIter.hasNext() && descIter.hasNext()) {
@@ -45,13 +44,6 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
                         String desc = descIter.next();
                         android.util.Log.d("DTCPage", "New sensor " + name + " " + desc);
                         sensorDataListAdapter.addSensor(name, desc, "");
-                    }
-                }
-                else{
-                    for (int i = 0; i < sensorDataListAdapter.getCount(); i++){
-                        android.util.Log.d("DTCPage", "Old sensor " + DTCs.get(i) + " " + descriptions.get(i));
-                        sensorDataListAdapter.updateSensor(i,descriptions.get(i));
-                    }
                 }
                 android.util.Log.d("DTCPage", "Done processing results");
             }
@@ -79,6 +71,7 @@ public class DTCPage extends Fragment implements HandleVisibilityChange {
         public void onClick(View v){
             backend.sendClearDTCs(new Backend.ResultHandler() {
                 public void gotResult(Bundle result) {
+                    onBecomesVisible();
                     //Lets toast to that
                     //TODO put these in strings.xml
                     String strResult = "DTCs successfully cleared";

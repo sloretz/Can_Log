@@ -196,7 +196,7 @@ public class Backend extends BluetoothService{
     {
         btWriter.write(cmd + "\r\n");
         btWriter.flush();
-        //Log.d("Backend", "->> " + cmd);
+        Log.d("Backend", "->> " + cmd);
     }
 
     protected String bt_readln() throws IOException
@@ -209,7 +209,9 @@ public class Backend extends BluetoothService{
                 //Log.d("Backend", "r");
                 nextLine = btReader.readLine();
             }
-        //Log.d("Backend", "<<- " + nextLine);
+        nextLine=nextLine.replace("\u0003","");
+        nextLine=nextLine.replace("\u0004","");
+        Log.d("Backend", "<<- " + nextLine);
         return nextLine;
     }
 
@@ -618,7 +620,7 @@ public class Backend extends BluetoothService{
                 try {
                     //first read the number of lines for progress
                     //then read one row until we hit the ~\n
-                    bt_writeln("transf");
+                    bt_writeln("trans");
                     Integer numLines = Integer.valueOf(bt_readln());
                     String nextLine;
                     int linesSoFar = 0;
@@ -644,11 +646,12 @@ public class Backend extends BluetoothService{
                         linesSoFar++;
                         publishProgress(linesSoFar/Float.valueOf(numLines));
                     }
+                    bt_writeln("storage format sd");
+                    bt_readln();
 
                 } catch (IOException e) {
                     result.putString("error", e.getLocalizedMessage());
                 }
-
                 Log.d("Backend", "begin history download returning");
                 return result;
             }
