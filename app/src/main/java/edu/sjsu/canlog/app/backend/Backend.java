@@ -146,7 +146,7 @@ public class Backend extends BluetoothService{
                             supportedPIDs.add(PIDadder);
                         }
                         --PIDadder;
-                        PIDsComparator=PIDsComparator << 1;
+                        PIDsComparator  <<= 1;
                     }
                     bt_writeln("pid 32");
                     PIDs= Long.valueOf(bt_readln(),16);
@@ -159,7 +159,7 @@ public class Backend extends BluetoothService{
                             supportedPIDs.add(PIDadder);
                         }
                         --PIDadder;
-                        PIDsComparator=PIDsComparator << 1;
+                        PIDsComparator <<= 1;
                     }
                     bt_writeln("pid 64");
                     PIDs= Long.valueOf(bt_readln(),16);
@@ -172,7 +172,7 @@ public class Backend extends BluetoothService{
                             supportedPIDs.add(PIDadder);
                         }
                         --PIDadder;
-                        PIDsComparator=PIDsComparator << 1;
+                        PIDsComparator <<= 1;
                     }
 
                 } catch (IOException e)
@@ -646,7 +646,7 @@ public class Backend extends BluetoothService{
                                 Integer.valueOf(splitRow[9]),
                                 Integer.valueOf(splitRow[10]));
                         linesSoFar++;
-                        publishProgress(Float.valueOf(linesSoFar)/Float.valueOf(numLines));
+                        publishProgress(linesSoFar/Float.valueOf(numLines));
                     }
 
                 } catch (IOException e) {
@@ -674,7 +674,7 @@ public class Backend extends BluetoothService{
                 Bundle result = new Bundle();
                 //Use DatabaseHandler
                 DatabaseHandler h = new DatabaseHandler(mContext, VIN);
-                ArrayList<SQLdata> data = (ArrayList<SQLdata>) h.getAllDataRange(PID, startDate, endDate);
+                ArrayList<SQLdata> data =  h.getAllDataRange(PID, startDate, endDate);
                 ArrayList<GraphValue> retValues = new ArrayList<GraphValue>();
 
                 for (SQLdata row : data)
