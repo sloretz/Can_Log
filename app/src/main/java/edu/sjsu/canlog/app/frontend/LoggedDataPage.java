@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import edu.sjsu.canlog.app.R;
 import edu.sjsu.canlog.app.backend.Backend;
+import edu.sjsu.canlog.app.backend.PrettyPID;
 
 
 /**
@@ -65,6 +66,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
             public void gotResult(Bundle result) {
                 if (backend.wasError(result))
                     return;
+                xyPlot.clear();
                 graphValues = result.getParcelableArrayList("values");
                 Log.d("LoggedDataPage", "Got query results");
 
@@ -81,6 +83,7 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
                         "Err: should not display");
 
                 xyPlot.addSeries(series, seriesFormat);
+                xyPlot.setTitle(PrettyPID.getDescription(PrettyPID.toInteger(currentPID)));
                 xyPlot.redraw();
             }
         });
