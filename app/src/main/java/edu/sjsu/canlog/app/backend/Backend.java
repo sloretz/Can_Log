@@ -24,7 +24,6 @@ public class Backend extends BluetoothService{
     public ArrayList<Integer> liveDataPIDs;
     private ArrayList<Integer> aboutCarPIDs;
     private ArrayList<Integer> supportedPIDs;
-    HashMap<String, DatabaseHandler> tables;
 
 
     //This is passed in to the fetch functions
@@ -41,7 +40,6 @@ public class Backend extends BluetoothService{
         loggedDataPIDs = new ArrayList<Integer>();
         liveDataPIDs = new ArrayList<Integer>();
         supportedPIDs = new ArrayList<Integer>();
-        tables = new HashMap<String, DatabaseHandler>();
 
         loggedDataPIDs.add(0x3);
         loggedDataPIDs.add(0x4);
@@ -181,15 +179,6 @@ public class Backend extends BluetoothService{
         };
         task.execute((ResultHandler)null);
 
-    }
-
-    protected DatabaseHandler getDB(String vin)
-    {
-        if (!tables.containsKey(vin)) {
-            DatabaseHandler h = new DatabaseHandler(mContext, vin);
-            tables.put(vin, h);
-        }
-        return tables.get(vin);
     }
 
     protected void bt_writeln(String cmd) throws IOException
@@ -554,16 +543,14 @@ public class Backend extends BluetoothService{
                 Bundle result = new Bundle();
                 ArrayList<String> vinList = new ArrayList<String>();
 
-                DatabaseHandler h = new DatabaseHandler(mContext, "");
-                Cursor c = h.showAllTables();
+                DatabaseHandler h = new DatabaseHandler(mContext);
+                Cursor c = h.showAllVINs();
                 if (c.moveToFirst())
                 {
-                    //This skips the first table "android_METADATA"
-                    while (c.moveToNext())
+                    do
                     {
-                        //Add VIN stripping off leading underscore
-                        vinList.add(c.getString(0).substring(1));
-                    }
+                        vinList.add(c.getString(0));
+                    }while (c.moveToNext());
                 }
 
                 result.putStringArrayList("VIN", vinList);
@@ -625,6 +612,7 @@ public class Backend extends BluetoothService{
                     String nextLine;
                     int linesSoFar = 0;
                     publishProgress(0.0f);
+                    DatabaseHandler db = new DatabaseHandler(mContext);
                     while (true)
                     {
                         nextLine = bt_readln();
@@ -632,7 +620,8 @@ public class Backend extends BluetoothService{
                             break;
                         String[] splitRow = nextLine.split(",");
                         String vin = splitRow[0];
-                        getDB(vin).addRow(
+                        db.addRow(
+                                vin,
                                 Integer.valueOf(splitRow[1]),
                                 Integer.valueOf(splitRow[2]),
                                 Integer.valueOf(splitRow[3]),
@@ -672,8 +661,8 @@ public class Backend extends BluetoothService{
                 Log.d("Backend", "Querying history for pid " + PID);
                 Bundle result = new Bundle();
                 //Use DatabaseHandler
-                DatabaseHandler h = new DatabaseHandler(mContext, VIN);
-                ArrayList<SQLdata> data =  h.getAllDataRange(PID, startDate, endDate);
+                DatabaseHandler h = new DatabaseHandler(mContext);
+                ArrayList<SQLdata> data =  h.getAllDataRange(VIN, PID, startDate, endDate);
                 ArrayList<GraphValue> retValues = new ArrayList<GraphValue>();
 
                 for (SQLdata row : data)

@@ -64,7 +64,6 @@ public class BluetoothService {
              */
             Bundle result = null;
             mSocketLock.lock();
-            Log.d("Backend", "Acquired lock");
             try {
                 while (mConnectedSocket == null)
                 {
