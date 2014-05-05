@@ -16,34 +16,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "CAN_LOG";
-    private final String tableVIN;
+    private static final String TABLE = "LOGS";
 
-    public DatabaseHandler(Context context, String car) {
+    public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        tableVIN="_" + car;
+        //tableVIN="_" + car;
     }
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        if (tableVIN.equals("_")) {
-            Log.d("DatabaseLogger", "Choosing not to create table " + tableVIN);
-            return; //hackish, don't create when just using for showAllTables()
-        }
-        String CREATE_TABLE= "CREATE TABLE IF NOT EXISTS " + tableVIN + " (time Integer PRIMARY KEY, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x2f Integer, x5c Integer, x5e Integer)";
-        Log.d("DatabaseLogger","Creating database table " + tableVIN);
+        //if (tableVIN.equals("_")) {
+        //   Log.d("DatabaseLogger", "Choosing not to create table " + tableVIN);
+        //    return; //hackish, don't create when just using for showAllTables()
+        //}
+        String CREATE_TABLE= "CREATE TABLE IF NOT EXISTS " + TABLE + " (VIN TEXT, time Integer, x03 Integer, x04 Integer, x05 Integer, x0c Integer, x0d Integer, x11 Integer, x2f Integer, x5c Integer, x5e Integer, PRIMARY KEY (VIN,TIME))";
+        Log.d("DatabaseLogger","Creating database table " + TABLE);
         db.execSQL(CREATE_TABLE);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
-        db.execSQL("DROP TABLE IF EXISTS " + tableVIN);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE);
         onCreate(db);
     }
 
-    public void addRow(int time, int x03, int x04, int x05, int x0c, int x0d, int x11, int x2f, int x5c, int x5e)
+    public void addRow(String vin, int time, int x03, int x04, int x05, int x0c, int x0d, int x11, int x2f, int x5c, int x5e)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values= new ContentValues();
+        values.put("VIN", vin);
         values.put("time", time);
         values.put("x03",x03);
         values.put("x04",x04);
@@ -55,12 +56,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("x5c",x5c);
         values.put("x5e",x5e);
 
-        db.insert(tableVIN, null, values);
+        db.insert(TABLE, null, values);
     }
-    public Cursor showAllTables()
+    public Cursor showAllVINs()
     {
         SQLiteDatabase db =this.getReadableDatabase();
-        String sql = "SELECT name FROM sqlite_master WHERE type='table'";
+        String sql = "SELECT VIN FROM " + TABLE + "GROUP BY VIN";
         return db.rawQuery(sql,null);
     }
     /*
@@ -79,10 +80,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return data;
     }
     */
-    public ArrayList<SQLdata> getAllDataRange(String column, long begin, long end)
+    public ArrayList<SQLdata> getAllDataRange(String VIN, String column, long begin, long end)
     {
         ArrayList<SQLdata> data = new ArrayList<SQLdata>();
-        String selectQuery= "SELECT time, " + column + " FROM " + tableVIN + " WHERE time > " + begin +" AND time < " + end + ";";
+        String selectQuery= "SELECT time, " + column + " FROM " + TABLE + " WHERE time > " + begin +" AND time < " + end + " AND VIN = " + VIN+" ;";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if(cursor.moveToFirst()) {
