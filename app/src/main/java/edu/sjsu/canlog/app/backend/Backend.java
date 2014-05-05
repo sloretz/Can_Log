@@ -117,10 +117,6 @@ public class Backend extends BluetoothService{
         liveDataPIDs.add(0x52);
         liveDataPIDs.add(0x53); //Absolute Evap system Vapor Pressure
         liveDataPIDs.add(0x54);
-        liveDataPIDs.add(0x55);
-        liveDataPIDs.add(0x56);
-        liveDataPIDs.add(0x57);
-        liveDataPIDs.add(0x58);
         liveDataPIDs.add(0x59);
         liveDataPIDs.add(0x5a);
         liveDataPIDs.add(0x5b);
@@ -489,16 +485,17 @@ public class Backend extends BluetoothService{
 
     public void fetchSensorData(final String sensorHandle, ResultHandler handler)
     {
-        Log.d("Backend", "Fetch sensor data called");
         BluetoothTask task = new BluetoothTask() {
             @Override
             protected Bundle doSocketTransfer()
             {
-                Log.d("Backend", "Fetch sensor data running");
                 Bundle result = new Bundle();
                 String data;
                 String type = "";
+                if (!supportedPIDs.contains(PrettyPID.toInteger(sensorHandle)))
+                    result.putString("error", "not supported");
                 try {
+                    Log.e("Backend", "fetching PID " + sensorHandle);
                     bt_writeln("pid " + PrettyPID.toInteger(sensorHandle));
                     data = bt_readln();
                     type = PrettyPID.getType(sensorHandle);
@@ -506,12 +503,11 @@ public class Backend extends BluetoothService{
                         result.putInt(sensorHandle, Integer.valueOf(data));
                     else if (type.equals("double"))
                         result.putDouble(sensorHandle, Double.valueOf(data));
-                } catch (IOException e)
+                } catch (Exception e)
                 {
                     result.putString("error", e.getLocalizedMessage());
                 }
                 result.putString("type", type);
-                Log.d("Backend", "fetch sensor data returning");
                 return result;
             }
         };

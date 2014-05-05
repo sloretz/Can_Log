@@ -21,6 +21,7 @@ import java.util.TimerTask;
 
 import edu.sjsu.canlog.app.R;
 import edu.sjsu.canlog.app.backend.Backend;
+import edu.sjsu.canlog.app.backend.PrettyPID;
 
 /**
  * Created by shane on 3/11/14.
@@ -39,7 +40,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
     private int currentPID = -1;
     private ArrayList<GraphValue> graphValues;
     private Timer updateTimer;
-    private boolean BTrequestOutstanding = false;
+    private int requestsOutstanding = 0;
     private page_t displayed_page = page_t.NO_PAGE;
 
     private enum page_t {NO_PAGE, PID_PICKER, PID_GRAPH}
@@ -79,35 +80,51 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         @Override
         public void run() {
             //Update the GUI
-            if (BTrequestOutstanding)
+            if (requestsOutstanding > 0)
                 return;
-            BTrequestOutstanding = true;
+            ArrayList<Integer> liveDataPIDs = Backend.getInstance().liveDataPIDs;
+            requestsOutstanding = liveDataPIDs.size();
+
             final Backend backend = Backend.getInstance();
-            backend.fetchAvailableSensorsAndData(new Backend.ResultHandler() {
-                public void gotResult(Bundle result) {
-                    if (backend.wasError(result))
-                        return;
-                    ArrayList<String> sensors = result.getStringArrayList("Sensors");
-                    ArrayList<String> data = result.getStringArrayList("Data");
-                    ArrayList<String> pids = result.getStringArrayList("PIDs");
-                    //First call, populate the sensor list
-                    if (sensorDataListAdapter.getCount() == 0) {
-                        Iterator<String> senIter = sensors.iterator();
-                        Iterator<String> datIter = data.iterator();
-                        Iterator<String> pidIter = pids.iterator();
-                        while (senIter.hasNext() && datIter.hasNext() && pidIter.hasNext()) {
-                            sensorDataListAdapter.addSensor(senIter.next(), datIter.next(), pidIter.next());
+            //Create a bt task for every PID
+
+            for (Integer pid : liveDataPIDs)
+            {
+                final int xPid = pid;
+                backend.fetchSensorData(PrettyPID.toString(pid), new Backend.ResultHandler() {
+                    public void gotResult(Bundle result) {
+                        if ("not supported".equals(result.getString("error")) || backend.wasError(result))
+                        {
+                            requestsOutstanding--;
+                            return;
                         }
-                    }
-                    //subsequent calls, update the gui
-                    else {
-                        for (int i = 0; i < sensorDataListAdapter.getCount(); i++){
-                            sensorDataListAdapter.updateSensor(i,data.get(i));
+                        String pidHandle = PrettyPID.toString(xPid);
+                        String type = result.getString("type");
+                        String data = "";
+                        if (type.equals("int"))
+                            data = Integer.toString(result.getInt(pidHandle));
+                        else
+                            data = Double.toString(result.getDouble(pidHandle));
+                        String name = PrettyPID.getDescription(xPid);
+
+                        boolean found = false;
+                        for (int i = 0; i < sensorDataListAdapter.getCount(); i++)
+                        {
+                            if (sensorDataListAdapter.getSensorName(i).equals(name))
+                            {
+                                sensorDataListAdapter.updateSensor(i,data);
+                                found = true;
+                                break;
+                            }
                         }
+                        if (!found)
+                        {
+                            sensorDataListAdapter.addSensor(name, data, pidHandle);
+                        }
+                        requestsOutstanding--;
                     }
-                    BTrequestOutstanding = false;
-                }
-            });
+                });
+            }
         }
     }
 
@@ -121,9 +138,9 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         }
         @Override
         public void run() {
-            if (BTrequestOutstanding)
+            if (requestsOutstanding > 0)
                 return;
-            BTrequestOutstanding = true;
+            requestsOutstanding++;
             //Update the GUI
             final Backend backend = Backend.getInstance();
             backend.fetchSensorData(sensorHandle, new Backend.ResultHandler() {
@@ -153,7 +170,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
                     }
                     Log.d("LiveDataPage", "Graph is redrawing plot size:" + graphValues.size() + " added:" + data);
                     xyPlot.redraw();
-                    BTrequestOutstanding = false;
+                    requestsOutstanding = 0;
                 }
             });
         }
