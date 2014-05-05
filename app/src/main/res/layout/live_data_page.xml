@@ -26,7 +26,7 @@
         androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
         androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
         androidPlot.graphWidget.marginTop="20dp"
-        androidPlot.graphWidget.marginLeft="15dp"
+        androidPlot.graphWidget.marginLeft="20dp"
         androidPlot.graphWidget.marginBottom="25dp"
         androidPlot.graphWidget.marginRight="10dp"
         androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
