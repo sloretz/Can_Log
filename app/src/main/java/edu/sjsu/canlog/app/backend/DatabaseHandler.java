@@ -83,7 +83,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<SQLdata> getAllDataRange(String VIN, String column, long begin, long end)
     {
         ArrayList<SQLdata> data = new ArrayList<SQLdata>();
-        String selectQuery= "SELECT time, " + column + " FROM " + TABLE + " WHERE time > " + begin +" AND time < " + end + " AND VIN = " + VIN+" ;";
+        String selectQuery= "SELECT time, " + column + " FROM " + TABLE + " WHERE time > " + begin +" AND time < " + end + " AND VIN = '" + VIN+"' ;";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if(cursor.moveToFirst()) {
