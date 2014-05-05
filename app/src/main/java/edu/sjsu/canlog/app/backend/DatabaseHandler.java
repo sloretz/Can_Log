@@ -61,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public Cursor showAllVINs()
     {
         SQLiteDatabase db =this.getReadableDatabase();
-        String sql = "SELECT VIN FROM " + TABLE + "GROUP BY VIN";
+        String sql = "SELECT VIN FROM " + TABLE + " GROUP BY VIN";
         return db.rawQuery(sql,null);
     }
     /*
