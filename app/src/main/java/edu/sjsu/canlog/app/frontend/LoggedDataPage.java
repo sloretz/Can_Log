@@ -62,6 +62,8 @@ public class LoggedDataPage extends SensorDataListViewFragment implements Handle
         final Backend backend = Backend.getInstance();
         //get the graph data from the backend
         Log.d("LoggedDataPage", "currentVIN " + currentVIN + " currentPID " + currentPID);
+        if (currentVIN == null || currentPID == null)
+            return;
         backend.queryHistoryForPID(currentVIN, currentPID, startDate, endDate, new Backend.ResultHandler() {
             public void gotResult(Bundle result) {
                 if (backend.wasError(result))
