@@ -100,7 +100,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
                         }
                         String pidHandle = PrettyPID.toString(xPid);
                         String type = result.getString("type");
-                        String data = "";
+                        String data;
                         if (type.equals("int"))
                             data = Integer.toString(result.getInt(pidHandle));
                         else
@@ -368,7 +368,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
 
         return rootView;
     }
-
+    /*
     protected ArrayList<Number> _graphValuesToNumber(ArrayList<GraphValue> graphValues)
     {
         ArrayList<Number> values = new ArrayList<Number>();
@@ -380,7 +380,7 @@ public class LiveDataPage extends SensorDataListViewFragment implements HandleBa
         }
         return values;
     }
-
+    */
     protected String _findSeriesName()
     {
         if (currentPID >= 0)
