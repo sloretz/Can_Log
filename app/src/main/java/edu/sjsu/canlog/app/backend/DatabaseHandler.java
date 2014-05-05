@@ -39,6 +39,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE);
         onCreate(db);
     }
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion)
+    {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE);
+        onCreate(db);
+    }
 
     public void addRow(String vin, int time, int x03, int x04, int x05, int x0c, int x0d, int x11, int x2f, int x5c, int x5e)
     {
