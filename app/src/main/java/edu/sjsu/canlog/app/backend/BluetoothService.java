@@ -63,14 +63,12 @@ public class BluetoothService {
              * return bundle
              */
             Bundle result = null;
-            android.util.Log.d("Backend", "About to acquire lock");
             mSocketLock.lock();
             Log.d("Backend", "Acquired lock");
             try {
                 while (mConnectedSocket == null)
                 {
                     try {
-                        Log.d("Backend", "Waiting for isConnected");
                         isConnected.await();
                     } catch (InterruptedException ie) {
                         //I don't think this should happen on android...
@@ -78,11 +76,8 @@ public class BluetoothService {
                         return null;
                     }
                 }
-                Log.d("Backend", "Calling socket transfer function");
                 result = doSocketTransfer();
-                Log.d("Backend", "Returned from socket transfer function");
             } finally {
-                Log.d("Backend", "Releasing lock");
                 mSocketLock.unlock();
 
             }
