@@ -195,15 +195,24 @@ public class Backend extends BluetoothService{
     {
         //readline, ignoring empty lines
         String nextLine = "";
-        boolean hasNextLine = false;
-        while (!hasNextLine) {
+        while (true) {
             if (btReader.ready()) {
                 char ch = Character.toChars(btReader.read())[0];
                 Log.d("Backend", "rc " + ch);
                 if (ch == '\u0003' || ch == '\u0004' || ch == '\r')
                     continue;
                 if (ch == '\n')
-                    break;
+                {
+                    if (nextLine.length() > 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
                 nextLine += ch;
             }
         }
@@ -218,8 +227,8 @@ public class Backend extends BluetoothService{
             return false;
 
         //Toast if an error happens
-        Toast toast = Toast.makeText(mContext, error, Toast.LENGTH_LONG);
-        toast.show();
+        //Toast toast = Toast.makeText(mContext, error, Toast.LENGTH_LONG);
+        //toast.show();
         return true;
     }
 
@@ -642,8 +651,8 @@ public class Backend extends BluetoothService{
                         linesSoFar++;
                         publishProgress(linesSoFar/Float.valueOf(numLines));
                     }
-                    bt_writeln("storage format sd");
-                    bt_readln();
+                    //bt_writeln("storage format sd");v
+                    //bt_readln();
 
                 } catch (IOException e) {
                     result.putString("error", e.getLocalizedMessage());

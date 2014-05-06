@@ -25,22 +25,16 @@ public class AboutCarPage extends SensorDataListViewFragment implements HandleVi
             public void gotResult(Bundle result) {
                 if (backend.wasError(result))
                     return;
+                sensorDataListAdapter.clear();;
                 ArrayList<String> names = result.getStringArrayList("carInfoNames");
                 ArrayList<String> values = result.getStringArrayList("values");
                 Log.d("AboutCarPage", "Num values " + values.size());
-                if (sensorDataListAdapter.getCount() == 0) {
-                    Iterator<String> nameIter = names.iterator();
-                    Iterator<String> valIter = values.iterator();
-                    while (nameIter.hasNext() && valIter.hasNext()) {
-                        sensorDataListAdapter.addSensor(nameIter.next(), valIter.next(),"");
-                    }
+                Iterator<String> nameIter = names.iterator();
+                Iterator<String> valIter = values.iterator();
+                while (nameIter.hasNext() && valIter.hasNext()) {
+                    sensorDataListAdapter.addSensor(nameIter.next(), valIter.next(),"");
                 }
-                else
-                {
-                    for (int i = 0; i < sensorDataListAdapter.getCount(); i++){
-                        sensorDataListAdapter.updateSensor(i,values.get(i));
-                    }
-                }
+
             }
         });
     }
